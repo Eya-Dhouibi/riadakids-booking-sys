@@ -1,0 +1,154 @@
+// ============================================================
+// Tutor LMS — Navigation Custom  (tutor/_nav.scss)
+//
+// Sidebar nav RiadaKids remplaçant la nav Tutor native.
+// Design : icône colorée + label + badge + état actif gradient.
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Conteneur sidebar nav ────────────────────────────────────
+
+.rk-nav-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 t.$space-3;
+
+  @include m.tablet {
+    display: none !important;
+  }
+}
+
+// ── Éléments nav ─────────────────────────────────────────────
+
+.rk-nav-item {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: 10px t.$space-3;
+  border-radius: t.$border-radius-sm;
+  text-decoration: none;
+  color: t.$text-primary;
+  font-size: t.$font-size-base;
+  font-weight: t.$font-weight-semibold;
+  transition: background t.$transition-fast, color t.$transition-fast, transform t.$transition-fast;
+  position: relative;
+  @include m.focus-ring;
+
+  &:hover {
+    background: t.$bg-light;
+    transform: translateX(-2px);
+
+    [dir="ltr"] & { transform: translateX(2px); }
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: t.$border-radius-xs;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: background t.$transition-fast;
+  }
+
+  &__label {
+    flex: 1;
+    @include m.text-ellipsis;
+  }
+
+  &__badge {
+    background: var(--e-global-color-primary, #{t.$hex-primary});
+    color: #fff;
+    font-size: t.$font-size-xs;
+    font-weight: t.$font-weight-bold;
+    padding: 2px 7px;
+    border-radius: t.$border-radius-pill;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  // Couleurs icônes par type
+  &--orange .rk-nav-item__icon  { background: #fff3ed; }
+  &--blue   .rk-nav-item__icon  { background: #eff6ff; }
+  &--green  .rk-nav-item__icon  { background: #f0fdf4; }
+  &--purple .rk-nav-item__icon  { background: #faf5ff; }
+  &--amber  .rk-nav-item__icon  { background: #fffbeb; }
+  &--teal   .rk-nav-item__icon  { background: #f0fdfa; }
+  &--indigo .rk-nav-item__icon  { background: #e0e7ff; }
+  &--settings .rk-nav-item__icon { background: t.$bg-light; }
+  &--logout   .rk-nav-item__icon { background: #fee2e2; }
+
+  // État actif — gradient primary→secondary
+  &--active {
+    background: linear-gradient(
+      135deg,
+      var(--e-global-color-primary,   #{t.$hex-primary})   0%,
+      color-mix(in srgb, var(--e-global-color-primary, #{t.$hex-primary}) 60%, var(--e-global-color-secondary, #{t.$hex-secondary})) 100%
+    ) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(t.$hex-primary, 0.22) !important;
+    transform: none !important;
+
+    .rk-nav-item__icon  { background: rgba(255, 255, 255, 0.22) !important; }
+    .rk-nav-item__badge { background: rgba(255, 255, 255, 0.3) !important; color: #fff !important; }
+
+    &:hover { color: #fff !important; transform: none !important; }
+  }
+}
+
+// ── Séparateur footer nav (Settings + Logout) ────────────────
+
+.rk-nav-footer {
+  margin-top: t.$space-2;
+  border-top: 1px solid t.$border-color;
+  padding-top: t.$space-2;
+}
+
+.rk-nav-item--logout {
+  color: t.$hex-red !important;
+
+  &:hover {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+  }
+}
+
+// ── Header profil dans sidebar ────────────────────────────────
+
+.rk-nav-profile {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-4 t.$space-3 t.$space-4;
+  border-bottom: 1px solid t.$border-color;
+  margin-bottom: t.$space-2;
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--e-global-color-primary, #{t.$hex-primary});
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-weight: t.$font-weight-bold;
+    font-size: t.$font-size-base;
+    color: t.$text-primary;
+    line-height: 1.2;
+    @include m.text-ellipsis;
+  }
+
+  &__level {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+    margin-top: 2px;
+  }
+}

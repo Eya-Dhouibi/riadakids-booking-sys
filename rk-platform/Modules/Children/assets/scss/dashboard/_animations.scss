@@ -1,0 +1,207 @@
+// ============================================================
+// Child Dashboard — Animations  (dashboard/_animations.scss)
+//
+// @keyframes globaux + classes d'entrée.
+// Respecte prefers-reduced-motion.
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Keyframes de base ────────────────────────────────────────
+
+@keyframes rk-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes rk-float-sm {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+@keyframes rk-pulse {
+  0%, 100% { box-shadow: 0 0 0 0px rgba(t.$hex-primary, 0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(t.$hex-primary, 0); }
+}
+
+@keyframes rk-ripple {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+@keyframes rk-sparkle {
+  0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+  50%       { opacity: 1;   transform: scale(1.2) rotate(15deg); }
+}
+
+@keyframes rk-rocket {
+  0%, 100% { transform: translateY(0)  rotate(-15deg); }
+  50%       { transform: translateY(-12px) rotate(-15deg); }
+}
+
+@keyframes rk-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes rk-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25%  { transform: rotate(15deg); }
+  75%  { transform: rotate(-10deg); }
+}
+
+@keyframes rk-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rk-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes rk-scale-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes rk-confetti {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(120px) rotate(720deg); opacity: 0; }
+}
+
+@keyframes rk-countup-flash {
+  0%, 100% { color: inherit; }
+  50%       { color: var(--e-global-color-primary, #{t.$hex-primary}); }
+}
+
+// ── Classes d'animation ──────────────────────────────────────
+
+.rkv2-wave { display: inline-block; animation: rk-wave 1.5s ease-in-out infinite; }
+
+.rkv2-float-item {
+  position: absolute;
+  font-size: 1.4rem;
+  animation: rk-float 3s ease-in-out infinite;
+  opacity: 0.7;
+
+  &.f1 { top: 10%; right: -10px; animation-delay: 0s; }
+  &.f2 { bottom: 20%; left: -10px; animation-delay: 0.7s; }
+  &.f3 { top: 50%; right: 10px; animation-delay: 1.4s; }
+}
+
+// Entrée progressive cards
+.rkv2-card {
+  animation: rk-slide-up 0.4s ease forwards;
+
+  @for $i from 1 through 8 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 0.07}s;
+    }
+  }
+}
+
+// ── Hero décorations ─────────────────────────────────────────
+
+.rkv2-hero-char-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+// ── Countup animation ────────────────────────────────────────
+
+.rk-countup {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Level-up overlay ─────────────────────────────────────────
+
+#rk-levelup-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: t.$z-modal;
+  backdrop-filter: blur(8px);
+  animation: rk-fade-in 0.3s ease;
+
+  &[hidden] { display: none !important; }
+}
+
+.rk-levelup-card {
+  @include m.card(t.$space-8, 24px);
+  max-width: 360px;
+  width: 90vw;
+  text-align: center;
+  animation: rk-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.rk-levelup-icon  { font-size: 3.5rem; margin-bottom: t.$space-4; animation: rk-float 2s ease-in-out infinite; }
+.rk-levelup-title { font-size: t.$font-size-2xl; font-weight: t.$font-weight-extrabold; color: var(--e-global-color-primary, #{t.$hex-primary}); margin-bottom: t.$space-2; }
+.rk-levelup-sub   { font-size: t.$font-size-md; color: t.$text-muted; margin-bottom: t.$space-2; }
+.rk-levelup-tier  { font-size: t.$font-size-lg; font-weight: t.$font-weight-bold; color: t.$text-primary; margin-bottom: t.$space-6; }
+.rk-levelup-btn   { @include m.btn-primary; width: 100%; justify-content: center; }
+
+// ── Badge popup modal ─────────────────────────────────────────
+
+.rk-cdb-badge-popup {
+  position: fixed;
+  inset: 0;
+  z-index: t.$z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[hidden] { display: none !important; }
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+  }
+
+  &__card {
+    @include m.card(t.$space-8, 20px);
+    position: relative;
+    z-index: 1;
+    max-width: 320px;
+    width: 90vw;
+    text-align: center;
+    animation: rk-scale-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &__icon { margin-bottom: t.$space-4; }
+  &__name { font-size: t.$font-size-lg; font-weight: t.$font-weight-extrabold; margin-bottom: t.$space-2; color: t.$text-primary; }
+  &__story { font-size: t.$font-size-sm; color: t.$text-muted; margin-bottom: t.$space-5; line-height: t.$line-height-loose; }
+  &__close { @include m.btn-primary; width: 100%; justify-content: center; }
+}
+
+// ── Reduced motion ────────────────────────────────────────────
+
+@include m.reduced-motion {
+  .rkv2-card,
+  .rkv2-hero-star,
+  .rkv2-hero-rocket,
+  .rkv2-anim-char,
+  .rkv2-float-item,
+  .rkv2-wave,
+  .rkv2-station-pulse,
+  .rk-levelup-icon,
+  .rkv2-map-cloud {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .rkv2-journey-bar-fill,
+  .rkv2-skill-bar-fill,
+  .rkv2-mission-bar-fill,
+  .rkv2-course-prog-fill {
+    transition: none !important;
+  }
+}

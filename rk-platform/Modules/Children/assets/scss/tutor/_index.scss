@@ -1,0 +1,7 @@
+// Tutor LMS dashboard — module barrel
+// @use 'tutor' in main.scss loads all of these
+@forward 'layout';
+@forward 'nav';
+@forward 'cards';
+@forward 'mobile';
+@forward 'overrides';

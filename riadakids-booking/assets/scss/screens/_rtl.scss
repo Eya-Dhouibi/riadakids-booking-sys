@@ -1,0 +1,29 @@
+// =============================================================================
+// SCREENS · Adaptations RTL (عربي)
+// =============================================================================
+// Toute l'interface est en dir="rtl" — cette feuille documente et centralise
+// les ajustements RTL transversaux confirmés par l'audit Figma qui ne sont
+// pas déjà portés nativement par les composants (ex. text-align: right,
+// flex-direction: row-reverse déjà en place dans chaque composant).
+//
+// Rappel des comportements confirmés (voir audit section "04 · Arabe/RTL") :
+//   - Sidebar de navigation à droite de l'écran (pas à gauche)
+//   - Flèches suivant/précédent inversées par rapport au sens LTR habituel
+//   - Navigation calendrier : mois suivant à gauche du libellé, précédent
+//     à droite
+//   - Chevrons/flèches miroités ; icônes non-directionnelles (calendrier,
+//     horloge, coche, personnage) non miroitées
+//   - Ordre visuel des lignes de liste : icône/pastille à droite (bord
+//     d'attaque en RTL), texte à sa gauche
+// =============================================================================
+
+// Chiffres (dates, heures, âges) restent en chiffres occidentaux au fil du
+// texte arabe — comportement bidi standard. unicode-bidi: isolate évite les
+// inversions d'affichage sur les segments numériques mêlés à du texte RTL
+// (ex. "19 أغسطس", "9 سنوات", "15:45").
+.rk-child-age-pill,
+.rk-date-header,
+.rk-summary-card__value,
+.rk-step6-field__input {
+  unicode-bidi: isolate;
+}

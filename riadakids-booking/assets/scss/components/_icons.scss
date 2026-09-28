@@ -1,0 +1,15 @@
+// =============================================================================
+// COMPONENTS · Icônes SVG (remplacent les emojis)
+// =============================================================================
+.rk-icon {
+  display: inline-block;
+  vertical-align: -0.15em;
+  flex-shrink: 0;
+}
+
+// Dans les boutons et badges : alignement optique avec le texte
+.rk-btn .rk-icon,
+.rk-status-badge .rk-icon,
+.rk-alert-icon .rk-icon {
+  vertical-align: -0.2em;
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626"/>
+      <stop offset="100%" style="stop-color:#991b1b"/>
+    </linearGradient>
+    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+  </defs>
+  <polygon points="40,4 72,22 72,58 40,76 8,58 8,22" fill="url(#bgGrad)" stroke="#fca5a5" stroke-width="2"/>
+  <!-- Lion face -->
+  <circle cx="40" cy="40" r="17" fill="#f59e0b"/>
+  <!-- Mane -->
+  <circle cx="40" cy="40" r="21" fill="#d97706" opacity="0.7"/>
+  <circle cx="40" cy="40" r="17" fill="#f59e0b"/>
+  <!-- Eyes -->
+  <circle cx="35" cy="37" r="3" fill="white"/>
+  <circle cx="45" cy="37" r="3" fill="white"/>
+  <circle cx="35.5" cy="37.5" r="1.5" fill="#1e293b"/>
+  <circle cx="45.5" cy="37.5" r="1.5" fill="#1e293b"/>
+  <!-- Nose -->
+  <ellipse cx="40" cy="43" rx="3" ry="2" fill="#d97706"/>
+  <!-- Mouth -->
+  <path d="M37,45 Q40,49 43,45" fill="none" stroke="#92400e" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Whiskers -->
+  <line x1="20" y1="42" x2="34" y2="43" stroke="white" stroke-width="1" opacity="0.8"/>
+  <line x1="20" y1="45" x2="34" y2="44" stroke="white" stroke-width="1" opacity="0.8"/>
+  <line x1="46" y1="43" x2="60" y2="42" stroke="white" stroke-width="1" opacity="0.8"/>
+  <line x1="46" y1="44" x2="60" y2="45" stroke="white" stroke-width="1" opacity="0.8"/>
+  <!-- Ears -->
+  <circle cx="27" cy="25" r="5" fill="#d97706"/>
+  <circle cx="53" cy="25" r="5" fill="#d97706"/>
+  <!-- Validated checkmark -->
+  <circle cx="60" cy="16" r="11" fill="url(#checkGrad)" stroke="white" stroke-width="2"/>
+  <polyline points="54,16 58,20 66,12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

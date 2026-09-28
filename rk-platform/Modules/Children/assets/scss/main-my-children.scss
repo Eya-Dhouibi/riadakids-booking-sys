@@ -1,0 +1,16 @@
+// ============================================================
+// Entry Point — My Children (parent view)  (main-my-children.scss)
+//
+// Compiles to: assets/css/child-card.css
+// Commande : npx sass assets/scss/main-my-children.scss:assets/css/child-card.css --style=compressed
+// ============================================================
+
+@use 'tokens' as t;
+@use 'mixins' as m;
+
+// ── Components ───────────────────────────────────────────────
+
+@use 'components/child-card';
+@use 'components/child-card-add';
+@use 'components/child-profile';
+@use 'components/modal';

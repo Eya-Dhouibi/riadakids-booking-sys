@@ -1,0 +1,323 @@
+// ============================================================
+// RiadaKids — Mixins SASS  (_mixins.scss)
+//
+// Mixins réutilisables : RTL, responsive, composants.
+// Utilisation : @use 'mixins' as m; puis @include m.card;
+// ============================================================
+
+@use 'tokens' as t;
+
+// ── Direction & RTL ──────────────────────────────────────────
+
+// Applique une propriété en tenant compte de la direction RTL.
+// Usage : @include rtl-prop(margin-right, margin-left, 16px);
+@mixin rtl-prop($ltr-prop, $rtl-prop, $value) {
+  #{$ltr-prop}: $value;
+  [dir="rtl"] & {
+    #{$ltr-prop}: initial;
+    #{$rtl-prop}: $value;
+  }
+}
+
+// Flip left/right pour RTL automatiquement.
+@mixin rtl-flip {
+  [dir="rtl"] & {
+    transform: scaleX(-1);
+  }
+}
+
+// ── Responsive breakpoints ───────────────────────────────────
+
+@mixin mobile-xs {
+  @media (max-width: #{t.$bp-xs}) { @content; }
+}
+
+@mixin mobile {
+  @media (max-width: #{t.$bp-sm}) { @content; }
+}
+
+@mixin tablet {
+  @media (max-width: #{t.$bp-md}) { @content; }
+}
+
+@mixin below-lg {
+  @media (max-width: #{t.$bp-lg}) { @content; }
+}
+
+@mixin desktop {
+  @media (min-width: #{t.$bp-xl}) { @content; }
+}
+
+@mixin touch {
+  @media (hover: none) and (pointer: coarse) { @content; }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) { @content; }
+}
+
+// ── Typography ───────────────────────────────────────────────
+
+@mixin heading($size: t.$font-size-xl, $weight: t.$font-weight-bold) {
+  font-size: $size;
+  font-weight: $weight;
+  line-height: t.$line-height-tight;
+  font-family: t.$font-family;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Cards ────────────────────────────────────────────────────
+
+@mixin card($padding: t.$space-5, $radius: t.$border-radius) {
+  background: t.$surface;
+  border-radius: $radius;
+  box-shadow: t.$shadow-card;
+  border: 1px solid t.$border-color;
+  padding: $padding;
+}
+
+@mixin card-hover {
+  transition: box-shadow t.$transition-base, transform t.$transition-base;
+  &:hover {
+    box-shadow: t.$shadow-elevated;
+    transform: translateY(-2px);
+  }
+  @include touch {
+    &:hover {
+      box-shadow: t.$shadow-card;
+      transform: none;
+    }
+  }
+}
+
+// ── Buttons ──────────────────────────────────────────────────
+
+@mixin btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: t.$space-2;
+  padding: 10px 20px;
+  border-radius: t.$border-radius-sm;
+  font-family: t.$font-family;
+  font-weight: t.$font-weight-bold;
+  font-size: t.$font-size-base;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: background t.$transition-fast, transform t.$transition-fast, box-shadow t.$transition-fast;
+  line-height: 1;
+  white-space: nowrap;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @include touch {
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+@mixin btn-primary {
+  @include btn-base;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  color: #fff;
+
+  &:hover {
+    background: color-mix(in srgb, var(--e-global-color-primary, #{t.$hex-primary}) 85%, #000);
+    box-shadow: 0 4px 12px rgba(t.$hex-primary, 0.35);
+    color: #fff;
+  }
+}
+
+@mixin btn-secondary {
+  @include btn-base;
+  background: transparent;
+  color: var(--e-global-color-primary, #{t.$hex-primary});
+  border: 2px solid var(--e-global-color-primary, #{t.$hex-primary});
+
+  &:hover {
+    background: rgba(t.$hex-primary, 0.06);
+  }
+}
+
+@mixin btn-sm {
+  padding: 6px 14px;
+  font-size: t.$font-size-sm;
+  border-radius: t.$border-radius-xs;
+}
+
+// ── Badges & Chips ───────────────────────────────────────────
+
+@mixin chip($bg: rgba(t.$hex-primary, 0.1), $color: var(--e-global-color-primary, #{t.$hex-primary})) {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: t.$border-radius-pill;
+  background: $bg;
+  color: $color;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  line-height: 1.4;
+}
+
+// ── Progress Bars ────────────────────────────────────────────
+
+@mixin progress-bar($height: 6px, $bg: t.$border-color) {
+  height: $height;
+  background: $bg;
+  border-radius: t.$border-radius-pill;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    border-radius: t.$border-radius-pill;
+    background: var(--e-global-color-primary, #{t.$hex-primary});
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: width;
+  }
+}
+
+// ── Sections ─────────────────────────────────────────────────
+
+@mixin section-header {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  margin-bottom: t.$space-5;
+
+  &__title {
+    @include heading(1rem);
+    color: t.$text-primary;
+    flex: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+  }
+
+  &__icon {
+    width: 18px;
+    height: 18px;
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+    flex-shrink: 0;
+  }
+}
+
+// ── Empty State ──────────────────────────────────────────────
+
+@mixin empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: t.$space-4;
+  padding: t.$space-12 t.$space-6;
+  text-align: center;
+  color: t.$text-muted;
+
+  &__icon {
+    width: 56px;
+    height: 56px;
+    opacity: 0.4;
+    color: t.$text-muted;
+  }
+
+  p {
+    font-size: t.$font-size-md;
+    margin: 0;
+    max-width: 280px;
+  }
+}
+
+// ── Scrollable containers ─────────────────────────────────────
+
+@mixin scrollable-x {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+// ── Safe area (iOS notch) ─────────────────────────────────────
+
+@mixin safe-bottom($base: 0px) {
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    padding-bottom: calc(#{$base} + env(safe-area-inset-bottom));
+  }
+}
+
+// ── Elevation (shadow) ───────────────────────────────────────
+
+@mixin elevation($level: 1) {
+  @if $level == 1 { box-shadow: t.$shadow-card; }
+  @else if $level == 2 { box-shadow: t.$shadow-elevated; }
+  @else if $level == 3 { box-shadow: t.$shadow-float; }
+}
+
+// ── Focus visible (a11y) ─────────────────────────────────────
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--e-global-color-primary, #{t.$hex-primary});
+    outline-offset: 2px;
+  }
+}
+
+// ── Overlay ──────────────────────────────────────────────────
+
+@mixin overlay($bg: rgba(0, 0, 0, 0.45)) {
+  position: fixed;
+  inset: 0;
+  background: $bg;
+  z-index: t.$z-overlay;
+  backdrop-filter: blur(2px);
+}
+
+// ── Gradient backgrounds ──────────────────────────────────────
+
+@mixin gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--e-global-color-primary, #{t.$hex-primary}) 0%,
+    var(--e-global-color-secondary, #{t.$hex-secondary}) 100%
+  );
+}
+
+@mixin gradient-hero {
+  background: linear-gradient(
+    145deg,
+    #1a1a2e 0%,
+    #16213e 40%,
+    #0f3460 100%
+  );
+}
+
+// ── Truncation ───────────────────────────────────────────────
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

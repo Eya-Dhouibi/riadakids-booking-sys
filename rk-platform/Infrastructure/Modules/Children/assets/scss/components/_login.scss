@@ -1,0 +1,441 @@
+// ============================================================
+// Components — Child Login  (components/_login.scss)
+//
+// Page de connexion enfant : design split-screen (photo + carte).
+// RTL, mobile-first. Reflète Modules/Children/assets/css/child-login.css
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Reset html/page ───────────────────────────────────────────
+
+html.rk-child-login-html {
+  margin: 50px auto;
+}
+
+.rk-child-login-body {
+  --tutor-color-primary: #ff4411;
+  --tutor-color-primary-rgb: 255, 68, 17;
+  --tutor-color-primary-hover: #4c95d7;
+  --tutor-color-primary-hover-rgb: 76, 149, 215;
+  --tutor-body-color: #212327;
+  --tutor-body-color-rgb: 33, 35, 39;
+  --tutor-border-color: #cdcfd5;
+  --tutor-border-color-rgb: 205, 207, 213;
+  --tutor-color-gray: #f6f9ff;
+  --tutor-color-gray-rgb: 246, 249, 255;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  #wpadminbar,
+  header:not(.rk-clb-header),
+  footer,
+  .site-header,
+  .site-footer,
+  nav {
+    display: none !important;
+  }
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  position: relative;
+  padding: t.$space-8 t.$space-4;
+  background: linear-gradient(160deg, #ffffff 0%, #ffffff 35%, #ffe3d9 62%, var(--tutor-color-primary) 100%);
+  background-attachment: fixed;
+}
+
+// ── Carte principale (split-screen) ───────────────────────────
+
+.rk-clb-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr .75fr;
+  width: 100%;
+  max-width: 1250px;
+  max-height: 740px;
+  background: #fff;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 30px 70px rgba(var(--tutor-body-color-rgb), .16), 0 4px 18px rgba(var(--tutor-body-color-rgb), .08);
+  animation: rk-clb-enter .7s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes rk-clb-enter {
+  from { opacity: 0; transform: translateY(28px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+// ── Colonne image ──────────────────────────────────────────────
+
+.rk-clb-media {
+  position: relative;
+  overflow: hidden;
+  background: var(--tutor-color-gray);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.02);
+    max-height: 700px;
+    transition: transform 6s ease;
+  }
+}
+
+.rk-clb-card:hover .rk-clb-media img {
+  transform: scale(1.08);
+}
+
+// ── Colonne formulaire ─────────────────────────────────────────
+
+.rk-clb-form-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: t.$space-8;
+  background: linear-gradient(0deg, #fff5f0 0%, #ffe6da 55%, #ff441182 100%);
+  overflow: hidden;
+
+  // Décoration de fond (étoiles)
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .5;
+    background:
+      radial-gradient(2px 2px at 12% 14%, rgba(var(--tutor-color-primary-rgb), .25) 0%, transparent 100%),
+      radial-gradient(2px 2px at 85% 20%, rgba(var(--tutor-color-primary-hover-rgb), .25) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 70% 85%, rgba(var(--tutor-color-primary-rgb), .2) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 20% 90%, rgba(var(--tutor-color-primary-hover-rgb), .2) 0%, transparent 100%);
+    animation: rk-clb-twinkle 5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes rk-clb-twinkle {
+  0% { opacity: .35; }
+  50% { opacity: .65; }
+  100% { opacity: .4; }
+}
+
+.rk-clb-form-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  margin-inline-start: auto;
+}
+
+// ── En-tête formulaire ─────────────────────────────────────────
+
+.rk-clb-head {
+  margin-bottom: 28px;
+  animation: rk-clb-fade-up .6s ease .1s both;
+
+  h1 {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--tutor-color-primary);
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--tutor-color-primary);
+    line-height: 1.6;
+  }
+}
+
+@keyframes rk-clb-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ── Alertes (succès / erreur) ───────────────────────────────────
+
+.rk-clb-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: .95rem;
+  font-weight: 700;
+  margin-bottom: 22px;
+  animation: rk-clb-fade-up .6s ease .05s both;
+
+  &--success {
+    background: rgba(var(--tutor-color-primary-hover-rgb), .1);
+    border: 1.5px solid rgba(var(--tutor-color-primary-hover-rgb), .3);
+    color: var(--tutor-color-primary-hover);
+  }
+
+  &--error {
+    background: rgba(var(--tutor-color-primary-rgb), .08);
+    border: 1.5px solid rgba(var(--tutor-color-primary-rgb), .25);
+    color: var(--tutor-color-primary);
+  }
+}
+
+// ── Champs de saisie (Inputs) ───────────────────────────────────
+
+.rk-clb-field {
+  position: relative;
+  margin-bottom: 22px;
+  animation: rk-clb-fade-up .6s ease .18s both;
+
+  label {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--tutor-color-primary-hover);
+    margin-bottom: 10px;
+  }
+
+  input {
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid var(--tutor-border-color);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 1rem;
+    color: var(--tutor-body-color);
+    font-family: inherit;
+    direction: rtl;
+    outline: none;
+    transition: border-color .25s ease, box-shadow .25s ease, transform .15s ease;
+
+    &::placeholder {
+      color: rgba(var(--tutor-body-color-rgb), .4);
+    }
+
+    &:focus {
+      border-color: var(--tutor-color-primary);
+      box-shadow: 0 0 0 4px rgba(var(--tutor-color-primary-rgb), .15);
+      transform: translateY(-1px);
+    }
+
+    &:hover {
+      border-color: rgba(var(--tutor-color-primary-rgb), .5);
+    }
+
+    // Override autofill natif
+    &[type='text'],
+    &:-internal-autofill-selected {
+      border-radius: 24px !important;
+      border: 1px solid var(--tutor-color-primary) !important;
+      background: #ff441114 !important;
+    }
+  }
+}
+
+// ── Bouton submit ────────────────────────────────────────────────
+
+.rk-clb-submit {
+  width: 100%;
+  height: 58px;
+  background: var(--tutor-color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background .25s ease, transform .15s ease, box-shadow .25s ease;
+  box-shadow: 0 10px 24px rgba(var(--tutor-color-primary-rgb), .35);
+  animation: rk-clb-fade-up .6s ease .3s both;
+
+  &:hover {
+    background: var(--tutor-color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(var(--tutor-color-primary-hover-rgb), .35);
+  }
+
+  &.loading {
+    opacity: .75;
+    pointer-events: none;
+  }
+}
+
+.rk-clb-submit-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Spinner
+
+.rk-clb-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, .4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rk-clb-spin .7s linear infinite;
+}
+
+@keyframes rk-clb-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Footer / Infos ─────────────────────────────────────────────
+
+.rk-clb-back {
+  text-align: center;
+  margin-top: 26px;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--tutor-body-color);
+  animation: rk-clb-fade-up .6s ease .36s both;
+
+  a {
+    color: var(--tutor-color-primary);
+    text-decoration: none;
+    font-weight: 900;
+    transition: color .2s ease;
+
+    &:hover {
+      color: var(--tutor-color-primary-hover);
+    }
+  }
+}
+
+.rk-clb-partners {
+  margin-top: 44px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  animation: rk-clb-fade-up .6s ease .42s both;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+
+  img {
+    height: 34px;
+    width: auto;
+  }
+}
+
+.rk-clb-partners-note {
+  text-align: center;
+  color: var(--tutor-color-primary-hover);
+  font-weight: 700;
+  margin-top: 20px;
+}
+
+// ── Responsive ───────────────────────────────────────────────────
+
+@media (max-width: 991px) {
+  .rk-child-login-body {
+    padding: 0;
+    align-items: flex-start;
+    background-attachment: scroll;
+  }
+
+  .rk-clb-card {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    width: 100%;
+    min-height: auto;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .rk-clb-media {
+    height: 46vh;
+    min-height: 320px;
+    border-radius: 0 0 40px 40px;
+    margin-bottom: -40px;
+    z-index: 2;
+  }
+
+  .rk-clb-form-col {
+    padding: 60px 24px 32px;
+    border-radius: 40px 40px 0 0;
+    z-index: 1;
+    position: relative;
+  }
+
+  .rk-clb-form-inner {
+    max-width: 100%;
+    margin-inline-start: 0;
+  }
+
+  .rk-clb-head {
+    text-align: center;
+    margin-bottom: 20px;
+
+    h1 { font-size: 2.6rem; }
+    p { font-size: 1.15rem; }
+  }
+
+  .rk-clb-back {
+    text-align: center;
+
+    a { color: var(--tutor-color-primary-hover); }
+  }
+
+  .rk-clb-partners {
+    margin-top: 32px;
+    justify-content: center;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rk-clb-media {
+    height: 42vh;
+    min-height: 280px;
+  }
+
+  .rk-clb-form-col {
+    padding: 40px 20px 24px;
+  }
+
+  .rk-clb-head {
+    h1 { font-size: 2.4rem; }
+    p { font-size: 1rem; }
+  }
+
+  .rk-clb-field {
+    label { font-size: 1.05rem; }
+    input { padding: 14px 16px; font-size: .95rem; }
+  }
+
+  .rk-clb-submit {
+    height: 52px;
+    font-size: 1rem;
+  }
+}
+
+@include m.reduced-motion {
+  .rk-clb-card,
+  .rk-clb-head,
+  .rk-clb-alert,
+  .rk-clb-field,
+  .rk-clb-submit,
+  .rk-clb-back,
+  .rk-clb-partners,
+  .rk-clb-media img {
+    animation: none !important;
+    transition: none !important;
+  }
+}

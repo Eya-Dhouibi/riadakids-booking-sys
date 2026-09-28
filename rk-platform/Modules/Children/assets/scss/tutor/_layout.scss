@@ -1,0 +1,641 @@
+// ============================================================
+// Tutor LMS — Layout  (tutor/_layout.scss)
+//
+// Grille sidebar + content pour le dashboard Tutor LMS.
+// Surcharge les styles natifs Tutor sans modifier le core.
+// RTL natif (dir="rtl" sur .tutor-wrap).
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Reset marges Tutor LMS ───────────────────────────────────
+
+.tutor-wrap.tutor-wrap-parent.tutor-dashboard.tutor-frontend-dashboard {
+  margin-top: 0 !important;
+}
+
+.tutor-dashboard .tutor-dashboard-content {
+  padding-top: 0 !important;
+}
+
+// ── Cacher éléments Tutor remplacés par RK ──────────────────
+
+body.rk-child-active,
+body.rk-parent-active {
+
+  .tutor-frontend-dashboard-header { display: none !important; }
+  #tutor-dashboard-footer-mobile   { display: none !important; }
+
+  // Footer site global
+  footer,
+  .site-footer,
+  #colophon,
+  #footer,
+  .elementor-location-footer,
+  [data-elementor-type="footer"],
+  .elementor-template-type-footer { display: none !important; }
+
+  // Header site masqué en desktop
+  @media (min-width: t.$bp-lg) {
+    .site-header,
+    #masthead,
+    header.site-header,
+    .elementor-location-header,
+    [data-elementor-type="header"],
+    .elementor-template-type-header,
+    #site-header,
+    .header-global { display: none !important; }
+  }
+}
+
+// ── Vue parent — hero sidebar compact (sans XP ring) ─────────
+
+body.rk-parent-active {
+
+  .rk-nav-hero--parent {
+    background: linear-gradient(
+      135deg,
+      var(--e-global-color-primary, #{t.$hex-primary}) 0%,
+      var(--e-global-color-secondary, #{t.$hex-secondary}) 100%
+    );
+
+    .rk-nav-hero__avatar--parent {
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      overflow: hidden;
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: t.$font-weight-extrabold;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+  }
+}
+
+// ── Filtres bar ───────────────────────────────────────────────
+
+.rk-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: t.$space-2;
+  margin-bottom: t.$space-5;
+}
+
+// ── KPI total badge ───────────────────────────────────────────
+
+.rk-kpi-total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  color: #fff;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  padding: 0 6px;
+  line-height: 1;
+}
+
+// Vue home : cacher tout le contenu Tutor natif
+body.rk-child-active.rk-td-home {
+  .tutor-profile-completion,
+  .tutor-alert,
+  .tutor-dashboard-title,
+  .tutor-dashboard-content-inner,
+  .tutor-frontend-dashboard-course-progress,
+  .popular-courses-heading-dashboard,
+  .tutor-table-responsive { display: none !important; }
+}
+
+// ── Grille principale Tutor dashboard ───────────────────────
+
+.tutor-dashboard {
+
+  &.tutor-frontend-dashboard {
+    background: t.$bg-light;
+
+    @include m.tablet {
+      padding: 0;
+    }
+  }
+
+  // Zone de contenu à droite de la sidebar
+  &-content {
+    background: t.$bg-light;
+
+    @include m.tablet {
+      padding: t.$space-4;
+    }
+  }
+
+  // Sidebar à gauche (notre version custom)
+  &-left-menu {
+    background: t.$surface;
+    border-radius: 20px;
+    box-shadow: t.$shadow-elevated;
+    padding: 14px 0 18px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+
+    @include m.tablet {
+      display: none !important;
+    }
+  }
+}
+
+// ── Page title RK ───────────────────────────────────────────
+
+.rk-td-page-title {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  margin-bottom: t.$space-6;
+  padding-bottom: t.$space-4;
+  border-bottom: 1px solid t.$border-color;
+
+  &__tag {
+    @include m.chip;
+  }
+}
+
+// ── Section wrapper ──────────────────────────────────────────
+
+.rk-section {
+  margin-bottom: t.$space-8;
+
+  &__header {
+    @include m.section-header;
+  }
+
+  &__title {
+    @include m.heading(1rem);
+    color: t.$text-primary;
+    flex: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+
+    &-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--e-global-color-primary, #{t.$hex-primary});
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ── KPIs row ─────────────────────────────────────────────────
+
+.rk-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: t.$space-4;
+  margin-bottom: t.$space-6;
+}
+
+.rk-kpi {
+  @include m.card(t.$space-4, t.$border-radius-sm);
+  text-align: center;
+
+  &__value {
+    display: block;
+    font-size: t.$font-size-2xl;
+    font-weight: t.$font-weight-extrabold;
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+    line-height: 1;
+    margin-bottom: t.$space-1;
+  }
+
+  &__label {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+  }
+}
+
+// ── Empty state ──────────────────────────────────────────────
+
+.rk-empty {
+  @include m.empty-state;
+
+  &__icon {
+    width: 56px;
+    height: 56px;
+    opacity: 0.4;
+  }
+}
+
+// ── Buttons RK ──────────────────────────────────────────────
+
+.rk-btn {
+  @include m.btn-base;
+
+  &--primary { @include m.btn-primary; }
+  &--outline  { @include m.btn-secondary; }
+
+  &--sm {
+    @include m.btn-sm;
+  }
+}
+
+// ── Progress bar ─────────────────────────────────────────────
+
+.rk-progress-bar {
+  @include m.progress-bar(8px);
+
+  &__fill {
+    height: 100%;
+    border-radius: t.$border-radius-pill;
+    background: var(--e-global-color-primary, #{t.$hex-primary});
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+// ── Pagination ───────────────────────────────────────────────
+
+.rk-pagination-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: t.$space-3;
+  margin-top: t.$space-5;
+
+  button {
+    @include m.btn-base;
+    @include m.btn-sm;
+    background: t.$bg-light;
+    color: t.$text-primary;
+    border: 1px solid t.$border-color;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &.active {
+      background: var(--e-global-color-primary, #{t.$hex-primary});
+      color: #fff;
+      border-color: transparent;
+    }
+  }
+
+  &__counter {
+    font-size: t.$font-size-sm;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+  }
+}
+
+// ── Mobile ───────────────────────────────────────────────────
+
+@include m.tablet {
+  .tutor-wrap.tutor-wrap-parent.tutor-dashboard.tutor-frontend-dashboard {
+    margin-top: 0 !important;
+  }
+
+  .tutor-dashboard .tutor-dashboard-content {
+    padding-top: 0 !important;
+  }
+}
+
+// ── Sessions — historique (rk-sessions.php) ──────────────────
+
+.rk-sessions-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-3;
+}
+
+.rk-session-history-row {
+  @include m.card(t.$space-4, t.$border-radius-sm);
+  @include m.card-hover;
+  display: flex;
+  align-items: center;
+  gap: t.$space-4;
+
+  &--past { opacity: 0.85; }
+}
+
+.rk-session-history-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: t.$border-radius-sm;
+  background: t.$bg-light;
+  border: 1px solid t.$border-color;
+}
+
+.rk-session-history-day {
+  font-size: t.$font-size-lg;
+  font-weight: t.$font-weight-extrabold;
+  color: t.$text-primary;
+  line-height: 1.1;
+}
+
+.rk-session-history-month {
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  color: t.$text-muted;
+  text-transform: uppercase;
+}
+
+.rk-session-history-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  strong {
+    font-size: t.$font-size-base;
+    color: t.$text-primary;
+    @include m.text-ellipsis;
+  }
+}
+
+.rk-session-history-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: t.$font-size-xs;
+  color: t.$text-muted;
+  font-weight: t.$font-weight-semibold;
+
+  svg { flex-shrink: 0; opacity: .7; }
+
+  &__sep { opacity: .5; }
+}
+
+.rk-session-history-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: t.$space-1;
+  flex-shrink: 0;
+}
+
+.rk-session-status {
+  @include m.chip;
+  white-space: nowrap;
+
+  &--confirmed,
+  &--present   { background: rgba(t.$hex-green, .12); color: t.$hex-green; }
+  &--completed { background: rgba(t.$hex-secondary, .12); color: var(--e-global-color-secondary, #{t.$hex-secondary}); }
+  &--cancelled,
+  &--absent    { background: rgba(t.$hex-red, .12); color: t.$hex-red; }
+  &--rescheduled,
+  &--late      { background: rgba(t.$hex-amber, .14); color: t.$hex-amber; }
+  &--pending   { background: t.$bg-muted; color: t.$text-muted; }
+}
+
+@include m.mobile {
+  .rk-session-history-row { flex-wrap: wrap; }
+  .rk-session-history-status { flex-direction: row; }
+}
+
+// ── Rapport mensuel — document imprimable (rk-rapport.php) ───
+
+.rk-rapport-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: t.$space-4;
+  margin-bottom: t.$space-6;
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+  }
+}
+
+.rk-rapport-print-bar {
+  display: flex;
+  justify-content: center;
+  gap: t.$space-3;
+  padding: t.$space-4;
+  margin-bottom: t.$space-6;
+  background: t.$bg-light;
+  border-radius: t.$border-radius-sm;
+}
+
+.rk-rapport-doc {
+  @include m.card(t.$space-8, t.$border-radius);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.rk-rapport-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: t.$space-4;
+  padding-bottom: t.$space-5;
+  margin-bottom: t.$space-6;
+  border-bottom: 2px solid t.$border-color;
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__logo {
+    font-size: t.$font-size-xl;
+    font-weight: t.$font-weight-extrabold;
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+
+  &__type {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+  }
+
+  &__child {
+    display: flex;
+    align-items: center;
+    gap: t.$space-3;
+  }
+
+  &__avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid t.$border-color;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: t.$font-size-lg;
+    font-weight: t.$font-weight-extrabold;
+    color: t.$text-primary;
+  }
+
+  &__period {
+    margin: 2px 0 0;
+    font-size: t.$font-size-sm;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+  }
+}
+
+.rk-rapport-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: t.$space-4;
+  margin-bottom: t.$space-8;
+}
+
+.rk-rapport-kpi {
+  background: t.$bg-light;
+  border-radius: t.$border-radius-sm;
+  padding: t.$space-4;
+  text-align: center;
+
+  &__val {
+    display: block;
+    font-size: t.$font-size-2xl;
+    font-weight: t.$font-weight-extrabold;
+    line-height: 1;
+    margin-bottom: t.$space-1;
+  }
+
+  &__label {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+  }
+}
+
+.rk-rapport-section {
+  margin-bottom: t.$space-8;
+
+  &__title {
+    @include m.heading(1rem);
+    color: t.$text-primary;
+    margin: 0 0 t.$space-4;
+    padding-bottom: t.$space-2;
+    border-bottom: 1px solid t.$border-color;
+  }
+}
+
+.rk-rapport-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: t.$font-size-sm;
+
+  th, td {
+    padding: t.$space-2 t.$space-3;
+    text-align: right;
+    border-bottom: 1px solid t.$border-color;
+  }
+
+  th {
+    font-weight: t.$font-weight-bold;
+    color: t.$text-muted;
+    font-size: t.$font-size-xs;
+    text-transform: uppercase;
+  }
+
+  td { color: t.$text-primary; }
+
+  tbody tr:hover { background: t.$bg-light; }
+}
+
+.rk-rapport-skills {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-3;
+}
+
+.rk-rapport-skill-row {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+}
+
+.rk-rapport-skill-name {
+  flex-shrink: 0;
+  width: 110px;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  color: t.$text-primary;
+  @include m.text-ellipsis;
+}
+
+.rk-rapport-eval {
+  background: t.$bg-light;
+  border-radius: t.$border-radius-sm;
+  padding: t.$space-5;
+
+  &__text {
+    margin: 0 0 t.$space-3;
+    color: t.$text-primary;
+    line-height: t.$line-height-normal;
+  }
+
+  &__strengths,
+  &__developments,
+  &__remark {
+    margin-top: t.$space-3;
+
+    strong {
+      display: block;
+      font-size: t.$font-size-sm;
+      color: t.$text-primary;
+      margin-bottom: t.$space-1;
+    }
+
+    ul {
+      margin: 0;
+      padding-inline-start: t.$space-5;
+    }
+
+    li {
+      font-size: t.$font-size-sm;
+      color: t.$text-muted;
+      margin-bottom: 2px;
+    }
+
+    p {
+      margin: 0;
+      font-size: t.$font-size-sm;
+      color: t.$text-muted;
+      line-height: t.$line-height-normal;
+    }
+  }
+}
+
+.rk-rapport-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: t.$space-2;
+  margin-top: t.$space-8;
+  padding-top: t.$space-4;
+  border-top: 1px solid t.$border-color;
+  font-size: t.$font-size-xs;
+  color: t.$text-muted;
+}
+
+@include m.tablet {
+  .rk-rapport-doc { padding: t.$space-5; }
+  .rk-rapport-header { flex-direction: column; align-items: flex-start; }
+}

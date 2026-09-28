@@ -1,0 +1,67 @@
+// ============================================================
+// RiadaKids — Carousel mobile (grille → ligne défilante)
+// (_carousel-mobile.scss)
+//
+// Composant BEM-agnostique : transforme n'importe quelle grille CSS
+// (.rkb2__grid, .rkb1__grid, ou toute future grille de cartes) en
+// carousel horizontal scroll-snap sous 640px, dès lors qu'elle porte
+// l'attribut [data-rk-carousel] posé par rk-badges.js (initCarousels()).
+//
+// ── Statut migration (v9.25) ────────────────────────────────
+// Ce fichier est la cible SCSS de la règle équivalente actuellement
+// dans assets/css/rk-dashboard-v4.css (legacy, hors pipeline SCSS,
+// préfixée #rkd4 / body.rkd4-subpage). Il N'EST PAS ENCORE branché
+// dans main.scss : le CSS chargé en prod reste rk-dashboard-v4.css
+// jusqu'à ce que ce module soit migré dans le pipeline SCSS (voir
+// guide d'installation, section "Dette technique connue").
+//
+// Utilisation une fois migré :
+//   @use 'components/carousel-mobile' as carousel;
+//   .my-grid { @include carousel.mobile-carousel; }
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// Largeur de carte par défaut dans le carousel — correspond à la
+// largeur des cartes .rkb2__card / .rkb1__grid en usage actuel.
+$card-width: 132px;
+$card-gap:   t.$space-3; // 12px
+
+@mixin mobile-carousel($width: $card-width, $gap: $card-gap) {
+  @include m.mobile {
+    &[data-rk-carousel] {
+      display: flex;
+      grid-template-columns: none;
+
+      overflow-x: auto;
+      // scroll-snap-type + scroll-snap-align(child) : base du swipe
+      // tactile natif — le navigateur gère l'inertie et l'alignement,
+      // aucune réimplémentation JS du geste n'est nécessaire.
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+
+      // Scrollbar masquée : le carousel se pilote au swipe / auto-play,
+      // pas à la scrollbar (cohérent avec les patterns mobile natifs).
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      padding-bottom: 4px;
+      gap: $gap;
+
+      > * {
+        flex: 0 0 auto;
+        width: $width;
+        scroll-snap-align: start;
+
+        // Empêche un swipe rapide de "sauter" plusieurs cartes d'un
+        // coup — sans ça, un flick énergique peut désynchroniser la
+        // position réelle de scroll de la carte que le JS d'auto-play
+        // (rk-badges.js) considère comme "active".
+        scroll-snap-stop: always;
+      }
+    }
+  }
+}

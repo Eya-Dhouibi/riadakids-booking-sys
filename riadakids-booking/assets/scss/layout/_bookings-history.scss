@@ -1,0 +1,873 @@
+// =============================================================================
+// LAYOUT · Historique des réservations (لقاءاتي القادمة)
+// =============================================================================
+@use '../settings' as v;
+
+.rk-bookings-history { margin-top: 24px; }
+
+// AJUSTEMENT (demande utilisateur, specs Figma exactes) — bannière
+// d'information sur la règle 24h, remplace l'ancien style inline dans
+// Dashboard.php (voir render_history()).
+.rk-bookings-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--rk-info-bg, #EAF3FA);
+  border: 1px solid var(--rk-accent-blue);
+  border-radius: 10px;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rk-accent-blue);
+  flex-wrap: nowrap;
+}
+.rk-bookings-info-banner__icon {
+  flex-shrink: 0;
+  display: flex;
+}
+
+.rk-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #1a1a2e;
+  }
+}
+
+// AJUSTEMENT (demande utilisateur) — en-tête "لقاءاتي القادمة" + badge de
+// comptage masqués visuellement au-dessus de l'historique des réservations.
+// Le JS (booking-confirmation.js) continue de mettre à jour le badge en
+// arrière-plan sans erreur, seul le rendu visuel disparaît.
+.rk-bookings-history > .rk-section-header {
+  display: none;
+}
+
+// ── État vide ─────────────────────────────────────────────────────────────
+.rk-empty {
+  color: #aaa;
+  font-size: 13px;
+  padding: 12px 0;
+  text-align: center;
+}
+.rk-empty-bookings {
+  text-align: center;
+  padding: 48px 20px;
+  color: #868e96;
+}
+.rk-empty-icon  { font-size: 48px; margin-bottom: 12px; }
+.rk-empty-title { font-size: 18px; font-weight: 700; color: #343a40; margin: 0 0 6px; }
+.rk-empty-sub   { font-size: 14px; margin: 0 0 4px; }
+.rk-bookings-empty-filtered {
+  text-align: center;
+  padding: 32px 16px;
+  color: #94a3b8;
+}
+
+// ── Cards « لقاءاتي القادمة » (remplace l'ancien tableau) ────────────────
+// Les classes .rk-history-table / .rk-table-responsive restent définies
+// dans components/_list-rows.scss (inutilisées ici) pour ne rien casser
+// ailleurs si un autre template s'en sert encore.
+// Grille à 3 colonnes en desktop, 1 colonne en mobile.
+.rk-bookings-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: v.$bp-900) {
+  .rk-bookings-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: v.$bp-640) {
+  .rk-bookings-cards { grid-template-columns: 1fr; }
+}
+
+// AJUSTEMENT (demande utilisateur) — allège .rk-booking-card : le markup
+// combine déjà .rk-booking-card.rk-course-card (voir Dashboard::
+// render_booking_card()), donc le fond/bordure/radius/ombre viennent
+// désormais uniquement de .rk-course-card (components/_cards.scss,
+// même style que les cartes du wizard de réservation) — évite la double
+// bordure/ombre qu'empilaient les deux classes précédemment.
+.rk-booking-card {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+// AJUSTEMENT (demande utilisateur — retour arrière) — opacité retirée : la
+// carte annulée reste désormais à pleine opacité, distinguée uniquement
+// par son badge de statut rouge "ملغى" (voir components/_cards.scss,
+// .rk-course-status-badge.is-cancelled) et son bouton "حجز مجدد".
+.rk-booking-card--muted {
+}
+
+.rk-bc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.rk-bc-titles { min-width: 0; }
+.rk-bc-program {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+.rk-bc-sub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: #6b7280;
+  line-height: 1.5;
+
+  strong { color: #374151; font-weight: 700; }
+}
+.rk-bc-sep { margin: 0 4px; color: #cbd5e1; }
+
+.rk-bc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6b7280;
+}
+.rk-bc-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  .rk-icon { flex-shrink: 0; color: #9aa1ac; }
+}
+
+// AJUSTEMENT (demande utilisateur) — alignement à droite (au lieu de
+// gauche), margin-top et bordure supérieure retirées (footer plus léger,
+// collé au contenu au-dessus).
+.rk-bc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+}
+.rk-bc-window,
+.rk-bc-window-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: .76rem;
+  font-weight: 700;
+}
+.rk-bc-window-note { color: #94a3b8; font-weight: 500; padding-inline-start: 0; }
+.rk-bc-window--open   { background: #dcfce7; color: #166534; }
+.rk-bc-window--closed { background: #fee2e2; color: #991b1b; }
+
+@media (max-width: v.$bp-480) {
+  .rk-bc-top { flex-direction: column; align-items: flex-start; }
+  .rk-bc-footer { flex-wrap: wrap; }
+  .rk-btn-edit-booking,
+  .rk-btn-rebook,
+  .rk-btn-cancel-booking {
+    flex: 1 1 auto;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+  }
+}
+
+// ── Pagination (6 cartes par page) ────────────────────────────────────────
+.rk-bookings-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+.rk-bookings-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 !important;
+  background: #FFEBE5 !important;
+  box-shadow: inset 0px 2px 4px rgba(83, 22, 4, 0.25) !important;
+  border: 1.4px solid #FF987B !important;
+  border-radius: 12px !important;
+  color: #FF6E46 !important;
+  font-size: .82rem;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+
+  &:hover:not(:disabled):not(.is-active) {
+    background: #f6f7f9;
+    border-color: #d7dbe0;
+  }
+  &.is-active {
+    background: linear-gradient(318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411 !important;
+    background-blend-mode: soft-light, normal;
+    color: #fff !important;
+  }
+  &:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    background: #FFEBE5;
+    box-shadow: inset 0px 2px 4px rgba(83, 22, 4, 0.25);
+    border-radius: 12px;
+    color: #FF6E46;
+    border: 1.4px solid #FF987B;
+  }
+}
+
+// ── Barre de filtres (sélecteur الطفل + bascule القادمة/السابقة) ─────────
+.rk-bookings-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-direction: row-reverse;
+}
+
+// AJOUT (demande utilisateur) — regroupe le filtre enfant + le filtre
+// statut côte à côte (petit gap constant entre eux), pour que le
+// justify-content:space-between du parent .rk-bookings-filter-bar
+// sépare bien ce GROUPE de .rk-time-filter, au lieu de répartir l'espace
+// également entre les 3 blocs (qui collait visuellement enfant/statut
+// l'un à l'autre — voir capture fournie par l'utilisateur).
+.rk-filters-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rk-child-filter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// FIX (bug signalé — dropdown ne s'ouvre pas) — .rk-status-filter n'avait
+// jamais reçu de style : sans position:relative, le menu déroulant
+// .rk-child-filter-menu (position:absolute à l'intérieur) se positionnait
+// par rapport au plus proche ancêtre positionné au lieu de ce conteneur —
+// invisible ou mal placé selon le contexte. Même structure exacte que
+// .rk-child-filter ci-dessus (demande utilisateur).
+.rk-status-filter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.rk-child-filter-label {
+  font-size: .85rem;
+  font-weight: 600;
+  color: #475467;
+}
+.rk-child-filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  @include v.rk-sheen-primary(v.$rk-primary);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  color: v.$rk-white !important;
+  border-radius: v.$rk-radius-md !important;
+  border: 0;
+  cursor: pointer;
+  padding: 14px !important;
+  font-size: .8rem;
+  font-weight: 400;
+  font-family: inherit;
+  transition: background .15s ease;
+
+  &:hover { background: var(--rk-primary-light); }
+
+  svg {
+    flex-shrink: 0;
+    transition: transform .15s ease;
+  }
+  &[aria-expanded="true"] svg { transform: rotate(180deg); }
+}
+
+.rk-child-filter-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  min-width: 160px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: v.$rk-radius-md;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, .12);
+
+  // AJOUT (par précaution, même pattern de sécurité déjà appliqué
+  // partout ailleurs dans ce projet) — garde explicite, même si aucun
+  // display explicite en conflit n'a été identifié sur cet élément.
+  &[hidden] {
+    display: none !important;
+  }
+}
+.rk-child-filter-option {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  color: #344054;
+  cursor: pointer;
+  transition: background .1s ease;
+
+  &:hover { background: #f6f7f9; }
+  &.is-active {
+    background: var(--rk-primary-bg);
+    color: var(--rk-primary-light);
+    font-weight: 700;
+  }
+}
+
+// Bascule القادمة / السابقة — même style exact que .rk-booking-view-tab
+// (components/_buttons.scss), dupliqué ici plutôt que partagé via une
+// classe commune pour ne pas modifier le markup HTML existant.
+.rk-time-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.rk-time-filter-tab {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  border: none;
+  font-size: 16px;
+  line-height: 100%;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+  white-space: nowrap;
+  background-color: v.$rk-primary-bg !important;
+  color: v.$rk-primary-light !important;
+  border-radius: v.$rk-radius-md !important;
+  font-family: inherit;
+  font-weight: 700;
+  padding: 0 18px;
+
+  &.is-active {
+    background-color: var(--e-global-color-accent) !important;
+    background-blend-mode: soft-light, normal;
+    color: v.$rk-white !important;
+  }
+  &:hover:not(.is-active) {
+    background: var(--rk-primary-bg);
+    color: var(--rk-primary-light);
+  }
+}
+
+@media (max-width: v.$bp-480) {
+  // AJUSTEMENT (demande utilisateur — retour arrière) —
+  // flex-direction:column retiré, align-items:center + gap:24px ajoutés.
+  .rk-bookings-filter-bar {
+    align-items: center;
+    gap: 24px;
+  }
+  // AJUSTEMENT — order:3 déplacé de .rk-child-filter vers
+  // .rk-filters-group (le vrai enfant direct flex de
+  // .rk-bookings-filter-bar désormais, depuis le regroupement
+  // enfant+statut ci-dessus) — sans quoi cette règle n'avait plus aucun
+  // effet.
+  .rk-filters-group {
+    order: 3;
+  }
+  .rk-time-filter { align-self: stretch; justify-content: center; }
+
+  // AJOUT (demande utilisateur) — pastilles القادمة/السابقة plus
+  // compactes sur mobile.
+  .rk-time-filter-tab {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  // AJOUT (demande utilisateur) — menu déroulant (enfant/statut)
+  // repositionné légèrement à droite sur mobile pour ne pas déborder de
+  // l'écran.
+  .rk-child-filter-menu {
+    right: -20px;
+  }
+}
+
+// ── Modale d'édition d'une réservation ────────────────────────────────────
+// AJUSTEMENT (fichier CSS de référence fourni, section 0) — overlay
+// harmonisé sur la teinte de marque exacte #172F46 à 50%, au lieu d'un
+// bleu générique rgba(15,23,42,.55).
+#rk-edit-booking-modal.rk-edit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(v.$rk-shadow-base, .5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+#rk-edit-booking-modal[hidden] { display: none !important; }
+
+// AJUSTEMENT (demande utilisateur) — modale unifiée : la même carte
+// accueille désormais les deux vues (édition ET reprogrammation), donc
+// toujours à la largeur la plus généreuse (560px, nécessaire pour le
+// calendrier + créneaux côte à côte). Remplace les deux règles séparées
+// précédentes (#rk-edit-booking-modal .rk-modal-card à 460px et
+// #rk-reschedule-modal .rk-modal-card à 560px). Bordure ajoutée (fichier
+// CSS de référence — 1px, teinte navy à faible opacité).
+#rk-edit-booking-modal .rk-modal-card {
+  position: relative;
+  // AJUSTEMENT (demande utilisateur) — dégradé bleu clair + bordure grise
+  // neutre, remplace le fond blanc plat + bordure navy à faible opacité.
+  background: linear-gradient(180deg, rgba(227, 242, 253, 0.2) 0%, rgba(186, 217, 243, 0.2) 100%), #FFFFFF;
+  border: 1px solid #E4E4E7;
+  box-shadow: 0px 1px 2px rgba(v.$rk-shadow-base, .25), 0px 2px 6px 2px rgba(v.$rk-shadow-base, .1);
+  border-radius: v.$rk-radius-lg;
+  width: 100%;
+  max-width: 560px;
+  padding: 24px 22px 20px;
+  animation: rkEditIn .18s ease-out;
+}
+
+@keyframes rkEditIn {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+#rk-edit-booking-modal .rk-modal-x {
+  position: absolute;
+  inset-inline-start: 14px;
+  top: 12px;
+  border: 0;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 12px;
+
+  &:hover { color: #475569; }
+}
+
+#rk-edit-booking-modal .rk-edit-sub {
+  margin: 0 0 14px;
+  font-size: .82rem;
+  color: #64748b;
+}
+#rk-edit-booking-modal .rk-edit-msg {
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin-bottom: 12px;
+  font-size: .84rem;
+  font-weight: 600;
+}
+// AJUSTEMENT (fichier CSS de référence fourni, section 2/3) — label et
+// champ select alignés sur les valeurs exactes du design system, au lieu
+// de couleurs génériques (#334155/#e2e8f0/#1e293b).
+#rk-edit-booking-modal .rk-edit-field {
+  margin-bottom: 13px;
+  // AJOUT (demande utilisateur) — chevron custom positionné en absolu par-
+  // dessus le select (nécessaire : un <select> natif ne rend aucun
+  // pseudo-élément ::before/::after directement sur lui-même).
+  position: relative;
+
+  label {
+    display: block;
+    align-items: center;
+    font-family: v.$rk-font-family;
+    font-size: 14px;
+    font-weight: 500;
+    color: #295177;
+    margin-bottom: 4px;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: calc(50% + 6.5px); // (hauteur label ~18px + margin 4px) / 2, centré sur le select seul
+    width: 12px;
+    height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23295177' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    pointer-events: none; // le clic doit toujours atteindre le <select> en dessous
+  }
+
+  // Exclusion — le champ "التاريخ" (bouton custom, pas un <select>) a déjà
+  // sa propre icône calendrier intégrée dans son HTML (voir
+  // .rk-reschedule-date-input dans components/_calendar.scss) : éviter de
+  // superposer un second chevron par-dessus.
+  &.rk-reschedule-date-field::after {
+    content: none;
+  }
+
+  // AJOUT (demande utilisateur) — champ "المدرب" transformé en simple
+  // affichage lecture seule (plus de <select>, voir Dashboard::
+  // render_edit_modal()) : pas de chevron non plus, rien à ouvrir.
+  &.rk-reschedule-staff-field::after {
+    content: none;
+  }
+}
+#rk-edit-booking-modal select {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: v.$rk-font-family;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 32px 10px 12px; // espace réservé à gauche pour le chevron custom
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0px 1px 2px rgba(v.$rk-shadow-base, .1);
+  color: var(--rk-text-heading);
+  cursor: pointer;
+  // Retire le chevron natif du navigateur (Chrome/Firefox/Safari) pour ne
+  // pas superposer deux flèches — le chevron custom ci-dessus le remplace.
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  &:focus {
+    border-color: var(--rk-accent-blue);
+    outline: none;
+  }
+  &:disabled {
+    background: #f8fafc;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+}
+
+// AJOUT (demande utilisateur) — champ "المدرب" en lecture seule (plus de
+// <select>), même look visuel que le select désactivé (fond légèrement
+// grisé, pas de curseur pointer) pour signaler clairement qu'il n'est pas
+// modifiable.
+.rk-reschedule-staff-readonly {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: v.$rk-font-family;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f8fafc;
+  box-shadow: 0px 1px 2px rgba(v.$rk-shadow-base, .1);
+  color: var(--rk-text-heading);
+  cursor: default;
+  min-height: 20px; // évite l'écrasement de hauteur avant le chargement AJAX
+}
+
+#rk-edit-booking-modal .rk-edit-note {
+  margin: 14px 0 0;
+  font-size: .78rem;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+// AJUSTEMENT (demande utilisateur) — titre simplifié : 18px/600→400
+// (graisse retirée, gérée par héritage h3), plus de flex/centrage
+// (aligné à droite par défaut, comme le reste du contenu RTL de la
+// modale).
+.rk-edit-view-title {
+  font-size: 18px;
+  line-height: 28px;
+  font-family: v.$rk-font-family;
+  color: var(--rk-text-heading);
+  margin: 0;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  // AJUSTEMENT (demande utilisateur) — variante "إلغاء اللقاء؟" : plus
+  // grande (20px/700) et centrée, cohérente avec l'illustration au-dessus
+  // (voir #rk-cancel-fields-view, components/_modal.scss).
+  &--cancel {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 8px;
+  }
+
+  // AJOUT (demande utilisateur) — variante écrans de succès (تم تحديث
+  // الموعد / تم إلغاء اللقاء), même format que --cancel ci-dessus.
+  &--success {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 8px;
+  }
+}
+
+// AJOUT (demande utilisateur) — marge supérieure scopée par ID, sur les
+// titres "تعديل الموعد" et "تم تحديث الموعد" uniquement (pas toute la
+// classe générique .rk-edit-view-title, qui reste sans marge par défaut).
+#rk-reschedule-modal-title,
+#rk-reschedule-success-title {
+  margin-top: 2rem;
+}
+
+// AJOUT (demande utilisateur) — bouton "تراجع" de la vue reprogrammation,
+// style dégradé orange dédié (distinct du footer générique
+// #rk-edit-booking-modal .rk-edit-actions .rk-btn ci-dessus, passé en
+// fond clair — celui-ci reste volontairement plus visible car c'est un
+// vrai bouton de navigation, pas une simple annulation).
+// AJUSTEMENT (demande utilisateur — retour arrière) — fond clair simple
+// (var(--rk-primary-bg)), plus de dégradé orange ni d'ombre — la classe
+// rk-btn-secondary a été retirée du HTML (voir Dashboard::
+// render_edit_modal()), ce bouton dépend désormais entièrement de ce
+// style scopé par ID.
+#rk-reschedule-back {
+  background-color: var(--rk-primary-bg) !important;
+  color: var(--rk-primary-light) !important;
+}
+
+// AJOUT (demande utilisateur) — bouton "إلغاء" du footer d'édition,
+// dégradé rouge foncé dédié (distinct du dégradé orange générique
+// .rk-edit-actions .rk-btn) — cohérent avec la sévérité de l'action.
+#rk-edit-cancel {
+  background: linear-gradient(318.96deg, #7B1D04 -1.9%, rgba(255, 200, 185, 0) 17.34%, #FAF3F1 87.36%), #E33939 !important;
+  background-blend-mode: soft-light, normal;
+  box-shadow: 0px 1.40625px 2.8125px rgba(0, 0, 0, 0.3), 0px 2.8125px 8.4375px 2.8125px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 12px;
+  color: #fff !important;
+}
+
+// AJOUT (rapport design — modale 1 "تعديل الحجز", section 1.1/1.3) —
+// bandeau supérieur : badge compte à rebours en pastille (coin gauche) +
+// date/heure du cours (coin droit).
+.rk-edit-topbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  position: relative;
+  // AJUSTEMENT (demande utilisateur) — colonne (au lieu de ligne), avec
+  // marge supérieure : le badge passe en position absolute (voir
+  // .rk-edit-countdown-badge ci-dessous), donc ce conteneur n'a plus
+  // besoin d'aligner ses enfants horizontalement.
+  flex-direction: column;
+  margin-top: 2rem;
+
+  &[hidden] {
+    display: none !important;
+  }
+}
+.rk-edit-countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--rk-primary-bg);
+  color: #FF4411;
+  border-radius: v.$rk-radius-pill;
+  padding: 4px 10px;
+  font-family: v.$rk-font-family;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  // AJUSTEMENT (demande utilisateur) — badge positionné en absolu dans le
+  // coin (au lieu d'inline dans le flex du bandeau), cohérent avec la
+  // maquette Figma.
+  width: fit-content;
+  position: absolute;
+  left: 12px;
+  top: -35px;
+
+  &[hidden] {
+    display: none !important;
+  }
+}
+.rk-edit-appointment-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--rk-text-muted);
+  font-family: v.$rk-font-family;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#rk-edit-booking-modal .rk-edit-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  flex-direction: row;
+
+  .rk-btn { flex: 1 1 auto; }
+  a.rk-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  // FIX (bug signalé) — .rk-edit-actions est désormais partagée par les
+  // deux footers de la modale unifiée (#rk-edit-actions-view et
+  // #rk-reschedule-actions-view, voir Dashboard::render_edit_modal()) :
+  // sans cette garde, display:flex a la même spécificité que le style
+  // natif du navigateur [hidden]{display:none} et l'emporte selon l'ordre
+  // de chargement — les deux jeux de boutons restaient visibles en même
+  // temps quel que soit l'attribut hidden posé par booking-reschedule.js.
+  // Même défaut déjà corrigé sur .rk-success-modal-backdrop et
+  // .rk-modal-overlay (voir components/_modal.scss) — cause structurelle
+  // identique, cette fois sur un sélecteur composé (#id .classe) plutôt
+  // qu'une simple classe.
+  &[hidden] {
+    display: none !important;
+  }
+
+  // AJUSTEMENT v3 (demande utilisateur — vraie cible finale) — remplace le
+  // dégradé orange plein par un fond clair + texte orange (cohérent avec
+  // le bouton secondaire générique du design system, voir
+  // components/_buttons.scss::rk-shadow-btn-secondary-inset), radius
+  // 12px explicite.
+  // AJUSTEMENT v4 (demande utilisateur — retour arrière) — dégradé orange
+  // réactivé (remplace le fond clair posé précédemment), radius 12px
+  // conservé.
+  .rk-btn {
+    background: linear-gradient(318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411;
+    background-blend-mode: soft-light, normal;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    border-radius: 12px !important;
+  }
+
+  // AJUSTEMENT (demande utilisateur) — bouton secondaire (إلغاء/تراجع)
+  // entièrement refait : dégradé rouge + ombre dédiés, dimensions fixes,
+  // remplace la bordure orange claire posée précédemment.
+  // AJUSTEMENT v4 (demande utilisateur — retour arrière) — dégradé rouge
+  // + couleur blanche retirés, le bouton hérite désormais du style de
+  // base .rk-btn-secondary (fond clair var(--rk-primary-bg), texte
+  // var(--rk-primary-light), voir components/_buttons.scss) — seules
+  // l'ombre interne, la couleur texte orange et les dimensions restent
+  // surchargées ici.
+  .rk-btn-secondary {
+    box-shadow: inset 0px 2px 4px rgba(83, 22, 4, 0.25);
+    color: #FF6E46 !important;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8.4375px 16.875px;
+    gap: 11.25px;
+    width: 168.44px;
+    height: 44px;
+    flex: none;
+    order: 0;
+    flex-grow: 1;
+  }
+}
+
+// AJUSTEMENT (demande utilisateur — retour arrière) — en desktop
+// (≥768px), le footer revient au flex simple (wrap), au lieu de la
+// grille 2 colonnes 65%/30% posée précédemment.
+@media (min-width: 768px) {
+  #rk-edit-booking-modal .rk-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: v.$bp-420) {
+  #rk-edit-booking-modal .rk-edit-actions .rk-btn { flex: 1 1 100%; }
+}
+
+// ── Divers résumé / crédit preview ────────────────────────────────────────
+.rk-info-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+.rk-modal-divider {
+  border: 0;
+  border-top: 1px solid #eef1f6;
+  margin: 16px 0;
+}
+.rk-modal-program-text {
+  font-weight: 600;
+  color: #0065BF;
+  max-width: 70%;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rk-credit-preview-body { padding: 12px 16px; }
+.rk-credit-preview-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rk-credit-icon { font-size: 28px; flex-shrink: 0; }
+.rk-credit-preview-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1971c2;
+}
+.rk-credit-preview-balance {
+  font-size: 12px;
+  color: #555;
+  margin-top: 2px;
+}
+.rk-credit-preview .rk-alert-danger {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--rk-error-border);
+  margin: 0;
+}
+
+.rk-pre-booking-summary {
+  background: var(--rk-bg-page);
+  border: 1px solid #dbe4ff;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+
+  h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #3b5bdb;
+    font-weight: 700;
+  }
+}
+.rk-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th {
+    width: 130px;
+    text-align: right;
+    color: #555;
+    padding: 6px 8px;
+    font-weight: 500;
+    vertical-align: top;
+  }
+  td {
+    color: #222;
+    font-weight: 700;
+    padding: 6px 8px;
+  }
+}

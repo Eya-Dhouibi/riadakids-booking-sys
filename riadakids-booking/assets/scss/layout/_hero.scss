@@ -1,0 +1,218 @@
+// =============================================================================
+// LAYOUT · Bannière hero
+// =============================================================================
+// Bannière purement présentationnelle au-dessus du wizard. Le compteur de
+// crédits est un affichage lecture-seule (rk-hero-credits-display) — la
+// source de vérité mise à jour par booking-credits.js reste
+// #rk-credits-display dans le header existant, inchangé.
+// Reproduit le modèle Figma : robot ancré à gauche, dégradé bleu, décor
+// flottant, carte blanche crédit+CTA à droite du texte.
+// =============================================================================
+@use '../settings' as v;
+
+.rk-hero {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 20px;
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, .20), rgba(255, 255, 255, .20)),
+    linear-gradient(120deg, #6DA8DE 0%, var(--rk-accent-blue) 60%, #3E7FC0 100%);
+  box-shadow: inset 0px 4px 20px rgba(v.$rk-shadow-base, 0.25);
+  border-radius: v.$rk-radius-md;
+  padding: 0 40px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  min-height: 240px;
+}
+
+.rk-hero-deco {
+  position: absolute;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .16);
+  pointer-events: none;
+}
+.rk-hero-deco-1 {
+  width: 26px;
+  height: 26px;
+  top: 22px;
+  right: 34%;
+  transform: rotate(20deg);
+}
+.rk-hero-deco-2 {
+  width: 16px;
+  height: 40px;
+  bottom: 18px;
+  right: 28%;
+  border-radius: v.$rk-radius-pill;
+  background: rgba(255, 255, 255, .14);
+  transform: rotate(-12deg);
+}
+
+.rk-hero-visual {
+  position: absolute;
+  bottom: 0;
+  left: -50px;
+  width: 70%;
+  flex-shrink: 0;
+  margin-inline-start: -12px;
+  align-self: flex-end;
+  line-height: 0;
+  z-index: 1;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.rk-hero-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  z-index: 1;
+  padding: 24px 0;
+}
+
+// Titre hero — sélecteur WooCommerce global fourni explicitement (cible
+// aussi #order_review_heading), à ne pas confondre avec .rk-hero-title qui
+// reste le sélecteur spécifique du markup du plugin.
+.rk-hero .woocommerce h3,
+.rk-hero #order_review_heading {
+  font-size: v.$rk-fs-h2-banner;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+.rk-hero .entry-content p {
+  margin-bottom: 0.5em;
+  font-size: v.$rk-fs-body-banner;
+  font-weight: 500;
+}
+.rk-hero-title {
+  font-size: v.$rk-fs-h2-banner;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+.rk-hero-body p,
+.rk-hero-sub {
+  margin-bottom: 0.5em;
+  font-size: v.$rk-fs-body-banner;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.rk-hero-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  background: v.$rk-white;
+  border-radius: v.$rk-radius-md;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(20, 60, 110, .18);
+  flex-direction: row-reverse;
+  flex-wrap: nowrap !important;
+}
+
+.rk-hero-actions .rk-hero-credit-btn {
+  justify-content: center;
+  background: linear-gradient(90deg, #ff7a34 0, #ff4411 100%);
+  box-shadow: 0 4px 12px rgba(255, 68, 17, .28);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: v.$rk-white;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: v.$rk-radius-md;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .18s ease;
+
+  &:hover {
+    background: #E8420F;
+    color: v.$rk-white;
+  }
+}
+
+.rk-hero-credit-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.rk-hero-credit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #183B5D;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  white-space: nowrap;
+
+  strong {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--rk-accent-blue);
+  }
+}
+
+@media (max-width: v.$bp-768) {
+  .rk-hero {
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 20px;
+  }
+  .rk-hero-visual {
+    position: relative;
+    width: 350px;
+    margin-inline-start: 0;
+    align-self: center;
+    left: 0;
+    bottom: 50px;
+  }
+  .rk-hero-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 16px 0 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: right;
+  }
+  .rk-hero-actions {
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    width: 100%;
+    border-radius: 16px;
+    justify-content: center;
+    position: relative;
+    top: 11rem;
+  }
+  .rk-hero-credit-btn,
+  .rk-hero-credit-pill {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+@media (max-width: v.$bp-480) {
+  .rk-hero-title { font-size: 18px; margin: 0 0 8px 0; }
+  .rk-hero-body p,
+  .rk-hero-sub { font-size: 14px; }
+  .rk-hero-actions .rk-hero-credit-btn {
+    font-size: 12px;
+    padding: 12px;
+  }
+  .rk-hero-credit-pill {
+    padding: 12px 0 12px 12px;
+  }
+}

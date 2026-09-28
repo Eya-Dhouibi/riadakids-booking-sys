@@ -1,0 +1,269 @@
+// =============================================================================
+// SCREENS · Confirmation — écran 8 (تأكيد الحجز) et navigation associée
+// =============================================================================
+// "كل شيء جاهز، لنؤكد الحجز" — 4 lignes récap (libellé + valeur + icône
+// ronde), toast d'info (components/_toast.scss), CTA final
+// (components/_buttons.scss .rk-btn-primary/.rk-btn-secondary).
+// =============================================================================
+@use '../settings' as v;
+
+.rk-step6-title {
+  font-family: v.$rk-font-family;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d2129;
+  text-align: center;
+  margin: 0 0 6px 0;
+}
+
+.rk-step6-subtitle {
+  font-family: v.$rk-font-family;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--rk-text-muted);
+  text-align: center;
+  margin: 0 0 24px 0;
+}
+
+.rk-final-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: v.$rk-modal-max-width;
+  margin: 0 auto;
+}
+
+// ── Ligne récapitulative (480×74, radius 12, fond blanc) ──────────────────
+// AJUSTEMENT (fichier CSS de référence fourni, section 5) — ombre à deux
+// couches (au lieu d'une seule) + bordure fine ajoutée, alignées sur les
+// valeurs exactes du design system.
+.rk-summary-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 14px 12px 24px;
+  gap: 16px;
+  width: 100%;
+  max-width: v.$rk-modal-max-width;
+  min-height: 74.4px;
+  background: v.$rk-white;
+  border: 1px solid rgba(41, 81, 119, 0.12);
+  box-shadow:
+    0 1px 2px rgba(v.$rk-shadow-base, .1),
+    0 2px 4px rgba(v.$rk-shadow-base, .06);
+  border-radius: v.$rk-radius-md;
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.rk-summary-card__icon {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12.6px;
+  gap: 8.4px;
+  width: v.$rk-step-circle;
+  height: v.$rk-step-circle;
+  background:
+    linear-gradient(134.42deg, rgba(215, 236, 250, 0.2) 0.5%, rgba(76, 149, 215, 0.2) 99.5%),
+    var(--rk-border);
+  // AJUSTEMENT (fichier CSS de référence fourni, section 5) — bordure
+  // fine ajoutée, absente auparavant.
+  border: 1.4px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0px 0.9px 1.8px rgba(v.$rk-shadow-base, .25),
+    0px 1.8px 5.4px 1.8px rgba(v.$rk-shadow-base, .05);
+  border-radius: 42px;
+  flex: none;
+  flex-grow: 0;
+  overflow: hidden;
+
+  .rk-icon {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    flex-grow: 0;
+    color: var(--rk-text-heading);
+  }
+}
+
+.rk-summary-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+}
+
+.rk-summary-card__label {
+  font-family: v.$rk-font-family;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: right;
+  color: var(--rk-text-muted);
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.rk-summary-card__value {
+  font-family: v.$rk-font-family;
+  font-style: normal;
+  // AJUSTEMENT (demande utilisateur, spec Figma exacte fournie) — 600 au
+  // lieu de 700, cohérent avec la vraie maquette Figma du composant.
+  font-weight: 600;
+  font-size: v.$rk-fs-list-row;
+  line-height: 20px;
+  text-align: right;
+  color: var(--rk-text-heading);
+  overflow-wrap: break-word;
+  flex: none;
+  flex-grow: 0;
+}
+
+// AJOUT (demande utilisateur, spec Figma exacte fournie — "Frame 281") —
+// ligne fuseau horaire sous la valeur, uniquement sur la carte "الموعد"
+// (voir booking-reschedule.js::showSuccessModal()).
+.rk-summary-card__tz {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$rk-font-family;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: right;
+  color: var(--rk-text-heading);
+
+  .rk-icon {
+    flex-shrink: 0;
+  }
+}
+
+.rk-summary-card__sub {
+  font-family: v.$rk-font-family;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--rk-text-muted);
+}
+
+// ── Champs nom/email masqués visuellement ──────────────────────────────────
+// Restent dans le DOM, fonctionnels : préremplis silencieusement en
+// arrière-plan (booking-ssa.js::bindSlotChosenEvent, depuis
+// rkConfig.customerName/customerEmail), et toujours utilisés/validés au
+// clic sur تأكيد الحجز (booking-confirmation.js::bindConfirmButton).
+// Masquage "visually-hidden" plutôt que display:none : garde le champ
+// focusable/tabulable et compatible avec l'autofill navigateur — seul le
+// rendu visuel disparaît, pas la fonction.
+.rk-step6-customer-fields {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.rk-step6-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 12px 16px;
+  background: v.$rk-white !important;
+  border: 1px solid #E3EEF7 !important;
+  border-radius: v.$rk-radius-md;
+  box-shadow:
+    0px 1px 2px -1px rgba(v.$rk-shadow-base, .2),
+    0px 1px 3px rgba(v.$rk-shadow-base, .05);
+}
+
+// ── Navigation (تأكيد الحجز / رجوع) — variante scopée à cet écran ────────
+// Specs Figma exactes pour l'étape 6, scopées à .rk-step6-nav pour ne pas
+// affecter .rk-btn-primary / .rk-btn-secondary utilisés ailleurs dans le
+// wizard (étapes 1 à 5).
+.rk-step6-nav {
+  display: flex;
+  flex-direction: row-reverse; // confirmer (1er dans le DOM) à gauche
+  justify-content: center;
+  gap: 12px;
+  max-width: v.$rk-modal-max-width;
+  margin: 24px auto 12px auto;
+
+  .rk-btn {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: v.$rk-btn-pad-h;
+    gap: v.$rk-btn-icon-gap;
+    width: 237px;
+    max-width: 100%;
+    height: 44px;
+    border-radius: v.$rk-radius-md;
+    font-family: v.$rk-font-family;
+    font-style: normal;
+    font-weight: 400;
+    font-size: v.$rk-fs-btn-label;
+    line-height: 100%;
+    flex: none;
+    flex-grow: 1;
+  }
+
+  .rk-btn-primary.rk-btn-confirm {
+    @include v.rk-sheen-primary(v.$rk-primary);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    color: v.$rk-white;
+
+    &:hover:not(:disabled) {
+      @include v.rk-sheen-primary(v.$rk-primary);
+      color: v.$rk-white;
+    }
+  }
+
+  .rk-btn-secondary {
+    background: v.$rk-primary-bg;
+    @include v.rk-shadow-btn-secondary-inset;
+    color: v.$rk-primary-light;
+
+    &:hover:not(:disabled) {
+      background: v.$rk-primary-bg;
+      color: v.$rk-primary-light;
+    }
+  }
+}
+
+@media (max-width: v.$bp-480) {
+  .rk-step6-nav {
+    flex-direction: column-reverse;
+
+    .rk-btn { width: 100%; }
+  }
+}
+
+// ── Fix pollution CSS du widget SSA sur <body> ────────────────────────────
+// Le widget SSA (rk-ssa-iframe / embed-inner) injecte ses styles Material
+// Design ("md-theme-default") directement sur le <body> de la page parente
+// (background blanc + padding 1rem parasites). Neutralisé sur la page de
+// réservation.
+//
+// ATTENTION — le sélecteur `html body, html body.md-theme-default` existait
+// dans le CSS source SANS déclaration active (bloc vide), pour réserver le
+// point d'intervention si la pollution SSA revient. Un sélecteur vide est
+// supprimé à la compilation Sass (aucun CSS émis) : cette note documente
+// donc l'intention à la place du sélecteur fantôme. Si le fond blanc /
+// padding parasite de SSA réapparaît sur <body>, ajouter ici :
+//   html body, html body.md-theme-default { background: transparent; padding: 0; }

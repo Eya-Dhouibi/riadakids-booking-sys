@@ -1,0 +1,81 @@
+/**
+ * rk-a11y.css — Fondation accessibilité RiadaKids  v2.3.0 (Audit P4-18)
+ *
+ * Chargé sur TOUS les écrans (enfant, coach, parent).
+ * Couvre : focus clavier visible, respect de prefers-reduced-motion,
+ * cibles tactiles minimales, texte lecteur d'écran, contraste des liens.
+ * RTL-safe : aucune propriété directionnelle physique.
+ */
+
+/* ── 1. Focus clavier visible (sans polluer le clic souris) ─────────── */
+:where(a, button, input, select, textarea, summary,
+       [role="button"], [role="tab"], [role="menuitem"], [tabindex]):focus-visible {
+	outline: 3px solid #2563b8 !important;
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+:where(a, button):focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* ── 2. Respect de prefers-reduced-motion ───────────────────────────────
+   Utilisateurs sensibles au mouvement (vestibulaire, TDAH, épilepsie) :
+   toutes les animations/transitions sont neutralisées, y compris celles
+   des feuilles chargées avant celle-ci. Les confettis/celebrations JS
+   doivent tester rkA11y.reducedMotion (exposé ci-dessous côté JS). */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* ── 3. Cibles tactiles minimales (WCAG 2.5.8 — enfants sur tablette) ── */
+:where(.rk-dashboard, .rk-coach-spa, .rk-mc-wrap)
+	:where(button, a.button, .rk-btn, [role="button"]) {
+	min-height: 44px;
+	min-width: 44px;
+}
+
+/* ── 4. Texte lecteur d'écran ───────────────────────────────────────── */
+.rk-sr-only {
+	position: absolute !important;
+	width: 1px; height: 1px;
+	padding: 0; margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ── 5. Lien d'évitement (à placer en premier dans les layouts SPA) ── */
+.rk-skip-link {
+	position: absolute;
+	inset-block-start: -48px;
+	inset-inline-start: 8px;
+	z-index: 100000;
+	padding: 10px 18px;
+	background: #152238;
+	color: #fff;
+	border-radius: 8px;
+	transition: inset-block-start .15s ease;
+}
+.rk-skip-link:focus {
+	inset-block-start: 8px;
+}
+
+/* ── 6. États désactivés perceptibles autrement que par la couleur ─── */
+:where(button, .rk-btn)[disabled],
+:where(button, .rk-btn)[aria-disabled="true"] {
+	opacity: .55;
+	cursor: not-allowed;
+	text-decoration: none;
+}
+
+/* ── 7. Zoom texte : ne jamais bloquer l'agrandissement ─────────────── */
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}

@@ -1,0 +1,427 @@
+/**
+ * RK – My Children | assets/css/child-modal.css  (v5.0.0)
+ * ──────────────────────────────────────────────────────────
+ * Responsabilité : Modale + formulaire + toasts de notification.
+ *
+ * Inclut :
+ *   - Overlay .rk-modal-overlay
+ *   - Box .rk-modal-box
+ *   - Champs de formulaire
+ *   - Boutons Save / Cancel
+ *   - Erreurs de champ et globales
+ *   - Toasts (.rk-toast)
+ */
+
+/* ══════════════════════════════════════════
+   MODAL OVERLAY
+   ══════════════════════════════════════════ */
+.rk-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,30,60,.52);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+  opacity: 0;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rk-modal-overlay.is-open  { opacity: 1; }
+.rk-modal-overlay[hidden]  { display: none !important; }
+
+/* ══════════════════════════════════════════
+   MODAL BOX
+   AJUSTEMENT (demande utilisateur) — fond dégradé radial bleu très
+   léger sur blanc, double box-shadow, radius 16px (remplace l'ancien
+   fond blanc plat + ombre simple 24px/80px).
+   ══════════════════════════════════════════ */
+.rk-modal-box {
+  background: radial-gradient(82.55% 83.67% at 50% 16.33%, rgba(227, 242, 253, 0.2) 0%, rgba(186, 217, 243, 0.2) 64.4%, rgba(76, 149, 215, 0.2) 100%), #FFFFFF;
+  box-shadow: 0px 1px 2px rgba(23, 47, 70, 0.25), 0px 2px 6px 2px rgba(23, 47, 70, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  direction: rtl;
+  transform: translateY(20px);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rk-modal-overlay.is-open .rk-modal-box { transform: translateY(0); }
+
+/* Bouton fermer — AJUSTEMENT (demande utilisateur) : repositionné en
+   haut, sans ancrage horizontal fixe (right:auto laisse le RTL du
+   document placer le bouton naturellement à l'opposé du contenu). */
+a#rk-modal-close,
+.rk-modal-close {
+  position: absolute;
+  top: 12px;
+  right: auto;
+  background: #FF4411;
+  border: 1px solid #e8edf3;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+a#rk-modal-close:hover,
+.rk-modal-close:hover {
+  background: #fee2e2;
+  color: var(--rk-danger, #ef4444);
+  border-color: #fca5a5;
+}
+
+/* Titre et sous-titre */
+#rk-modal-title {
+  font-size: 1.22rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: #1a2540;
+}
+.rk-modal-subtitle {
+  font-size: .85rem;
+  color: #8a97ab;
+  margin: 0 0 24px;
+}
+
+/* ══════════════════════════════════════════
+   FORMULAIRE
+   ══════════════════════════════════════════ */
+.rk-form-field           { margin-bottom: 18px; }
+.rk-form-field label     { display: block; font-size: .88rem; font-weight: 700; margin-bottom: 6px; color: #1a2540; }
+.rk-required             { color: var(--rk-danger, #ef4444); margin-right: 2px; }
+
+.rk-form-field input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e8edf3;
+  border-radius: 10px;
+  font-size: .9rem;
+  font-family: inherit;
+  direction: rtl;
+  color: #1a2540;
+  background: #f7f9fc;
+  transition: border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+.rk-form-field input:focus {
+  outline: none;
+  border-color: var(--e-global-color-secondary);
+  box-shadow: 0 0 0 3px rgba(76,149,215,.14);
+  background: #fff;
+}
+.rk-input-error {
+  border-color: var(--rk-danger, #ef4444) !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.10) !important;
+}
+.rk-field-error { display: block; color: var(--rk-danger, #ef4444); font-size: .78rem; margin-top: 4px; }
+
+/* Erreur globale formulaire */
+.rk-form-error {
+  background: #fee2e2;
+  color: var(--rk-danger, #ef4444);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: .85rem;
+  margin-bottom: 16px;
+  border: 1px solid #fca5a5;
+}
+
+/* ── Actions ── */
+.rk-form-actions { display: flex; gap: 10px; margin-top: 8px; }
+
+/* AJUSTEMENT (demande utilisateur) — dégradé orange (au lieu de la
+   couleur unie var(--e-global-color-primary)), même dégradé que les
+   autres CTA principaux du plugin (rk-cmc-btn-primary, etc.). */
+a#rk-save-child,
+.rk-btn-save {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #FF7A34, var(--e-global-color-primary, #FF4411));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: .92rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: filter 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 14px rgba(255,68,17,.28);
+}
+a#rk-save-child:hover:not(:disabled),
+.rk-btn-save:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 20px rgba(255,68,17,.40);
+}
+a#rk-save-child:disabled,
+.rk-btn-save:disabled { opacity: .65; cursor: not-allowed; }
+
+/* AJUSTEMENT (demande utilisateur) — fond rose pâle + texte orange
+   (au lieu du gris neutre) pour matcher le style "annuler" utilisé
+   ailleurs dans le plugin (ex. rk-cmc-btn-secondary). */
+a#rk-cancel-modal,
+.rk-btn-cancel {
+  background: #FFEBE5;
+  color: var(--e-global-color-primary, #FF4411);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: .88rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+a#rk-cancel-modal:hover,
+.rk-btn-cancel:hover { background: #ffe4dc; }
+
+/* ══════════════════════════════════════════
+   TOASTS
+   ══════════════════════════════════════════ */
+@keyframes rk-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Caché par défaut — affiché uniquement via la classe .rk-toast--visible ajoutée par JS */
+.rk-toast {
+  display: none;
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 30px;
+  font-size: .9rem;
+  font-weight: 700;
+  box-shadow: 0 4px 24px rgba(0,0,0,.16);
+  white-space: nowrap;
+}
+.rk-toast.rk-toast--visible {
+  display: flex;
+  animation: rk-toast-in .3s ease;
+}
+.rk-toast--success { background: var(--rk-success, #22c55e); color: #fff; }
+.rk-toast--error   { background: var(--rk-danger, #ef4444);  color: #fff; }
+.rk-toast--info    { background: var(--e-global-color-secondary); color: #fff; }
+
+/* ── Responsive modale ── */
+@media (max-width: 480px) {
+  .rk-modal-box { padding: 22px 16px; }
+}
+
+/* AJUSTEMENT (demande utilisateur) — style de base des champs texte
+   du formulaire d'ajout : fond blanc, ombre légère, radius 6px. */
+#rk-add-form-wrap input {
+  background: #FFFFFF;
+  box-shadow: 0px 1px 2px rgba(23, 47, 70, 0.1);
+  border-radius: 6px;
+}
+
+#rk-add-form-wrap {
+  margin-top: 2rem;
+}
+
+/* ══════════════════════════════════════════
+   CHAMP AVATAR (prévisualisation live)
+   AJUSTEMENT (demande utilisateur) — colonne inversée : les champs
+   texte passent au-dessus, la prévisualisation d'avatar en dessous.
+   ══════════════════════════════════════════ */
+.rk-avatar-field {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.rk-avatar-field__preview {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,68,17,.12), rgba(76,149,215,.12));
+  border: 2.5px solid #e8edf3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.22s ease;
+}
+
+.rk-avatar-field__preview:has(img:not([hidden])) {
+  border-color: var(--e-global-color-secondary, #4C95D7);
+}
+
+.rk-avatar-field__initials {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--e-global-color-primary, #FF4411);
+  line-height: 1;
+  user-select: none;
+}
+
+.rk-avatar-field__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rk-avatar-field__inputs {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.rk-avatar-field__inputs .rk-form-field {
+  margin-bottom: 12px;
+}
+
+.rk-avatar-field__inputs .rk-form-field:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Champ photo — preview en flex avec le reste du champ (demande
+   utilisateur) : le rond avatar s'affiche à côté du label/bouton
+   d'upload/hint, au lieu d'être positionné en dehors du groupe de
+   champs comme précédemment. ── */
+.rk-form-field--avatar {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  align-items: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 16px !important;
+  margin-top: 2rem;
+}
+.rk-form-field--avatar .rk-avatar-field__preview {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.rk-form-field__avatar-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hint sous le champ avatar URL */
+.rk-field-hint {
+  display: block;
+  font-size: .75rem;
+  color: #a0aec0;
+  margin-top: 4px;
+}
+
+/* Label optionnel */
+.rk-field-optional {
+  font-size: .75rem;
+  font-weight: 400;
+  color: #a0aec0;
+  margin-right: 4px;
+}
+
+/* ══ v2.9 — Upload de la photo enfant (bibliothèque WP) ══ */
+.rk-avatar-upload{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.rk-avatar-upload__btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 18px; border-radius:10px; cursor:pointer;
+  border:2px dashed var(--e-global-color-primary,#FF4411);
+  background:rgba(255,68,17,.05);
+  color:var(--e-global-color-primary,#FF4411);
+  font-weight:700; font-size:.85rem;
+  font-family:Cairo,Tajawal,sans-serif;
+  transition:background .15s ease, transform .15s ease;
+}
+.rk-avatar-upload__btn:hover{ background:rgba(255,68,17,.1); transform:translateY(-1px); }
+.rk-avatar-upload__btn:disabled{ opacity:.55; cursor:wait; transform:none; }
+.rk-avatar-upload__state{ font-size:.75rem; font-weight:700; }
+
+/* ══════════════════════════════════════════════════════════════════
+ * v5.2.0 — Isolation vis-à-vis d'Elementor
+ *
+ * Les <button> de la modale héritaient des styles globaux d'Elementor
+ * (.elementor-button, sélecteurs `button`, `a.button`, thème…). Ils sont
+ * désormais des <a role="button"> portant .rk-btn : on remet à zéro tout
+ * l'héritage puis on ré-applique nos styles.
+ *
+ * `all: unset` n'est pas utilisé : il casserait les styles déjà définis
+ * plus haut. On neutralise uniquement ce qu'Elementor impose.
+ * ══════════════════════════════════════════════════════════════════ */
+
+.rk-modal-box .rk-btn,
+.rk-modal-box a.rk-btn,
+.rk-modal-box a.rk-btn:link,
+.rk-modal-box a.rk-btn:visited {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    text-shadow: none;
+    user-select: none;
+    background-image: none;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Elementor cible souvent a:hover — on neutralise le soulignement */
+.rk-modal-box a.rk-btn:hover,
+.rk-modal-box a.rk-btn:focus,
+.rk-modal-box a.rk-btn:active {
+    text-decoration: none;
+    background-image: none;
+}
+
+/* Accessibilité : anneau de focus visible au clavier uniquement */
+.rk-modal-box a.rk-btn:focus-visible {
+    outline: 2px solid #ff4411;
+    outline-offset: 2px;
+}
+
+/* <a> n'a pas d'attribut disabled → équivalent via classe + aria */
+.rk-modal-box .rk-btn.is-disabled,
+.rk-modal-box .rk-btn[aria-disabled="true"] {
+    opacity: .65;
+    cursor: wait;
+    pointer-events: none;
+    transform: none;
+}
+
+/* Les règles :disabled existantes ne s'appliquent plus à un <a> :
+   on rétablit leur équivalent pour l'état de sauvegarde. */
+.rk-btn-save.is-disabled { opacity: .65; cursor: not-allowed; }
+.rk-avatar-upload__btn.is-disabled { opacity: .55; cursor: wait; transform: none; }
+
+/* Le bouton de fermeture est un <a> : conserver ses dimensions */
+.rk-modal-box a.rk-modal-close {
+    padding: 0;
+    line-height: 0;
+}
+
+/* Champ « nom de famille » — indication discrète */
+.rk-field-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #7a869a;
+}

@@ -1,0 +1,233 @@
+// ============================================================
+// Components — Modal  (components/_modal.scss)
+//
+// Modales CRUD enfants : ajout, édition, suppression.
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Overlay ──────────────────────────────────────────────────
+
+.rk-modal-overlay {
+  @include m.overlay;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: t.$space-4;
+
+  &[hidden] { display: none !important; }
+  &:not([hidden]) { animation: rk-fade-in 0.2s ease; }
+}
+
+// ── Panel ────────────────────────────────────────────────────
+
+.rk-modal-content {
+  @include m.card(0, 20px);
+  position: relative;
+  z-index: t.$z-modal;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: rk-scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+
+  @include m.mobile {
+    max-width: 100%;
+    max-height: 95vh;
+    border-radius: 20px 20px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    animation: rk-slide-up-mobile 0.3s ease;
+  }
+}
+
+@keyframes rk-slide-up-mobile {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+// ── Header ───────────────────────────────────────────────────
+
+.rk-modal-header {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-5 t.$space-6;
+  border-bottom: 1px solid t.$border-color;
+  flex-shrink: 0;
+}
+
+.rk-modal-title {
+  font-size: t.$font-size-lg;
+  font-weight: t.$font-weight-extrabold;
+  color: t.$text-primary;
+  flex: 1;
+  margin: 0;
+}
+
+.rk-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: t.$border-radius-xs;
+  background: t.$bg-light;
+  border: 1px solid t.$border-color;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: t.$text-muted;
+  font-size: 1rem;
+  transition: background t.$transition-fast, color t.$transition-fast;
+  flex-shrink: 0;
+  @include m.focus-ring;
+
+  &:hover {
+    background: rgba(t.$hex-primary, 0.08);
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+}
+
+// ── Body ─────────────────────────────────────────────────────
+
+.rk-modal-body {
+  padding: t.$space-6;
+  flex: 1;
+  overflow-y: auto;
+}
+
+// ── Form fields ───────────────────────────────────────────────
+
+.rk-form-group {
+  margin-bottom: t.$space-4;
+
+  label {
+    display: block;
+    font-size: t.$font-size-sm;
+    font-weight: t.$font-weight-bold;
+    color: t.$text-primary;
+    margin-bottom: t.$space-1;
+  }
+}
+
+.rk-form-input,
+.rk-form-select,
+.rk-form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid t.$border-color;
+  border-radius: t.$border-radius-sm;
+  font-family: t.$font-family;
+  font-size: t.$font-size-base;
+  color: t.$text-primary;
+  background: t.$surface;
+  transition: border-color t.$transition-fast, box-shadow t.$transition-fast;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: var(--e-global-color-primary, #{t.$hex-primary});
+    box-shadow: 0 0 0 3px rgba(t.$hex-primary, 0.1);
+  }
+
+  &::placeholder { color: t.$text-muted; }
+}
+
+.rk-form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.rk-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: t.$space-4;
+
+  @include m.mobile { grid-template-columns: 1fr; }
+}
+
+// ── Footer ────────────────────────────────────────────────────
+
+.rk-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: t.$space-3;
+  padding: t.$space-4 t.$space-6;
+  border-top: 1px solid t.$border-color;
+  flex-shrink: 0;
+  background: t.$bg-light;
+  border-radius: 0 0 20px 20px;
+
+  @include m.mobile {
+    justify-content: stretch;
+
+    .rk-btn { flex: 1; justify-content: center; }
+  }
+}
+
+// ── Delete confirm ────────────────────────────────────────────
+
+.rk-modal-content--danger {
+  .rk-modal-header {
+    border-bottom-color: rgba(t.$hex-red, 0.2);
+    background: rgba(t.$hex-red, 0.03);
+  }
+
+  .rk-modal-title { color: t.$hex-red; }
+
+  .rk-btn--danger {
+    @include m.btn-base;
+    background: t.$hex-red;
+    color: #fff;
+
+    &:hover { background: #b91c1c; }
+  }
+}
+
+// ── Notifications toast ───────────────────────────────────────
+
+.rk-toast {
+  position: fixed;
+  top: t.$space-4;
+  right: t.$space-4;
+  z-index: t.$z-toast;
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-3 t.$space-5;
+  border-radius: t.$border-radius-sm;
+  background: t.$text-primary;
+  color: #fff;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  box-shadow: t.$shadow-float;
+  animation: rk-slide-up 0.3s ease;
+  max-width: 360px;
+
+  [dir="rtl"] & {
+    right: auto;
+    left: t.$space-4;
+  }
+
+  &--success { background: t.$hex-green; }
+  &--error   { background: t.$hex-red; }
+  &--info    { background: var(--e-global-color-secondary, #{t.$hex-secondary}); }
+
+  &__close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    @include m.focus-ring;
+
+    &:hover { color: #fff; }
+  }
+}

@@ -1,0 +1,627 @@
+/**
+ * RK – My Children | assets/css/child-actions.css  (v5.1.0 — UX Refonte)
+ * ──────────────────────────────────────────────────────────────────────────
+ * Changements v5.1 :
+ */
+
+/* ══════════════════════════════════════════════════════
+   HERO BANNER v6.0
+   Template : templates/child-header.php
+   ══════════════════════════════════════════════════════ */
+
+.rk-hero-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg,
+    var(--e-global-color-primary, #FF4411) 0%,
+    var(--e-global-color-secondary, #4C95D7) 100%);
+  border-radius: 16px;
+  padding: 28px 32px;
+  color: #fff;
+  margin-bottom: 24px;
+  display: block; /* le flex est sur .rk-hero-title-group, pas sur le banner */
+}
+
+/* Annuler la pseudo-décoration de l'ancien CSS (child-card.css::before) */
+.rk-hero-banner::before { content: none; }
+
+/* Formes décoratives en arrière-plan */
+.rk-hero-bg-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.rk-hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+}
+.rk-hero-shape--1 {
+  width: 260px;
+  height: 260px;
+  top: -80px;
+  left: -60px;
+}
+.rk-hero-shape--2 {
+  width: 180px;
+  height: 180px;
+  bottom: -60px;
+  right: 10%;
+  background: rgba(255, 255, 255, 0.05);
+}
+.rk-hero-shape--3 {
+  width: 90px;
+  height: 90px;
+  top: 20px;
+  right: 20%;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* Contenu au-dessus des formes */
+.rk-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Groupe icône + texte */
+.rk-hero-title-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.rk-hero-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+.rk-hero-icon svg {
+  color: #fff;
+}
+
+.rk-hero-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.rk-hero-greeting {
+  font-size: .875rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rk-hero-next-session {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: .80rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Alerte crédits faibles */
+.rk-hero-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: .82rem;
+  font-weight: 600;
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+.rk-hero-alert svg {
+  flex-shrink: 0;
+  color: #fde047;
+}
+
+/* Variante alerte (classe sur le banner) */
+.rk-hero-banner--alert {
+  background: linear-gradient(135deg,
+    #ef4444 0%,
+    var(--e-global-color-secondary, #4C95D7) 100%);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .rk-hero-banner { padding: 22px 18px; }
+  .rk-hero-title  { font-size: 1.2rem; }
+  .rk-hero-shape--1 { width: 180px; height: 180px; top: -60px; left: -40px; }
+}
+
+/* ──────────────────────────────────────────
+   BOUTON PRINCIPAL (usage futur)
+   ────────────────────────────────────────── */
+.rk-btn-enter-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  text-align: center;
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: filter 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 14px;
+  letter-spacing: .02em;
+  border: 1px solid var(--e-global-color-secondary);
+}
+.rk-btn-enter-child:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(255,68,17,.42);
+  color: #fff;
+  text-decoration: none;
+}
+.rk-btn-enter-child svg { flex-shrink: 0; }
+
+/* ──────────────────────────────────────────
+   CTA PRINCIPAUX — Dashboard + Booking
+   Toujours visibles, jamais masqués.
+   ────────────────────────────────────────── */
+.rk-child-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 6px;
+  width: calc(100% - 32px);
+}
+.rk-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px 4px 8px;
+  border: 1.5px solid #e8edf3;
+  border-radius: 10px;
+  background: #f7f9fc;
+  color: #5a6a85;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  line-height: 1;
+}
+.rk-action-btn svg  { flex-shrink: 0; }
+.rk-action-btn span { font-size: .60rem; font-weight: 600; letter-spacing: .01em; }
+
+.rk-action-btn--dashboard:hover {
+  background: var(--e-global-color-11f6b7e);
+  color: var(--e-global-color-secondary);
+  border-color: var(--e-global-color-secondary);
+}
+.rk-action-btn--book:hover {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #86efac;
+}
+.rk-action-btn--history:hover {
+  background: #fffbeb;
+  color: #92400e;
+  border-color: var(--e-global-color-d48238b);
+}
+.rk-action-btn--child-space:hover {
+  background: #fff5f0;
+  color: var(--e-global-color-primary,#FF4411);
+  border-color: var(--e-global-color-primary,#FF4411);
+}
+
+/* ══════════════════════════════════════════════════════
+   MORE ACTIONS — Bouton ⋮ + Dropdown
+   Position : coin supérieur droit de la carte
+   ══════════════════════════════════════════════════════ */
+.rk-more-actions {
+  position: absolute;
+  top: 10px;
+  /* RTL : coin gauche = début visuel droit */
+  left: 10px;
+  z-index: 10;
+}
+
+/* Bouton ⋮ */
+.rk-more-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid transparent;
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #5a6a85;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s ease,
+              border-color 0.18s ease,
+              color 0.18s ease,
+              box-shadow 0.18s ease;
+  padding: 0;
+  line-height: 1;
+}
+.rk-more-btn:hover,
+.rk-more-btn[aria-expanded="true"] {
+  background: #fff;
+  border-color: #e8edf3;
+  color: #1a2540;
+  box-shadow: 0 2px 10px rgba(26,37,64,.12);
+}
+.rk-more-btn:focus-visible {
+  outline: 2px solid var(--e-global-color-primary);
+  outline-offset: 2px;
+}
+
+.rk-more-dots {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .02em;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ──────────────────────────────────────────
+   Dropdown panel
+   ────────────────────────────────────────── */
+.rk-more-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;        /* RTL : s'aligne sur le bord gauche (=droit visuel) */
+  min-width: 148px;
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(26,37,64,.14);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  /* Animation : masqué par défaut */
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.20s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.20s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* État ouvert (classe ajoutée par JS) */
+.rk-more-dropdown.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ──────────────────────────────────────────
+   Items du dropdown
+   ────────────────────────────────────────── */
+.rk-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #374151;
+  font-size: .85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: right;       /* RTL */
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+.rk-dropdown-item svg { flex-shrink: 0; color: #6b7280; }
+
+.rk-dropdown-item:hover {
+ background: #fef2f2;
+    color: #b91c1c;
+}
+.rk-dropdown-item:hover svg { color: #374151; }
+
+.rk-dropdown-item:focus-visible {
+  outline: 2px solid var(--e-global-color-primary);
+  outline-offset: -2px;
+}
+
+/* Variante danger — Supprimer */
+.rk-dropdown-item--danger {
+  color: #dc2626;
+}
+.rk-dropdown-item--danger svg { color: #dc2626; }
+.rk-dropdown-item--danger:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.rk-dropdown-item--danger:hover svg { color: #b91c1c; }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .rk-child-actions { gap: 4px; }
+  .rk-action-btn    { padding: 7px 2px; }
+  .rk-action-btn span { font-size: .55rem; }
+
+  /* Sur mobile : dropdown s'étend vers la droite si bord trop proche */
+  .rk-more-dropdown {
+    left: auto;
+    right: 0;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   SMART CARD — Header + Identité
+   Synchronisé avec templates/components/child-card.php
+   ══════════════════════════════════════════════════════ */
+.rk-scard-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 18px 14px;
+}
+.rk-scard-avatar { position: relative; flex-shrink: 0; }
+.rk-scard-avatar img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,68,17,.18);
+  display: block;
+  box-shadow: 0 2px 10px rgba(0,0,0,.10);
+}
+.rk-scard-identity { flex: 1; min-width: 0; }
+
+.rk-scard-age {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .70rem;
+  color: #64748b;
+}
+
+/* ── Zone actions smart ── */
+.rk-child-actions--smart {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 16px 18px;
+  width: auto;
+}
+.rk-child-actions--smart .rk-scard-pin {
+  grid-column: 1 / -1;
+  justify-content: center;
+  cursor: default;
+  background: #f8fafc;
+  border-color: #e8edf3;
+  flex-direction: row;
+  gap: 5px;
+}
+
+/* ── Affichage PIN ── */
+.rk-scard-pin__label {
+  font-size: .65rem;
+  color: #64748b;
+  font-weight: 600;
+}
+.rk-scard-pin__code {
+  font-size: .82rem;
+  font-weight: 800;
+  color: var(--e-global-color-primary,#FF4411);
+  letter-spacing: .06em;
+}
+
+/* ══════════════════════════════════════════════════════
+   GRID — 3 colonnes desktop / 2 tablette / 1 mobile
+   Page : /my-account/my-children/
+   ══════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  #rk-child-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  #rk-child-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ══════════════════════════════════════════════════════
+   SMART CARD — Stats (barres de progression / présence)
+   ══════════════════════════════════════════════════════ */
+.rk-scard-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 18px 14px;
+  border-top: 1px solid #f0f4f8;
+  margin-top: 2px;
+}
+
+.rk-scard-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rk-scard-stat__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rk-scard-stat__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.rk-scard-stat__val {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1.4;
+  flex-shrink: 0;
+  letter-spacing: .02em;
+}
+
+.rk-scard-bar-wrap {
+  height: 8px;
+  background: #eef2f7;
+  border-radius: 99px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+}
+
+.rk-scard-bar {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 4px;
+}
+
+/* ══════════════════════════════════════════════════════
+   SMART CARD — Prochaine séance
+   ══════════════════════════════════════════════════════ */
+.rk-scard-next-session,
+.rk-scard-no-session {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f8fafc;
+  border-top: 1px solid #f0f4f8;
+  border-bottom: 1px solid #f0f4f8;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+}
+
+.rk-scard-next-session {
+  color: #1a2540;
+}
+
+.rk-scard-next-session--today {
+  background: #eff6ff;
+  border-top-color: #bfdbfe;
+  border-bottom-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.rk-scard-next-session__label {
+  font-weight: 600;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.rk-scard-next-session__day {
+  font-weight: 800;
+  color: var(--e-global-color-secondary, #4C95D7);
+}
+
+.rk-scard-next-session__time {
+  font-weight: 700;
+  color: #1a2540;
+  font-variant-numeric: tabular-nums;
+}
+
+.rk-scard-book-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: var(--e-global-color-primary, #FF4411);
+  color: #fff !important;
+  font-size: .65rem;
+  font-weight: 700;
+  text-decoration: none;
+  margin-right: auto;
+  transition: filter 0.15s ease;
+  flex-shrink: 0;
+}
+.rk-scard-book-link:hover {
+  filter: brightness(1.1);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   SMART CARD — Alerte présence
+   ══════════════════════════════════════════════════════ */
+.rk-scard-alert-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: #fef2f2;
+  border-top: 1px solid #fecaca;
+  font-size: .70rem;
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+.rk-scard-alert-dot {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.rk-child-card-smart--alert {
+  border-color: #fecaca;
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — ajustements fin
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .rk-card-grid {
+    display: grid;
+    grid-template-columns: 100% !important;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rk-scard-stats { padding: 0 12px 10px; }
+  .rk-scard-next-session,
+  .rk-scard-no-session { padding: 7px 12px; }
+}

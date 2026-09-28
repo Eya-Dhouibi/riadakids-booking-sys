@@ -1,0 +1,286 @@
+/**
+ * RiadaKids — Children Dashboard : fondations UX/UI premium
+ *
+ * Fichier SÉPARÉ de rk-dashboard-v4.css (déjà volumineux) plutôt que
+ * d'y ajouter encore : ce fichier ne contient QUE des utilitaires
+ * génériques réutilisables sur n'importe quelle page du Dashboard —
+ * animations, décorations flottantes, composant Empty State partagé.
+ * Aucune règle ici ne cible une page précise (pas de .rk-sess__*,
+ * .rkc2__* etc.) : ces classes-là restent dans rk-dashboard-v4.css,
+ * qui peut désormais les combiner avec les utilitaires d'ici.
+ *
+ * @package RK_My_Children
+ * @since   9.9.0
+ */
+
+/* ════════════════════════════════════════════════════════════════
+   TOKENS DE MOUVEMENT — complètent les tokens couleur/radius/ombre
+   déjà définis dans rk-dashboard-v4.css (#rkd4 { --rk4-* }).
+   ════════════════════════════════════════════════════════════════ */
+#rkd4,
+body.rkd4-chrome{
+    --rk4-ease-out:      cubic-bezier(.16,1,.3,1);
+    --rk4-ease-bounce:   cubic-bezier(.34,1.56,.64,1);
+    --rk4-dur-fast:      160ms;
+    --rk4-dur-base:      280ms;
+    --rk4-dur-slow:      600ms;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ENTRÉE DES CARTES — Fade In + Slide Up, échelonné.
+   Classe générique : ajouter data-rk-stagger sur le conteneur parent
+   (grille/liste de cartes), chaque enfant direct hérite d'un délai
+   croissant automatiquement (jusqu'à 8 éléments, plafonné ensuite
+   pour ne jamais faire attendre une grande liste inutilement).
+   ════════════════════════════════════════════════════════════════ */
+#rkd4 [data-rk-stagger] > *,
+body.rkd4-subpage [data-rk-stagger] > *{
+    animation: rk4-fade-up var(--rk4-dur-slow) var(--rk4-ease-out) both;
+}
+@keyframes rk4-fade-up{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+#rkd4 [data-rk-stagger] > *:nth-child(1),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(1){ animation-delay:.00s; }
+#rkd4 [data-rk-stagger] > *:nth-child(2),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(2){ animation-delay:.05s; }
+#rkd4 [data-rk-stagger] > *:nth-child(3),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(3){ animation-delay:.10s; }
+#rkd4 [data-rk-stagger] > *:nth-child(4),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(4){ animation-delay:.15s; }
+#rkd4 [data-rk-stagger] > *:nth-child(5),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(5){ animation-delay:.20s; }
+#rkd4 [data-rk-stagger] > *:nth-child(6),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(6){ animation-delay:.25s; }
+#rkd4 [data-rk-stagger] > *:nth-child(7),  body.rkd4-subpage [data-rk-stagger] > *:nth-child(7){ animation-delay:.30s; }
+#rkd4 [data-rk-stagger] > *:nth-child(n+8), body.rkd4-subpage [data-rk-stagger] > *:nth-child(n+8){ animation-delay:.35s; }
+
+/* ════════════════════════════════════════════════════════════════
+   FLOTTEMENT DISCRET — illustrations/icônes/mascottes.
+   Amplitude volontairement faible (6px) : un flottement visible mais
+   qui ne distrait jamais de la lecture du contenu.
+   ════════════════════════════════════════════════════════════════ */
+#rkd4 [data-rk-float],
+body.rkd4-subpage [data-rk-float]{
+    animation: rk4-float 3.6s ease-in-out infinite;
+}
+#rkd4 [data-rk-float="slow"],
+body.rkd4-subpage [data-rk-float="slow"]{ animation-duration:5.2s; }
+#rkd4 [data-rk-float="delay-1"],
+body.rkd4-subpage [data-rk-float="delay-1"]{ animation-delay:.6s; }
+#rkd4 [data-rk-float="delay-2"],
+body.rkd4-subpage [data-rk-float="delay-2"]{ animation-delay:1.2s; }
+@keyframes rk4-float{
+    0%, 100%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BOUTONS PREMIUM — micro-interaction commune à tout bouton/lien
+   d'action du Dashboard. S'ajoute (ne remplace pas) aux classes
+   existantes .rk-adv2__cta, .rkb2__tab, .rkc2__card-action, etc. —
+   qui ont déjà leur propre transform:translateY au survol : cette
+   classe couvre les boutons qui n'en ont pas encore.
+   ════════════════════════════════════════════════════════════════ */
+#rkd4 [data-rk-btn-pop],
+body.rkd4-subpage [data-rk-btn-pop]{
+    transition: transform var(--rk4-dur-fast) var(--rk4-ease-bounce), box-shadow var(--rk4-dur-fast) ease;
+}
+#rkd4 [data-rk-btn-pop]:hover,
+body.rkd4-subpage [data-rk-btn-pop]:hover{ transform:translateY(-2px); }
+#rkd4 [data-rk-btn-pop]:active,
+body.rkd4-subpage [data-rk-btn-pop]:active{ transform:translateY(0) scale(.97); }
+
+/* ════════════════════════════════════════════════════════════════
+   BOUTON D'ACTION FLOTTANT (FAB) — mobile principalement, ancré en
+   bas de l'écran, au-dessus de la barre de navigation mobile
+   (--rk4-navh). Un seul FAB actif par page (voir JS : le contenu du
+   bouton change selon le contexte de la page courante).
+   ════════════════════════════════════════════════════════════════ */
+#rkd4 .rk4-fab,
+body.rkd4-subpage .rk4-fab{
+    position:fixed;
+    inset-inline-end:20px;
+    bottom:calc(var(--rk4-navh) + 16px);
+    z-index:60;
+    display:none; /* activé uniquement en mobile, voir media query */
+    align-items:center; gap:8px;
+    padding:14px 20px;
+    background:var(--rk4-orange);
+    color:#fff;
+    border:none; border-radius:var(--rk4-pill);
+    font-family:var(--rk4-font); font-size:.85rem; font-weight:800;
+    box-shadow:0 8px 24px rgba(255,68,17,.35);
+    cursor:pointer;
+    transition:transform var(--rk4-dur-fast) var(--rk4-ease-bounce);
+}
+#rkd4 .rk4-fab:hover,
+body.rkd4-subpage .rk4-fab:hover{ transform:translateY(-2px); }
+#rkd4 .rk4-fab:active,
+body.rkd4-subpage .rk4-fab:active{ transform:scale(.95); }
+#rkd4 .rk4-fab svg,
+body.rkd4-subpage .rk4-fab svg{ width:16px; height:16px; flex-shrink:0; }
+@media (max-width:640px){
+    #rkd4 .rk4-fab[data-rk-fab-active],
+    body.rkd4-subpage .rk4-fab[data-rk-fab-active]{ display:inline-flex; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DÉCORATIONS FLOTTANTES EN ARRIÈRE-PLAN — nuages/étoiles/formes
+   abstraites, purement décoratives (aria-hidden côté HTML),
+   positionnées en absolu dans un conteneur relatif. Opacité réduite
+   pour ne jamais concurrencer le contenu réel au premier plan.
+   ════════════════════════════════════════════════════════════════ */
+#rkd4 .rk4-deco-layer,
+body.rkd4-subpage .rk4-deco-layer{
+    position:absolute; inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+}
+#rkd4 .rk4-deco-layer img,
+body.rkd4-subpage .rk4-deco-layer img{
+    position:absolute;
+    opacity:.5;
+    filter:saturate(.9);
+}
+/* Le contenu réel d'une section utilisant .rk4-deco-layer doit être
+   positionné (position:relative; z-index:1) pour rester au-dessus —
+   appliqué automatiquement via ce sélecteur combiné. */
+#rkd4 [data-rk-deco-host],
+body.rkd4-subpage [data-rk-deco-host]{ position:relative; overflow:hidden; }
+#rkd4 [data-rk-deco-host] > *:not(.rk4-deco-layer),
+body.rkd4-subpage [data-rk-deco-host] > *:not(.rk4-deco-layer){ position:relative; z-index:1; }
+
+/* ════════════════════════════════════════════════════════════════
+   COMPOSANT EMPTY STATE GÉNÉRIQUE — remplace les états vides en
+   texte brut (.rk-empty simple <p>, voir bug rapporté sur لقاءاتي)
+   par un composant riche et cohérent, réutilisable sur toute page.
+   Structure HTML attendue :
+     <div class="rk4-empty">
+       <div class="rk4-deco-layer">...images décoratives...</div>
+       <img class="rk4-empty__illustration" data-rk-float ...>
+       <h2 class="rk4-empty__title">...</h2>
+       <p class="rk4-empty__text">...</p>
+       <a/button class="rk4-empty__cta" data-rk-btn-pop>...</a>
+     </div>
+   ════════════════════════════════════════════════════════════════ */
+#rkd4 .rk4-empty,
+body.rkd4-subpage .rk4-empty{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    padding:48px 24px;
+    text-align:center;
+    background:var(--rk4-surface);
+    border-radius:var(--rk4-r-lg);
+    box-shadow:var(--rk4-sh);
+    overflow:hidden;
+}
+#rkd4 .rk4-empty__illustration,
+body.rkd4-subpage .rk4-empty__illustration{
+    width:180px; height:180px; max-width:55%;
+    object-fit:contain;
+    margin-bottom:4px;
+}
+#rkd4 .rk4-empty__title,
+body.rkd4-subpage .rk4-empty__title{
+    margin:0; font-size:1.1rem; font-weight:800; color:var(--rk4-blue-deep);
+}
+#rkd4 .rk4-empty__text,
+body.rkd4-subpage .rk4-empty__text{
+    margin:0; font-size:.86rem; font-weight:600; color:var(--rk4-muted);
+    max-width:340px; line-height:1.6;
+}
+#rkd4 .rk4-empty__cta,
+body.rkd4-subpage .rk4-empty__cta{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:6px; padding:11px 24px;
+    background:var(--rk4-orange); color:#fff;
+    border:none; border-radius:var(--rk4-pill);
+    font-family:var(--rk4-font); font-size:.85rem; font-weight:800;
+    text-decoration:none; cursor:pointer;
+    box-shadow:0 6px 18px rgba(255,68,17,.25);
+}
+#rkd4 .rk4-empty__cta svg,
+body.rkd4-subpage .rk4-empty__cta svg{ width:14px; height:14px; }
+
+/* Variante compacte — widgets de taille réduite (ex: carte "coach" ou
+   "shararat" dans la grille de l'accueil) où l'illustration pleine
+   taille serait disproportionnée. Pas d'illustration, juste une
+   icône + texte, mais toujours dans la même carte/ombre cohérente. */
+#rkd4 .rk4-empty--compact,
+body.rkd4-subpage .rk4-empty--compact{
+    padding:24px 16px;
+    box-shadow:none;
+    background:var(--rk4-bg);
+}
+#rkd4 .rk4-empty--compact .rk4-empty__icon,
+body.rkd4-subpage .rk4-empty--compact .rk4-empty__icon{
+    width:32px; height:32px; color:var(--rk4-blue); opacity:.4;
+}
+#rkd4 .rk4-empty--compact .rk4-empty__text,
+body.rkd4-subpage .rk4-empty--compact .rk4-empty__text{ font-size:.8rem; }
+
+/* ════════════════════════════════════════════════════════════════
+   COMPTEURS ANIMÉS — nombre qui s'incrémente à l'affichage (XP,
+   badges, séances...), activé via data-rk-count-to="123" sur
+   l'élément — logique dans rk-dashboard-enhance.js, cette classe ne
+   gère que l'état visuel intermédiaire (légère mise en emphase
+   pendant le comptage, purement cosmétique). */
+#rkd4 [data-rk-count-to],
+body.rkd4-subpage [data-rk-count-to]{
+    display:inline-block;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE — garde-fous globaux mobile-first, complètent (sans
+   dupliquer) les media queries déjà présentes par page dans
+   rk-dashboard-v4.css. Ici : garanties transverses uniquement.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Aucun débordement horizontal possible depuis le conteneur racine,
+   quelle que soit la page — filet de sécurité global. */
+#rkd4,
+body.rkd4-chrome{
+    overflow-x:hidden;
+    max-width:100vw;
+}
+
+/* Cibles tactiles ≥44px sur tout élément interactif explicitement
+   marqué comme tel, y compris ceux qui n'auraient pas déjà leur
+   propre min-height défini page par page. */
+@media (max-width:640px){
+    #rkd4 button,
+    #rkd4 a.rk4-empty__cta,
+    #rkd4 [role="button"],
+    body.rkd4-subpage button,
+    body.rkd4-subpage a.rk4-empty__cta,
+    body.rkd4-subpage [role="button"]{
+        min-height:44px;
+    }
+}
+
+@media (max-width:600px){
+    #rkd4 .rk4-empty,
+    body.rkd4-subpage .rk4-empty{ padding:36px 18px; }
+    #rkd4 .rk4-empty__illustration,
+    body.rkd4-subpage .rk4-empty__illustration{ width:140px; height:140px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RESPECT DE prefers-reduced-motion — coupe TOUTES les animations
+   de ce fichier d'un coup, quelle que soit la page qui les utilise.
+   ════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion:reduce){
+    #rkd4 [data-rk-stagger] > *,
+    #rkd4 [data-rk-float],
+    #rkd4 [data-rk-btn-pop],
+    #rkd4 .rk4-fab,
+    body.rkd4-subpage [data-rk-stagger] > *,
+    body.rkd4-subpage [data-rk-float],
+    body.rkd4-subpage [data-rk-btn-pop],
+    body.rkd4-subpage .rk4-fab{
+        animation:none !important;
+        transition:none !important;
+    }
+    #rkd4 [data-rk-stagger] > *,
+    body.rkd4-subpage [data-rk-stagger] > *{
+        opacity:1; transform:none;
+    }
+}

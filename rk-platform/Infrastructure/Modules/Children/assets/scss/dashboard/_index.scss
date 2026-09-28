@@ -1,0 +1,7 @@
+// Child dashboard overlay (rkv2) — module barrel
+// @use 'dashboard' in main.scss loads all of these
+@forward 'layout';
+@forward 'components';
+@forward 'drawer';
+@forward 'animations';
+@forward 'mobile';

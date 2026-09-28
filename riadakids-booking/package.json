@@ -1,0 +1,15 @@
+{
+  "name": "riadakids-booking-scss",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Compilation SCSS -> CSS pour assets/css/style.css (RiadaKids Booking)",
+  "scripts": {
+    "scss:build": "node node_modules/sass/sass.js assets/scss/style.scss assets/css/style.css --style=expanded --no-source-map",
+    "scss:min": "node node_modules/sass/sass.js assets/scss/style.scss assets/css/style.min.css --style=compressed --no-source-map",
+    "scss:build:all": "npm run scss:build && npm run scss:min",
+    "scss:watch": "node node_modules/sass/sass.js --watch assets/scss/style.scss:assets/css/style.css --style=expanded --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.104.0"
+  }
+}

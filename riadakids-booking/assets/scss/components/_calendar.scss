@@ -1,0 +1,694 @@
+// =============================================================================
+// COMPONENTS · Calendrier (écran 6 — الموعد, étape 2/3)
+// =============================================================================
+// IMPORTANT — le calendrier affiché dans le wizard N'EST PAS un composant
+// natif de ce plugin : c'est le widget du plugin tiers "Simply Schedule
+// Appointments" (SSA), affiché en iframe/DOM et retravaillé visuellement
+// par assets/js/booking-ssa-overlay.js (capture/relecture du HTML natif,
+// ex. _captureCalendarSnapshot / _injectCalendarSnapshot). Le style visuel
+// du calendrier lui-même (cellules, navigation mois, pastilles de
+// disponibilité) vient donc du CSS du plugin SSA, pas de ce fichier.
+//
+// Ce fichier est le point d'extension pour toute SURCOUCHE que nous
+// appliquons par-dessus ce widget (wrapper, snapshot figé, en-tête de date
+// custom) — il ne redéfinit pas le composant SSA natif.
+//
+// Tokens de référence relevés dans l'audit Figma pour ce composant, à
+// utiliser si une future surcouche doit reproduire visuellement le
+// calendrier plutôt que de dépendre du CSS de SSA :
+//   conteneur     : 288px, radius 12px, padding 4px
+//   cellule jour  : 38×36px, radius 6px, padding 16px h / 8px v
+//   date dispo.   : pastille $rk-border (#D7ECFA) — teinte estimée, non
+//                   confirmée pixel-à-pixel (Dev Mode indisponible au
+//                   moment de l'audit)
+//   navigation    : cercles pleins $rk-primary (#FF4411)
+// =============================================================================
+@use '../settings' as v;
+
+// Wrapper générique du widget SSA intégré dans la page
+.rk-ssa-widget-wrap {
+  border-radius: v.$rk-radius-sm;
+}
+
+// Snapshot HTML figé du calendrier (rejoué visuellement sur l'écran
+// créneaux, voir booking-ssa-overlay.js::_injectCalendarSnapshot) —
+// conteneur non stylé pour l'instant : hérite du CSS natif SSA capturé
+// avec le HTML.
+.rk-calendar-snapshot {
+  // point d'extension — aucune règle propre actuellement
+}
+.rk-calendar-snapshot__proxy {
+  // point d'extension — aucune règle propre actuellement
+}
+
+// ── Surcouche visuelle sur les cartes générées par le widget SSA ─────────
+// Classes réelles observées en production dans le DOM du widget SSA
+// (Material Design Components — .mdc-card), retravaillées visuellement
+// pour matcher le style des cartes avatar du plugin.
+// AJUSTEMENT (demande utilisateur) — dégradé + ombre + radius 12px
+// réactivés (remplace la version précédente qui ne portait que
+// max-width/transition).
+.booking-cards .mdc-card {
+  background: radial-gradient(326.1% 105.11% at 50.2% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(186, 217, 243, 0.2) 79.42%, rgba(76, 149, 215, 0.2) 100%), #fff;
+  border: none;
+  border-radius: 12px !important;
+  box-shadow: 0px 1px 2px rgba(23, 47, 70, .2), 0px 2px 6px rgba(23, 47, 70, .05);
+  // Variante radius 16px + bordure/fond plats/ombre nulle envisagée puis
+  // écartée (gardée en référence, ne pas réactiver sans confirmation) :
+  //   border-radius: 16px !important;
+  //   border: 1px solid #E3EEF7 !important;
+  //   box-shadow: none !important;
+  //   background: #FFFFFF !important;
+  max-width: 100%;
+  transition: border-color 0.15s ease, transform 0.15s ease !important;
+}
+
+@media (max-width: v.$bp-768) {
+  .appt-select > .monthly,
+  .rk-calendar-snapshot {
+    order: 2 !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: auto !important;
+  }
+}
+
+// =============================================================================
+// SURCOUCHE WIDGET SSA NATIF (iframe #rk-ssa-iframe) — demande utilisateur
+// =============================================================================
+// Contrairement au reste de ce fichier, ce bloc cible le VRAI DOM rendu par
+// le widget SSA à l'intérieur de son iframe (#rk-ssa-iframe) — sélecteur/
+// calendrier/créneaux du wizard de réservation initial (écrans 5 à 7 du
+// wizard). Classes non préfixées .rk-* : ce sont les classes natives du
+// widget SSA (Material Design Components / Vue), pas les nôtres — d'où le
+// nombre important de !important, nécessaire pour outrepasser le CSS déjà
+// chargé par le widget lui-même.
+
+// ── 1. Base — RTL global à l'intérieur de l'iframe ──────────────────────
+#rk-ssa-iframe body {
+  text-align: right;
+  font-family: inherit !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.app-wrapper {
+  background: transparent !important;
+}
+
+.appt-select {
+  padding: 0 !important;
+}
+
+#ssa-booking-app main .app-wrapper.rtl_support .booking-header .timezone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+  background: #fff;
+  border-radius: 12px;
+  width: fit-content;
+  padding: 4px 12px;
+}
+
+.back-button-wrapper {
+  margin-bottom: 1rem;
+  float: left;
+}
+
+// ── 2. Grille de jours & en-tête du mois (correction bug mobile) ────────
+.ssa-app .v-calendar-weekly,
+.ssa-app .calendar-days {
+  gap: 8px !important;
+}
+
+// Grille alignée proprement sur 7 colonnes
+.calendar-days.monthly,
+ul.week {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.calendar-days.monthly > div {
+  width: 100% !important; // évite l'écrasement à 10%
+  margin: 0 !important;
+}
+
+.ssa-app .v-calendar-weekly__day,
+.ssa-app .book-day {
+  border: 1px solid #f1f3f5 !important;
+  border-radius: 10px !important;
+  background-color: #fafbfc !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  padding: 8px !important;
+
+  &:hover {
+    background-color: #f0f7ff !important;
+    border-color: #0065BF !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 101, 191, 0.08) !important;
+  }
+}
+
+.calendar-days.monthly .book-day button {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+}
+
+.ssa-app .v-calendar-weekly__day-label,
+.ssa-app .book-day .md-title {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #1d2129 !important;
+  margin-bottom: 6px !important;
+}
+
+.ssa-app .v-event,
+.ssa-app .book-day .md-body-1,
+.ssa-app .ssa-slots-available-text {
+  background-color: transparent !important;
+  color: #0065BF !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  border-radius: 4px !important;
+}
+
+// En-tête du mois et navigation en mode RTL
+.monthly .title.monthly {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-direction: row-reverse !important;
+  margin-bottom: 16px !important;
+  padding: 0 4px !important;
+
+  h2.monthly-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #1d2129 !important;
+    margin: 0 !important;
+  }
+
+  .prev,
+  .next {
+    position: static !important;
+  }
+}
+
+.ssa-app .v-btn {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.ssa-app .v-btn--contained.v-btn--has-bg {
+  background-color: #0065BF !important;
+  color: #ffffff !important;
+
+  &:hover {
+    background-color: #004f99 !important;
+    transform: translateY(-1px);
+  }
+}
+
+// ── 3. Sélection de l'heure (colonne créneaux) ───────────────────────────
+.time-select h2.md-headline.focus-target {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #1d2129 !important;
+  text-align: center !important;
+  margin-bottom: 30px !important;
+  direction: rtl !important;
+}
+
+.time-section-col-icon {
+  margin-bottom: 12px !important;
+}
+
+.time-listing-icon {
+  width: 45px !important;
+  height: 45px !important;
+
+  .icon-path path,
+  g path {
+    fill: #0065BF !important;
+  }
+}
+
+h2.time-selection-col-header.md-subheading {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #2b2b2b !important;
+  margin-bottom: 16px !important;
+  border-bottom: 2px solid #f1f3f5 !important;
+  padding-bottom: 8px !important;
+}
+
+// AJUSTEMENT — colonne (flex-direction: column) : ce bloc cible le widget
+// SSA NATIF dans son iframe, distinct de ul#rk-reschedule-slots-list (même
+// classe time-listing, mais conteneur en ligne — voir _timeslots.scss) :
+// le sélecteur générique `ul.time-listing` défini ailleurs (voir
+// screens/_confirmation.scss ou layout) doit rester scopé, ce bloc-ci ne
+// s'applique qu'à l'intérieur de l'iframe SSA native.
+#rk-ssa-iframe ul.time-listing {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+#rk-ssa-iframe ul.time-listing li .mdc-button {
+  width: 100% !important;
+  min-height: 44px !important;
+  border: 1px solid #0065BF !important;
+  background-color: #ffffff !important;
+  border-radius: 10px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  .mdc-button__label {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #0065BF !important;
+    direction: ltr !important;
+    display: inline-block !important;
+  }
+
+  &:hover {
+    background-color: #0065BF !important;
+    box-shadow: 0 4px 12px rgba(0, 101, 191, 0.2) !important;
+    transform: translateY(-1px) !important;
+
+    .mdc-button__label {
+      color: #ffffff !important;
+    }
+  }
+}
+
+// ── 4. Titre + cartes de sélection du type de rendez-vous ────────────────
+h1.ssa-type-header.focus-target {
+  display: none !important;
+}
+
+.booking-cards {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  justify-content: center !important;
+  direction: rtl !important;
+}
+
+.booking-cards .book-type-single {
+  width: 255px !important;
+  max-width: 100% !important;
+}
+
+// AJUSTEMENT — specs complètes du widget natif (dimensions fixes, badge
+// icône décoratif ::before, hover) ajoutées à la règle .booking-cards
+// .mdc-card définie plus haut dans ce fichier (radius 12px) — ici en
+// complément, sans redéfinir radius/background déjà posés ci-dessus.
+.booking-cards .mdc-card {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 194px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 24px 16px !important;
+  cursor: pointer !important;
+
+  &:hover,
+  &:focus {
+    box-shadow: 0px 2px 4px rgba(23, 47, 70, 0.25), 0px 4px 12px 4px rgba(23, 47, 70, 0.1) !important;
+    transform: translateY(-2px) !important;
+  }
+}
+
+.booking-cards .mdc-card-header {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 76px 0 0 !important;
+
+  &::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    background-color: #D7ECFA !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 24 24' fill='none'%3E%3Ccircle cx='12' cy='7' r='3' stroke='%234C95D7' stroke-width='1.8'/%3E%3Cpath d='M6.5 19C6.5 15.96 8.96 13.5 12 13.5C15.04 13.5 17.5 15.96 17.5 19' stroke='%234C95D7' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 26px 26px !important;
+  }
+}
+
+.booking-cards .md-title {
+  width: auto !important;
+  max-width: 100% !important;
+  height: 24px !important;
+  font-family: 'Alexandria', inherit !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  line-height: 24px !important;
+  text-align: center !important;
+  color: #295177 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.booking-cards .md-subhead {
+  margin: 0 !important;
+}
+
+.booking-cards .appointment-duration {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 4px 8px !important;
+  gap: 4px !important;
+  min-width: 71px !important;
+  height: 24px !important;
+  background: #FFEBE5 !important;
+  border-radius: 1234px !important;
+  color: #FF4411 !important;
+  font-family: 'Alexandria', inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+// ── 5. Media queries responsive (mobile) ──────────────────────────────────
+@media (max-width: v.$bp-768) {
+  .rk-date-header {
+    order: 1 !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    padding-left: 0 !important;
+    padding-bottom: 40px !important;
+    margin-top: 40px !important;
+    border-left: none !important;
+    border-bottom: 1px solid #8BA1B7 !important;
+  }
+}
+
+@media (max-width: v.$bp-600) {
+  .app-wrapper {
+    padding: 10px !important;
+  }
+
+  .calendar-days.monthly,
+  ul.week {
+    gap: 4px !important;
+  }
+
+  ul.week li {
+    font-size: 11px !important;
+    text-align: center !important;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .calendar-days.monthly .book-day button {
+    min-height: 38px !important;
+    font-size: 12px !important;
+  }
+
+  .booking-cards {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .booking-cards .book-type-single {
+    width: 100% !important;
+  }
+}
+
+// En-tête de date custom (écran 7 — créneau, ex. "السبت 19 أغسطس")
+.rk-date-header {
+  font-family: v.$rk-font-family;
+  font-weight: 700;
+  font-size: v.$rk-fs-h2-section;
+  color: var(--rk-text-heading);
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+// ── Calendrier natif — modale de reprogrammation (écran تعديل الموعد) ────
+// Contrairement au calendrier du wizard initial (widget SSA ci-dessus),
+// celui-ci EST un composant natif construit par booking-reschedule.js
+// (voir includes/Ajax/RescheduleAjax.php pour la donnée de disponibilité).
+// Applique donc réellement les tokens de référence Figma relevés en tête
+// de fichier : conteneur 288px/radius 12/padding 4, cellule 38×36/radius 6.
+// ── Champ "التاريخ" cliquable + popover calendrier (demande utilisateur,
+// rapport design §2.4) — remplace l'ancien calendrier affiché en
+// permanence dans le flux de la modale (.rk-reschedule-calendar-row).
+.rk-reschedule-date-field {
+  position: relative;
+}
+
+.rk-reschedule-date-input {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  gap: 8px;
+  background-color: #fff !important;
+  border: 1px solid var(--rk-border);
+  border-radius: 8px !important;
+  font-family: v.$rk-font-family;
+  font-size: 14px;
+  color: var(--rk-text-heading) !important;
+  cursor: pointer;
+  text-align: right;
+  transition: border-color .15s ease;
+
+  &:hover,
+  &[aria-expanded="true"] {
+    border-color: var(--rk-accent-blue);
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: var(--rk-text-muted);
+  }
+}
+
+.rk-reschedule-calendar-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(v.$rk-shadow-base, .18);
+  border-radius: v.$rk-radius-md;
+
+  &[hidden] {
+    display: none !important;
+  }
+}
+
+.rk-reschedule-calendar {
+  width: v.$rk-cal-container;
+  max-width: 100%;
+  border-radius: v.$rk-radius-md;
+  padding: 4px;
+  background: v.$rk-white;
+  border: 1px solid var(--rk-border);
+  flex-shrink: 0;
+}
+
+.rk-reschedule-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px;
+  font-family: v.$rk-font-family;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--rk-text-heading);
+}
+
+.rk-reschedule-cal-nav {
+  width: 28px;
+  height: 28px;
+  padding: 0 !important;
+  border: none;
+  // AJUSTEMENT (demande utilisateur) — dégradé orange + ombre (au lieu
+  // d'un rouge plein simple), radius 6px (au lieu de cercle complet).
+  background: linear-gradient(318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411;
+  background-blend-mode: soft-light, normal;
+  box-shadow: 0px 0.727273px 1.45455px rgba(0, 0, 0, 0.3), 0px 1.45455px 4.36364px 1.45455px rgba(0, 0, 0, 0.15);
+  border-radius: 6px !important;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease;
+
+  &:hover {
+    background: v.$rk-primary-light;
+  }
+  &:disabled {
+    background: var(--rk-text-faint);
+    cursor: not-allowed;
+  }
+}
+
+// AJOUT (bug signalé) — ligne des jours de semaine (الأحد → السبت),
+// manquait entièrement du calendrier. Même grille 7 colonnes que
+// .rk-reschedule-cal-grid ci-dessous, pour un alignement parfait entre
+// les libellés de jour et les cases numérotées.
+.rk-reschedule-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 0 0 4px;
+
+  span {
+    text-align: center;
+    font-family: v.$rk-font-family;
+    font-size: 9px;
+    font-weight: 600;
+    color: #8BA1B7;
+  }
+}
+
+.rk-reschedule-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.rk-reschedule-cal-cell {
+  box-sizing: border-box;
+  width: v.$rk-cal-cell-w;
+  height: v.$rk-cal-cell-h;
+  max-width: 100%;
+  border-radius: v.$rk-cal-cell-radius;
+  border: none;
+  background: transparent;
+  font-family: v.$rk-font-family;
+  font-size: 13px;
+  color: var(--rk-text-muted);
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--empty {
+    visibility: hidden;
+  }
+
+  &.is-available {
+    background: transparent;
+    color: var(--rk-text-heading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+    padding: 0;
+    font-size: 12px;
+
+    &:hover {
+      background: #FF4411;
+      color: #fff;
+      border-radius: 6px;
+    }
+  }
+
+  &.is-selected {
+    background: v.$rk-primary !important;
+    color: v.$rk-white !important;
+  }
+
+  &:disabled:not(.is-available) {
+    // AJUSTEMENT (bug signalé — dates désactivées affichées en orange) —
+    // un style générique du thème/WooCommerce cible probablement tout
+    // <button disabled> dans un formulaire (même défaut déjà rencontré sur
+    // .rk-step6-field__input — voir screens/_confirmation.scss). !important
+    // garantit que notre fond neutre l'emporte quel que soit ce style
+    // externe.
+    background: transparent !important;
+    color: #8BA1B7;
+    opacity: .5;
+    font-size: 12px;
+    padding: 0;
+  }
+}
+
+// ── Volet créneaux — modale de reprogrammation ────────────────────────────
+.rk-reschedule-slots {
+  margin-top: 12px;
+}
+
+.rk-reschedule-slots-empty {
+  font-family: v.$rk-font-family;
+  font-size: 13px;
+  color: var(--rk-text-muted);
+  text-align: center;
+  margin-top: 24px;
+}
+
+.rk-reschedule-slot {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  border: v.$rk-listrow-border-rest solid var(--rk-border);
+  // AJUSTEMENT (bug signalé — toutes les pastilles horaires affichées en
+  // orange plein simultanément) — même famille de bug que les dates
+  // désactivées du calendrier (déjà corrigé, voir .rk-reschedule-cal-cell
+  // ci-dessus) : un style externe (thème/WooCommerce) cible probablement
+  // tout <button> dans ce contexte de liste. !important garantit que
+  // notre fond blanc par défaut l'emporte.
+  background: v.$rk-white !important;
+  font-family: v.$rk-font-family;
+  font-size: 12px;
+  color: var(--rk-text-heading) !important;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s ease, box-shadow .15s ease;
+
+  &:hover {
+    border-color: var(--rk-accent-blue);
+  }
+  &.is-selected {
+    border-width: v.$rk-listrow-border-selected;
+    border-color: v.$rk-primary;
+    @include v.rk-shadow-selected;
+  }
+}

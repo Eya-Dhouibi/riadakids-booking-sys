@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="skillGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4411"/>
+      <stop offset="100%" stop-color="#FF6B35"/>
+    </linearGradient>
+    <linearGradient id="skillGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4C95D7"/>
+      <stop offset="100%" stop-color="#6BA3E6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle with pulse -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="url(#skillGrad1)" stroke-width="3">
+    <animate attributeName="r" values="28;30;28" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <!-- Skill icon -->
+  <path d="M32 16 L42 26 L22 26 Z" fill="url(#skillGrad2)">
+    <animateTransform attributeName="transform" type="rotate" values="0 32 32;360 32 32" dur="4s" repeatCount="indefinite"/>
+  </path>
+  <circle cx="32" cy="42" r="8" fill="url(#skillGrad1)">
+    <animate attributeName="r" values="7;9;7" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="32" y="46" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">XP</text>
+</svg>

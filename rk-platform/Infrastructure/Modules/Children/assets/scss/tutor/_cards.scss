@@ -1,0 +1,356 @@
+// ============================================================
+// Tutor LMS — Cards  (tutor/_cards.scss)
+//
+// Composants partagés entre tous les endpoints Tutor RK :
+//   .rk-course-card   → enrolled-courses.php
+//   .rk-quiz-row      → rk-quiz.php
+//   .rk-quiz-stat-card
+//   .rk-bilan         → rk-evaluations.php
+//   .rk-stars
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ═══════════════════════════════════════════════════════
+// COURSES LIST & CARD
+// ═══════════════════════════════════════════════════════
+
+.rk-courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-4;
+}
+
+.rk-course-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: t.$surface;
+  border-radius: t.$border-radius;
+  box-shadow: t.$shadow-card;
+  border: 1px solid t.$border-color;
+  overflow: hidden;
+  transition: box-shadow t.$transition-base, transform t.$transition-base;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    box-shadow: t.$shadow-elevated;
+    transform: translateY(-2px);
+  }
+
+  @include m.touch {
+    &:hover { box-shadow: t.$shadow-card; transform: none; }
+  }
+
+  // Thumbnail
+  &__thumb {
+    width: 100px;
+    min-height: 90px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(t.$hex-primary, 0.1) 0%, rgba(t.$hex-secondary, 0.1) 100%);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @include m.mobile {
+      width: 80px;
+      min-height: 80px;
+    }
+  }
+
+  &__thumb-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: rgba(t.$hex-primary, 0.4);
+    }
+  }
+
+  &__pct-badge {
+    position: absolute;
+    top: t.$space-1;
+    right: t.$space-1;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: t.$font-weight-bold;
+    padding: 2px 5px;
+    border-radius: t.$border-radius-xs;
+    backdrop-filter: blur(4px);
+  }
+
+  // Body
+  &__body {
+    flex: 1;
+    padding: t.$space-4;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: t.$font-size-base;
+    font-weight: t.$font-weight-bold;
+    color: t.$text-primary;
+    margin-bottom: t.$space-2;
+    @include m.text-clamp(2);
+  }
+
+  &__progress {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+    margin-top: t.$space-2;
+  }
+
+  &__count {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+    flex-shrink: 0;
+  }
+
+  // Arrow chevron
+  &__arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 t.$space-4;
+    color: t.$text-muted;
+    flex-shrink: 0;
+  }
+
+  &__arrow-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform t.$transition-fast;
+  }
+
+  &:hover &__arrow-icon {
+    transform: translateX(-3px);
+    [dir="ltr"] & { transform: translateX(3px); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ STATS BAR
+// ═══════════════════════════════════════════════════════
+
+.rk-quiz-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: t.$space-4;
+  margin-bottom: t.$space-6;
+}
+
+.rk-quiz-stat-card {
+  @include m.card(t.$space-4, t.$border-radius-sm);
+  text-align: center;
+
+  &__value {
+    display: block;
+    font-size: t.$font-size-2xl;
+    font-weight: t.$font-weight-extrabold;
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+    line-height: 1;
+    margin-bottom: t.$space-1;
+  }
+
+  &__label {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+    font-weight: t.$font-weight-semibold;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ ROWS (Tutor + Coach quizzes)
+// ═══════════════════════════════════════════════════════
+
+.rk-quiz-list {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-3;
+}
+
+.rk-quiz-row {
+  display: flex;
+  align-items: center;
+  gap: t.$space-4;
+  padding: t.$space-3 t.$space-4;
+  background: t.$surface;
+  border-radius: t.$border-radius-sm;
+  border: 1px solid t.$border-color;
+  transition: box-shadow t.$transition-fast;
+
+  &:hover {
+    box-shadow: t.$shadow-card;
+  }
+
+  // Variante info (quiz non lu du coach)
+  &--info {
+    border-color: var(--e-global-color-secondary, #{t.$hex-secondary});
+    background: rgba(t.$hex-secondary, 0.04);
+  }
+
+  // Variante succès
+  &--pass {
+    border-color: t.$hex-green;
+    background: rgba(t.$hex-green, 0.04);
+  }
+
+  // Variante échec
+  &--fail {
+    border-color: t.$hex-red;
+    background: rgba(t.$hex-red, 0.04);
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: t.$border-radius-xs;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    background: t.$bg-light;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: t.$font-size-base;
+    font-weight: t.$font-weight-bold;
+    color: t.$text-primary;
+    @include m.text-clamp(1);
+    margin-bottom: 2px;
+  }
+
+  &__meta {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+  }
+
+  &__score {
+    font-size: t.$font-size-md;
+    font-weight: t.$font-weight-extrabold;
+    flex-shrink: 0;
+
+    &--pass { color: t.$hex-green; }
+    &--fail { color: t.$hex-red; }
+    &--info { color: var(--e-global-color-secondary, #{t.$hex-secondary}); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// BILANS / ÉVALUATIONS
+// ═══════════════════════════════════════════════════════
+
+.rk-bilan {
+  @include m.card;
+  margin-bottom: t.$space-5;
+
+  // Vue enfant
+  &--child {
+    border-right: 4px solid var(--e-global-color-primary, #{t.$hex-primary});
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: t.$space-3;
+    margin-bottom: t.$space-4;
+  }
+
+  &__coach {
+    display: flex;
+    align-items: center;
+    gap: t.$space-3;
+    margin-bottom: t.$space-4;
+  }
+
+  &__coach-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: t.$bg-light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    border: 2px solid t.$border-color;
+  }
+
+  &__coach-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__coach-name {
+    font-weight: t.$font-weight-bold;
+    font-size: t.$font-size-base;
+    color: t.$text-primary;
+    margin-bottom: 2px;
+  }
+
+  &__coach-date {
+    font-size: t.$font-size-xs;
+    color: t.$text-muted;
+  }
+
+  &__summary {
+    font-size: t.$font-size-base;
+    line-height: t.$line-height-loose;
+    color: t.$text-primary;
+    background: t.$bg-light;
+    border-radius: t.$border-radius-sm;
+    padding: t.$space-3;
+    margin-bottom: t.$space-4;
+  }
+
+  &__cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: t.$space-4;
+    margin-bottom: t.$space-4;
+
+    @include m.mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// ── Stars rating ─────────────────────────────────────────────
+
+.rk-stars {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.rk-star {
+  font-size: 1.1rem;
+  filter: grayscale(1) opacity(0.3);
+  transition: filter t.$transition-fast;
+
+  &--on,
+  &.on {
+    filter: none;
+  }
+}

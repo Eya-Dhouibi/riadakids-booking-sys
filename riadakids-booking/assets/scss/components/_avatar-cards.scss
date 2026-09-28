@@ -1,0 +1,237 @@
+// =============================================================================
+// COMPONENTS · Cartes avatar (Enfant / Encadrant)
+// =============================================================================
+// Écrans 4 (الطفل) et 5 (الموعد — choix encadrant) : même composant carte
+// avatar, portrait rond centré, radius unifié à 12px (était 15px — voir
+// note incohérence radius dans settings/_variables.scss).
+// =============================================================================
+@use '../settings' as v;
+
+.rk-child-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+  gap: 16px;
+  justify-items: center;
+}
+
+// Photo dans la carte : remplit le cercle existant
+.rk-child-avatar {
+  overflow: hidden;
+  padding: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+}
+
+// Carte enfant/encadrant — 255×194, radial gradient, ombre à deux états
+.rk-option-card.rk-child-card {
+  box-sizing: border-box;
+  width: 255px;
+  max-width: 100%;
+  height: 194px;
+  background:
+    radial-gradient(326.1% 105.11% at 50.2% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(186, 217, 243, 0.2) 79.42%, rgba(76, 149, 215, 0.2) 100%),
+    v.$rk-white;
+  border: none;
+  border-radius: v.$rk-radius-md; // unifié (était 15px)
+  @include v.rk-shadow-card-rest;
+  transition: box-shadow .15s ease;
+
+  &:hover {
+    border: none;
+    background:
+      radial-gradient(326.1% 105.11% at 50.2% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(186, 217, 243, 0.2) 79.42%, rgba(76, 149, 215, 0.2) 100%),
+      v.$rk-white;
+  }
+}
+.rk-option-card.rk-child-card:has(input[type="radio"]:checked),
+.rk-option-card.rk-child-card.rk-selected-card {
+  @include v.rk-shadow-selected;
+  box-shadow:
+    0px 2px 4px rgba(v.$rk-shadow-base, .25),
+    0px 4px 12px 4px rgba(v.$rk-shadow-base, .1),
+    0px 0px 0px 3px var(--rk-primary) !important;
+}
+
+.rk-child-card-inner {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-align: center;
+}
+
+.rk-child-photo-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+
+  .rk-child-avatar,
+  .rk-option-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--rk-border);
+  }
+}
+
+// Pastille de compteur de réservations — coin supérieur
+.rk-child-count-bubble {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rk-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: v.$rk-radius-pill;
+  border: 2px solid #fff;
+  line-height: 1;
+}
+
+.rk-child-fullname {
+  font-size: v.$rk-fs-list-row;
+  font-weight: 700;
+  color: var(--rk-text-heading);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.rk-child-age-pill {
+  display: inline-block;
+  padding: 3px 12px;
+  background: #FFE7DE;
+  color: var(--rk-primary);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: v.$rk-radius-pill;
+}
+
+.rk-child-card .rk-check-indicator {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin-right: 0;
+}
+
+.rk-child-card.selected .rk-check-indicator {
+  background: var(--rk-accent-blue);
+  color: #fff;
+}
+
+// ── Carte "طفل جديد" — toujours en tête de grille, ouvre le popup ────────
+.rk-child-card-add {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 255px;
+  max-width: 100%;
+  height: 194px;
+  background-color: #F4F9FD !important;
+  border: 2px dashed #BAD9F3;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s ease, background .15s ease;
+
+  &:hover {
+    border-color: var(--rk-accent-blue);
+    background: #EAF3FB;
+  }
+}
+.rk-child-add-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--rk-border);
+  color: var(--rk-accent-blue);
+}
+.rk-child-card-add strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--rk-text-heading);
+}
+.rk-child-card-add small {
+  font-size: 12px;
+  color: var(--rk-text-muted);
+  line-height: 1.4;
+}
+.rk-child-add-btn {
+  margin-top: 4px;
+  font-size: 13px;
+  padding: 7px 16px;
+}
+
+@media (max-width: v.$bp-640) {
+  .rk-option-card.rk-child-card,
+  .rk-child-card-add {
+    width: 100%;
+  }
+}
+
+// ── Sélecteur de photo (formulaire d'ajout enfant) ───────────────────────
+.rk-field-avatar { grid-column: 1 / -1; }
+
+.rk-avatar-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.rk-avatar-preview {
+  position: relative;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #eef4fb;
+  border: 2px dashed #c3d7ee;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: 800;
+  color: var(--rk-accent-blue);
+  font-size: 1.05rem;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.rk-avatar-state {
+  font-size: .78rem;
+  opacity: .85;
+}
+
+@media (max-width: v.$bp-480) {
+  .rk-avatar-picker { gap: 8px; }
+  .rk-avatar-state { flex: 1 1 100%; }
+}

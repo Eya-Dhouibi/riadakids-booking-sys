@@ -1,0 +1,333 @@
+/* ============================================================
+   RK Coach Hub — Page Login Standalone
+   Design: Split layout (login-form-07) × RiadaKids brand
+   ============================================================ */
+
+/* ── Reset complet (annule tout ce que le thème injecte) ── */
+.rk-cl-body *,
+.rk-cl-body *::before,
+.rk-cl-body *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.rk-cl-body {
+  font-family: 'Tajawal', 'Segoe UI', Arial, sans-serif;
+  background: #f0f4f8;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  direction: rtl;
+}
+
+/* Masque tous les éléments du thème qui pourraient fuiter */
+.rk-cl-body #wpadminbar,
+.rk-cl-body header:not(.rk-cl-header),
+.rk-cl-body footer:not(.rk-cl-footer),
+.rk-cl-body .site-header,
+.rk-cl-body .site-footer,
+.rk-cl-body .woocommerce-notices-wrapper,
+.rk-cl-body nav.woocommerce-MyAccount-navigation { display: none !important; }
+
+/* ── Layout split ───────────────────────────────────────── */
+.rk-cl-wrap {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ── Panneau gauche — illustration ──────────────────────── */
+.rk-cl-left {
+  width: 48%;
+  background: linear-gradient(155deg, #0f2d5a 0%, #1B4F8C 45%, #E8500A 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Décoration géométrique en arrière-plan */
+.rk-cl-left::before {
+  content: '';
+  position: absolute;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  border: 60px solid rgba(255,255,255,.05);
+  top: -80px; left: -80px;
+}
+.rk-cl-left::after {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  border: 40px solid rgba(255,255,255,.05);
+  bottom: -60px; right: -40px;
+}
+
+.rk-cl-left-content { position: relative; z-index: 1; text-align: center; color: #fff; }
+
+.rk-cl-logo {
+  margin-bottom: 40px;
+}
+.rk-cl-logo img {
+  max-width: 160px;
+  filter: brightness(0) invert(1);
+}
+.rk-cl-logo-text {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: .02em;
+}
+.rk-cl-logo-text span { color: #fb923c; }
+
+.rk-cl-illustration {
+  margin: 32px auto;
+  width: 260px;
+}
+
+.rk-cl-tagline {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.rk-cl-tagline-sub {
+  font-size: .9rem;
+  opacity: .75;
+  line-height: 1.7;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* Dots decoration */
+.rk-cl-dots {
+  display: flex; gap: 8px; justify-content: center;
+  margin-top: 36px;
+}
+.rk-cl-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,.3);
+}
+.rk-cl-dot.active { background: #fb923c; width: 24px; border-radius: 4px; }
+
+/* ── Panneau droit — formulaire ─────────────────────────── */
+.rk-cl-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  background: #fff;
+}
+
+.rk-cl-form-wrap {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* En-tête formulaire */
+.rk-cl-form-head { margin-bottom: 36px; }
+.rk-cl-form-head h1 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+.rk-cl-form-head p {
+  font-size: .9rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* Badge rôle */
+.rk-cl-role-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  color: #1e40af; font-size: .75rem; font-weight: 800;
+  padding: 4px 12px; border-radius: 50px;
+  margin-bottom: 20px;
+}
+.rk-cl-role-badge svg { flex-shrink: 0; }
+
+/* ── Alertes ──────────────────────────────────────────────── */
+.rk-cl-alert {
+  border-radius: 10px; padding: 12px 16px;
+  font-size: .86rem; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-bottom: 20px;
+}
+.rk-cl-alert--error {
+  background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;
+}
+.rk-cl-alert--success {
+  background: #f0fdf4; border: 1px solid #bbf7d0; color: #14532d;
+}
+.rk-cl-alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Champs flottants (style login-form-07) ─────────────── */
+.rk-cl-field {
+  position: relative;
+  background: #f1f5f9;
+  border-bottom: 2px solid #e2e8f0;
+  transition: background .2s, border-color .2s;
+  overflow: hidden;
+}
+.rk-cl-field.first { border-radius: 10px 10px 0 0; }
+.rk-cl-field.last  { border-radius: 0 0 10px 10px; margin-bottom: 24px; }
+.rk-cl-field:focus-within {
+  background: #fff;
+  border-color: #1B4F8C;
+}
+
+.rk-cl-field label {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  right: 16px;
+  font-size: .82rem;
+  color: #94a3b8;
+  pointer-events: none;
+  transition: all .2s;
+  font-weight: 500;
+}
+.rk-cl-field.has-value label,
+.rk-cl-field:focus-within label {
+  top: 12px;
+  transform: none;
+  font-size: .68rem;
+  color: #1B4F8C;
+}
+
+.rk-cl-field input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 26px 16px 10px;
+  font-size: 1rem;
+  color: #1e293b;
+  font-family: inherit;
+  direction: rtl;
+}
+.rk-cl-field input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px #f1f5f9 inset;
+}
+.rk-cl-field:focus-within input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px #fff inset;
+}
+
+/* Toggle mot de passe */
+.rk-cl-pwd-toggle {
+  position: absolute;
+  left: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none;
+  color: #94a3b8; cursor: pointer; padding: 4px;
+  display: flex; align-items: center;
+  transition: color .15s;
+}
+.rk-cl-pwd-toggle:hover { color: #1B4F8C; }
+
+/* ── Rangée remember / forgot ──────────────────────────── */
+.rk-cl-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.rk-cl-checkbox {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-size: .84rem; color: #64748b;
+  user-select: none;
+}
+.rk-cl-checkbox input { display: none; }
+.rk-cl-check-box {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 2px solid #cbd5e1;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .15s;
+}
+.rk-cl-checkbox input:checked ~ .rk-cl-check-box {
+  background: #1B4F8C; border-color: #1B4F8C;
+}
+.rk-cl-checkbox input:checked ~ .rk-cl-check-box::after {
+  content: '';
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none; border-right: none;
+  transform: rotate(-45deg) translate(1px, -1px);
+  display: block;
+}
+
+.rk-cl-forgot {
+  font-size: .84rem; color: #1B4F8C;
+  text-decoration: none; font-weight: 600;
+  transition: color .15s;
+}
+.rk-cl-forgot:hover { color: #E8500A; }
+
+/* ── Bouton submit ──────────────────────────────────────── */
+.rk-cl-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #E8500A, #f97316);
+  color: #fff;
+  border: none; border-radius: 10px;
+  height: 52px;
+  font-size: 1rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity .15s, transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 16px rgba(232,80,10,.3);
+}
+.rk-cl-submit:hover {
+  opacity: .93;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(232,80,10,.35);
+}
+.rk-cl-submit:active { transform: translateY(0); }
+.rk-cl-submit svg { transition: transform .2s; }
+.rk-cl-submit:hover svg { transform: translateX(-3px); }
+
+/* Spinner pendant soumission */
+.rk-cl-submit.loading { opacity: .7; pointer-events: none; }
+.rk-cl-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rk-spin .7s linear infinite;
+}
+@keyframes rk-spin { to { transform: rotate(360deg); } }
+
+/* ── Séparateur retour site ─────────────────────────────── */
+.rk-cl-back {
+  text-align: center;
+  margin-top: 28px;
+  font-size: .83rem;
+  color: #94a3b8;
+}
+.rk-cl-back a {
+  color: #1B4F8C; font-weight: 700; text-decoration: none;
+  transition: color .15s;
+}
+.rk-cl-back a:hover { color: #E8500A; }
+
+/* ── Footer minimaliste ─────────────────────────────────── */
+.rk-cl-footer-note {
+  margin-top: 32px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: .76rem; color: #cbd5e1;
+  justify-content: center;
+}
+.rk-cl-footer-note svg { color: #e2e8f0; flex-shrink: 0; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .rk-cl-wrap { flex-direction: column; }
+  .rk-cl-left {
+    width: 100%; padding: 40px 24px;
+    min-height: auto;
+  }
+  .rk-cl-illustration { width: 180px; }
+  .rk-cl-tagline { font-size: 1.1rem; }
+  .rk-cl-right { padding: 40px 20px; }
+  .rk-cl-form-wrap { max-width: 100%; }
+}

@@ -1,0 +1,28 @@
+// =============================================================================
+// RIADAKIDS BOOKING — Feuille de style principale
+// =============================================================================
+// Point d'entrée unique de la compilation SCSS → CSS.
+// Compile vers assets/css/style.css et assets/css/style.min.css — mêmes
+// noms et chemin que l'ancien fichier monolithique, pour que
+// includes/Core/Assets.php continue de fonctionner SANS AUCUNE MODIFICATION
+// (wp_enqueue_style('rk-style', .../assets/css/style.css, ...) inchangé).
+//
+// Ordre de chargement volontaire :
+//   1. settings — variables & mixins (rien n'est émis en CSS ici)
+//   2. base     — :root custom properties + fond de page global
+//   3. components — chaque composant réutilisable (boutons, cartes, etc.)
+//   4. layout   — assemblages transversaux (hero, stats, historique)
+//   5. screens  — spécificités par écran du wizard + adaptations RTL
+//
+// Design system source : audit Figma "RiadaKids (Final Designs)", page
+// Parents Dashboard, écrans البرنامج → الحجز مؤكد (node-id 202:2431).
+// Voir settings/_variables.scss pour le détail des tokens et des 2
+// incohérences corrigées (radius carte unifié à 12px, ombre bouton
+// primaire harmonisée sur #172F46).
+// =============================================================================
+
+@use 'settings';
+@use 'base';
+@use 'components';
+@use 'layout';
+@use 'screens';

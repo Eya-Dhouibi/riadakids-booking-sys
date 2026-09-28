@@ -1,0 +1,18 @@
+// ============================================================
+// RK Dashboard — Single Entry Point  (main.scss)
+//
+// Compiles to : assets/css/rk-dashboard.css
+// Command     : npx sass assets/scss/main.scss:assets/css/rk-dashboard.css --style=compressed --no-source-map
+//
+// Scope       : /dashboard/ (Tutor LMS) + /my-account/child-dashboard/
+// Contexts    : body.rk-child-active   — child view
+//               body.rk-parent-active  — parent view
+//               #rk-dashboard.rkv2     — child home overlay
+// ============================================================
+
+@use 'tokens' as t;
+@use 'mixins' as m;
+
+// Each directory exposes its partials via _index.scss (@forward)
+@use 'tutor';       // layout + nav + cards + mobile + overrides
+@use 'dashboard';   // layout + components + drawer + animations + mobile

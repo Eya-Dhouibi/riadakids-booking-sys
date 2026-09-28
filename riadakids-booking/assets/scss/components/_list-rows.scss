@@ -1,0 +1,172 @@
+// =============================================================================
+// COMPONENTS · Lignes de liste sélectionnables
+// =============================================================================
+// Écran Séance (اللقاء) : grille 2 colonnes de lignes .rk-session-card.
+// Repos : fond blanc, bordure 1px. Sélectionné : bordure 3px + halo bleu-nuit
+// (motif transversal confirmé par l'audit — l'épaisseur de bordure code
+// l'état, pas la couleur de fond).
+// =============================================================================
+@use '../settings' as v;
+
+.rk-session-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$rk-listrow-gap;
+}
+// Nombre impair de séances : la dernière carte, seule dans sa ligne,
+// s'étend sur toute la largeur plutôt que de rester à moitié vide.
+.rk-session-list > .rk-session-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.rk-session-card.rk-session-card {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: v.$rk-listrow-pad;
+  gap: v.$rk-listrow-gap;
+  background: v.$rk-white;
+  border: v.$rk-listrow-border-rest solid var(--rk-border);
+  border-radius: v.$rk-radius-md;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+
+  &:hover {
+    border-color: var(--rk-accent-blue);
+  }
+}
+.rk-session-card:has(input[type="radio"]:checked),
+.rk-session-card.rk-selected-card {
+  // AJUSTEMENT (demande utilisateur) — bordure 1px (au lieu de 3px) +
+  // couleur directe #f41 (variante légèrement plus foncée que
+  // $rk-primary #FF4411, valeur exacte fournie).
+  border-width: 1px;
+  border-color: #f41;
+  box-shadow:
+    0px 2px 4px rgba(v.$rk-shadow-base, .25),
+    0px 4px 12px 4px rgba(v.$rk-shadow-base, .1),
+    0px 0px 0px 3px #f41;
+}
+
+.rk-session-content.rk-session-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.rk-session-icon {
+  img {
+    max-width: 60px;
+  }
+}
+.rk-session-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+}
+.rk-session-content .rk-session-text strong {
+  display: block;
+  font-family: v.$rk-font-family;
+  font-weight: 700;
+  font-size: v.$rk-fs-list-row;
+  color: var(--rk-text-heading);
+}
+.rk-session-content .rk-session-text small {
+  display: block;
+  font-family: v.$rk-font-family;
+  font-weight: 400;
+  font-size: v.$rk-fs-card-desc;
+  color: var(--rk-text-muted);
+}
+
+@media (max-width: v.$bp-640) {
+  .rk-session-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Historique des réservations (حجوزاتي) — lignes tabulaires ────────────
+// Contexte différent (tableau de données, pas sélection de wizard) mais
+// même famille "ligne de liste" — regroupé ici pour cohérence de dossier.
+.rk-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rk-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 560px;
+
+  // FIX — bouton "تعديل" tronqué/masqué par défaut. Le tableau est plus
+  // large que son conteneur visible, donc scrollable horizontalement ; en
+  // RTL la colonne "إجراءات" (dernière colonne du balisage = la plus à
+  // droite affichée) tombait hors du cadre visible. Fixée en position
+  // sticky sur le bord droit.
+  th:last-child,
+  td:last-child {
+    position: sticky;
+    inset-inline-end: 0;
+    background: #fff;
+    box-shadow: -4px 0 8px -4px rgba(16, 24, 40, .08);
+  }
+  thead th:last-child {
+    background: #f8f9fa;
+    box-shadow: -4px 0 8px -4px rgba(16, 24, 40, .08);
+  }
+  thead tr { background: #f8f9fa; }
+  th {
+    padding: 10px 14px;
+    text-align: right;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #343a40;
+  }
+  tbody tr:hover {
+    background: #f8f9fb;
+    td:last-child { background: #f8f9fb; }
+  }
+}
+
+@media (max-width: v.$bp-600) {
+  // Tableau → mode cartes
+  .rk-history-table {
+    min-width: unset;
+    thead { display: none; }
+    tbody tr {
+      display: block;
+      margin-bottom: 12px;
+      border: 1px solid #e9ecef;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    }
+    td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 13px;
+
+      &:last-child { border-bottom: none; }
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #868e96;
+        font-size: 12px;
+        white-space: nowrap;
+        margin-left: 8px;
+      }
+    }
+  }
+}

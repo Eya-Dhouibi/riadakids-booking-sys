@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <defs>
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fde047"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <polygon points="30,4 36,20 53,20 40,30 45,47 30,37 15,47 20,30 7,20 24,20" fill="url(#starGrad)" stroke="#d97706" stroke-width="1.5"/>
+  <!-- Smiley face on star -->
+  <circle cx="25" cy="24" r="2.5" fill="#92400e"/>
+  <circle cx="35" cy="24" r="2.5" fill="#92400e"/>
+  <path d="M24,30 Q30,36 36,30" fill="none" stroke="#92400e" stroke-width="2" stroke-linecap="round"/>
+  <!-- Cheek blush -->
+  <circle cx="22" cy="30" r="3" fill="#fb7185" opacity="0.5"/>
+  <circle cx="38" cy="30" r="3" fill="#fb7185" opacity="0.5"/>
+</svg>

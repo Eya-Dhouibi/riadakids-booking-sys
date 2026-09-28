@@ -1,0 +1,141 @@
+// =============================================================================
+// COMPONENTS · Indicateur d'étapes (stepper)
+// =============================================================================
+// 5 étapes, cercle identique dans les deux états — seule la couleur de
+// l'icône et du libellé change (pas le fond du cercle, confirmé Figma).
+// Connecteur entre étapes : pointillé gris par défaut, ligne pleine bleue
+// une fois complété — dessiné en ::after sur chaque .rk-step sauf le
+// dernier, jamais l'inverse, pour rester cohérent quel que soit le nombre
+// d'étapes.
+// =============================================================================
+@use '../settings' as v;
+
+.rk-step-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 40px !important;
+}
+
+.rk-steps {
+  display: flex;
+  gap: 0;
+  margin-bottom: 40px;
+  padding: 8px 0;
+  overflow-x: auto;
+}
+
+.rk-step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 6px;
+  cursor: default;
+  min-width: 84px;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    right: 50%;
+    left: -50%;
+    margin-right: 20px;
+    margin-left: 20px;
+    height: 2px;
+    border-radius: 7.03px;
+    background-image: linear-gradient(to left, #C4DDF2 50%, transparent 50%);
+    background-size: 10px 2px;
+    background-repeat: repeat-x;
+  }
+
+  &.completed:not(:last-child)::after,
+  &.active:not(:last-child)::after {
+    background-image: none;
+    background:
+      linear-gradient(318.96deg, #9CC5E9 -1.9%, rgba(196, 221, 242, 0) 17.34%, rgba(234, 243, 250, 0.7) 87.36%),
+      var(--rk-accent-blue);
+    background-blend-mode: soft-light, normal;
+  }
+
+  strong {
+    font-family: v.$rk-font-family;
+    font-weight: 700;
+    font-size: v.$rk-fs-step-active;
+    line-height: 22px;
+    color: var(--rk-text-heading);
+    text-align: center;
+  }
+}
+
+.rk-step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--rk-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  color: var(--rk-text-faint);
+  transition: background .2s, color .2s;
+
+  svg {
+    width: 62%;
+    height: 62%;
+    display: block;
+  }
+}
+.rk-step.active .rk-step-icon,
+.rk-step.completed .rk-step-icon {
+  background: linear-gradient(135deg, var(--rk-border) 0%, #9CC5E9 100%);
+  color: var(--rk-text-heading);
+}
+
+.rk-step-label {
+  font-family: v.$rk-font-family;
+  font-weight: 600;
+  font-size: v.$rk-fs-step-num;
+  line-height: 22px;
+  text-transform: uppercase;
+  color: var(--rk-text-muted);
+  text-align: center;
+}
+
+.rk-step-hint {
+  font-size: 12px;
+  font-weight: 400;
+  color: #868e96;
+  display: block;
+  margin-top: 2px;
+}
+
+@media (max-width: v.$bp-600) {
+  .rk-steps strong,
+  .rk-step-label {
+    display: none;
+  }
+  .rk-steps {
+    gap: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rk-step {
+    min-width: 64px;
+    width: 64px;
+    flex: 0 0 auto;
+    padding: 8px 4px;
+
+    &:not(:last-child)::after {
+      right: -32px;
+      left: 32px;
+    }
+  }
+  .rk-step-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0;
+  }
+}

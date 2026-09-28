@@ -1,0 +1,50 @@
+// =============================================================================
+// COMPONENTS · Créneaux horaires (écran 7 — الموعد, étape 3/3)
+// =============================================================================
+// Même réserve que components/_calendar.scss : les pastilles de créneaux
+// (15:45, 16:30, 17:15…) sont rendues par le widget SSA tiers, pas par un
+// composant natif de ce plugin. Ce fichier est le point d'extension pour
+// toute surcouche visuelle propre au wizard RiadaKids.
+//
+// Tokens de référence Figma pour ce composant (si une reproduction
+// visuelle native devient nécessaire) :
+//   padding       : 80px horizontal / 16px vertical (très généreux)
+//   radius        : 12px
+//   bordure       : 1px au repos / 3px sélectionné (même motif que les
+//                   lignes de liste, voir components/_list-rows.scss et
+//                   settings/_mixins.scss::rk-selectable-border)
+// =============================================================================
+@use '../settings' as v;
+
+// Ligne fuseau horaire en pied de volet ("توقيت الرياض (GMT+3)")
+.rk-timezone-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: v.$rk-font-family;
+  font-size: 12px;
+  color: var(--rk-text-muted);
+  margin-top: 12px;
+
+  svg {
+    transition: transform .15s ease;
+  }
+  &[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+}
+
+// ── Surcouche visuelle sur la liste de créneaux du widget SSA ────────────
+// Classes réelles observées en production dans le DOM du widget SSA :
+// la liste native est verticale (colonne) — passée en ligne avec retour
+// (wrap) pour matcher les pastilles horizontales de la maquette Figma.
+ul.time-listing,
+.time-select ul.time-listing {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 10px !important;
+}

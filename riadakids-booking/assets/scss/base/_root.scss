@@ -1,0 +1,39 @@
+// =============================================================================
+// BASE · :root custom properties
+// =============================================================================
+// Reproduit EXACTEMENT le bloc :root de l'ancien style.css (ÉTAPE 18), pour
+// que tout code (JS, styles inline, futurs développements) qui lit une
+// variable CSS --rk-* continue de fonctionner à l'identique. Les valeurs
+// viennent des variables SCSS (settings/variables) — une seule source de
+// vérité, ce fichier ne fait que les exposer en custom properties.
+// =============================================================================
+@use '../settings' as v;
+
+:root {
+  --rk-primary:        #{v.$rk-primary};
+  --rk-primary-light:  #{v.$rk-primary-light};
+  --rk-primary-bg:     #{v.$rk-primary-bg};
+  --rk-text-heading:   #{v.$rk-text-heading};
+  --rk-text-muted:     #{v.$rk-text-muted};
+  --rk-text-faint:     #{v.$rk-text-faint};
+  --rk-border:         #{v.$rk-border};
+  --rk-bg-page:        #{v.$rk-bg-page};
+  --rk-white:          #{v.$rk-white};
+  --rk-accent-blue:    #{v.$rk-accent-blue};
+
+  --rk-success-bg:     #{v.$rk-success-bg};
+  --rk-success-text:   #{v.$rk-success-text};
+  --rk-error-bg:       #{v.$rk-error-bg};
+  --rk-error-border:   #{v.$rk-error-border};
+  --rk-error-text:     #{v.$rk-error-text};
+  --rk-warning-bg:     #{v.$rk-warning-bg};
+  --rk-info-bg:        #{v.$rk-info-bg};
+  --rk-info-text:      #{v.$rk-info-text};
+
+  --rk-radius-sm:      #{v.$rk-radius-sm};
+  --rk-radius-md:      #{v.$rk-radius-md};
+  --rk-radius-lg:       #{v.$rk-radius-lg};
+  --rk-radius-pill:    #{v.$rk-radius-pill};
+
+  --rk-font-family:    #{v.$rk-font-family};
+}

@@ -1,0 +1,87 @@
+// ============================================================
+// Components — Child Card Add  ("طفل جديد")
+//
+// AJOUT (demande utilisateur — organisation SCSS propre) — carte
+// pointillée d'ajout, retirée du HTML de /my-account/my-children/
+// depuis que $show_add_card=false (remplacée par le bouton fixe, voir
+// woocommerce/myaccount/my-children.php dans le thème), mais conservée
+// ici : le composant reste techniquement affichable si $show_add_card
+// est réactivé quelque part (ex. render_grid() appelée ailleurs).
+//
+// Compiles to: assets/css/child-card.css (voir main-my-children.scss)
+// ============================================================
+
+/* ══════════════════════════════════════════════════════════════
+   v11.0 — Carte "طفل جديد" (style riadakids-booking, étape 4)
+   ══════════════════════════════════════════════════════════════ */
+.rk-child-card-add {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 255px;
+    max-width: 100%;
+    height: 194px;
+    background-color: #F4F9FD !important;
+    border: 2px dashed #BAD9F3;
+    border-radius: 15px;
+    cursor: pointer;
+    text-align: center;
+    padding: 20px;
+    transition: border-color .15s ease,background .15s ease;
+    font-family: var(--rk-font);
+}
+
+.rk-child-card-add:hover {
+    border-color: var(--e-global-color-secondary, #4C95D7);
+    background: #EAF3FB;
+}
+
+.rk-child-add-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: var(--e-global-color-secondary, #4C95D7);
+}
+
+.rk-child-card-add strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2540;
+}
+
+.rk-child-card-add small {
+    font-size: 12px;
+    color: var(--rk-muted, #64748b);
+    line-height: 1.4;
+}
+
+.rk-child-add-btn {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: linear-gradient(90deg, #ff7a34 0, #ff4411 100%);
+    box-shadow: 0 4px 12px rgba(255, 68, 17, .28);
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 400 !important;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background .18s ease;
+}
+
+@media(max-width:640px) {
+    .rk-child-card-add {
+        width: 100%;
+    }
+}

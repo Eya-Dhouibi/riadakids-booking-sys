@@ -1,0 +1,395 @@
+// =============================================================================
+// COMPONENTS · Boutons
+// =============================================================================
+// Reprend .rk-btn (base), .rk-btn-primary, .rk-btn-secondary, .rk-btn-outline,
+// .rk-btn-danger, .rk-booking-view-tab (switcher, même style visuel que
+// primary/secondary — dupliqué historiquement plutôt que partagé pour ne pas
+// changer le markup, conservé tel quel ici).
+//
+// Incohérence corrigée (validée) : l'ombre de .rk-btn-primary utilisait du
+// noir pur rgba(0,0,0,…) — remplacée par rk-shadow-btn-primary() qui utilise
+// la teinte de marque #172F46, cohérente avec toutes les autres ombres du
+// fichier (voir settings/_mixins.scss).
+// =============================================================================
+@use '../settings' as v;
+
+.rk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: v.$rk-radius-sm;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, opacity .15s, color .15s;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: inherit;
+  line-height: 1.4;
+  pointer-events: auto; // garantit que le bouton répond aux clics
+  position: relative;
+  z-index: 1;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &:focus {
+    outline: 2px solid #91a7ff;
+    outline-offset: 2px;
+  }
+
+  &:disabled,
+  &[disabled] {
+    background: #adb5bd !important;
+    cursor: not-allowed;
+    opacity: .65;
+    pointer-events: none;
+    background-color: var(--rk-primary-bg) !important;
+    @include v.rk-shadow-btn-secondary-inset;
+    color: var(--rk-primary-light) !important;
+  }
+}
+
+.rk-btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+// ── Primaire (التالي) — dégradé orange + sheen (spec Figma) ──────────────
+.rk-btn-primary {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: v.$rk-btn-pad-v v.$rk-btn-pad-h;
+  gap: v.$rk-btn-icon-gap;
+  min-width: 77px;
+  height: 44px;
+  @include v.rk-sheen-primary(var(--rk-primary));
+  @include v.rk-shadow-btn-primary;
+  border-radius: v.$rk-radius-md !important;
+  font-family: v.$rk-font-family;
+  font-weight: 500;
+  font-size: v.$rk-fs-btn-label;
+  line-height: 100%;
+  color: v.$rk-white;
+
+  &:hover:not(:disabled) {
+    @include v.rk-sheen-primary(var(--rk-primary));
+    color: v.$rk-white;
+  }
+}
+
+// ── Secondaire (السابق) — fond pêche clair, ombre interne (spec Figma) ───
+.rk-btn-secondary {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: v.$rk-btn-pad-v v.$rk-btn-pad-h;
+  gap: v.$rk-btn-icon-gap;
+  min-width: 86px;
+  height: 44px;
+  background: var(--rk-primary-bg) !important;
+  @include v.rk-shadow-btn-secondary-inset;
+  border-radius: v.$rk-radius-md !important;
+  font-family: v.$rk-font-family;
+  font-weight: 400;
+  font-size: v.$rk-fs-btn-label;
+  line-height: 100%;
+  color: var(--rk-primary-light) !important;
+
+  &:hover:not(:disabled) {
+    background: var(--rk-primary-bg);
+    color: var(--rk-primary-light);
+  }
+}
+
+// ── Outline (bleu accent) ─────────────────────────────────────────────────
+.rk-btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--rk-accent-blue);
+  color: var(--rk-accent-blue);
+
+  &:hover:not(:disabled) {
+    background: rgba(76, 149, 215, .08);
+  }
+  &:disabled {
+    opacity: .6;
+    cursor: wait;
+  }
+}
+
+// ── Danger (rouge plein — إلغاء الحجز) ────────────────────────────────────
+// Même famille que primary/secondary mais couleur danger dédiée, jamais
+// réutilisée ailleurs dans le wizard (modale de confirmation d'annulation).
+.rk-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #e03131;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: .85rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background .15s ease, transform .15s ease;
+
+  &:hover:not(:disabled) {
+    background: #c92a2a;
+    transform: translateY(-1px);
+  }
+  &:disabled {
+    opacity: .6;
+    cursor: wait;
+  }
+}
+
+// ── Éditer / annuler réservation (لقاءاتي القادمة) ───────────────────────
+// Boutons "إلغاء" / "تعديل الموعد" restylés en pilules pleinement arrondies
+// pour correspondre à la maquette : "إلغاء" plein en couleur primaire
+// (orange) avec icône ⊘, "تعديل الموعد" en pilule claire (fond
+// var(--rk-primary-bg)) avec icône calendrier — même famille visuelle que
+// .rk-child-filter-toggle / .rk-time-filter-tab (layout/_bookings-history).
+// AJUSTEMENT (demande utilisateur, specs Figma exactes fournies) — bouton
+// "تعديل الحجز" en pied de carte (لقاءاتي القادمة) : fond orange plein +
+// sheen, identique à .rk-btn-cancel-booking dans sa forme (même famille
+// visuelle que le bouton primaire du wizard), radius 10px, taille fixe
+// 113×35px selon la maquette. Remplace l'ancien style "pastille pêche
+// claire" utilisé quand ce bouton coexistait avec un bouton إلغاء séparé.
+.rk-btn-edit-booking {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  @include v.rk-sheen-primary(v.$rk-primary);
+  background-blend-mode: soft-light, normal !important;
+  color: v.$rk-white !important;
+  border: 0;
+  cursor: pointer;
+  border-radius: 10px !important;
+  width: 113px;
+  height: 35px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  transition: background .18s, color .18s, box-shadow .18s, transform .18s;
+
+  &:hover,
+  &:focus {
+    @include v.rk-sheen-primary(v.$rk-primary);
+    background-blend-mode: soft-light, normal !important;
+    color: v.$rk-white !important;
+    text-decoration: none !important;
+    transform: translateY(-1px);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--rk-primary);
+    outline-offset: 2px;
+  }
+}
+
+// AJOUT (demande utilisateur, specs Figma exactes fournies) — bouton
+// "حجز مجدد" en pied de carte annulée : pilule verte pleine + sheen,
+// famille visuelle distincte (confirmation positive), jamais réutilisée
+// ailleurs dans le wizard.
+.rk-btn-rebook {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(318.96deg, #B3E8C8 -1.9%, rgba(208, 240, 220, 0) 17.34%, #EBF9F1 87.36%), #79D8A0;
+  background-blend-mode: soft-light, normal;
+  box-shadow: 0px 1.4px 2.8px rgba(0, 0, 0, .3), 0px 2.8px 8.4px 2.8px rgba(0, 0, 0, .15);
+  color: #407656;
+  border: 0;
+  cursor: pointer;
+  border-radius: v.$rk-radius-pill;
+  padding: 8px 17px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  transition: transform .18s;
+
+  &:hover,
+  &:focus {
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  &:focus-visible {
+    outline: 2px solid #407656;
+    outline-offset: 2px;
+  }
+}
+
+// AJUSTEMENT (demande utilisateur — retour arrière) — dégradé orange
+// standard (au lieu du dégradé vert ci-dessus), radius 12px (au lieu du
+// pill complet). Sélecteur combiné puisque les deux classes sont
+// TOUJOURS présentes ensemble en pratique (voir Dashboard::
+// render_booking_card() et booking-edit.js, aucun usage de
+// .rk-btn-rebook seule) — gagne par spécificité sur la règle .rk-btn-
+// rebook générique ci-dessus, sans avoir à la modifier directement.
+.rk-btn-rebook.rk-open-rebook-form {
+  background: linear-gradient(318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411;
+  background-blend-mode: soft-light, normal;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 12px !important;
+}
+
+// AJOUT (demande utilisateur) — note visuelle non cliquable, pour une
+// réservation confirmée dont la fenêtre 24h est expirée (ni modifiable ni
+// annulée) : "signe opposé" de .rk-btn-edit-booking (neutre/grisé, cadenas
+// plutôt que crayon), remplace un footer autrement vide.
+// AJUSTEMENT (demande utilisateur) — transformée en vraie bannière info
+// (fond bleu clair, bordure, padding généreux), même style que
+// .rk-bookings-info-banner déjà utilisée en haut de la liste des
+// réservations (voir layout/_bookings-history.scss) — remplace la
+// précédente note discrète en pied de carte. width:100% pour bien
+// remplir .rk-bc-footer (flex, justify-content:flex-end par défaut,
+// pensé pour un petit bouton — cette bannière doit occuper toute la
+// largeur disponible malgré ce contexte).
+// AJUSTEMENT (demande utilisateur — retour arrière) — style compact
+// (padding 8px au lieu de 16px/24px, taille de texte réduite à 12px),
+// largeur automatique au lieu de 100%, margin-bottom retiré.
+.rk-bc-locked-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--rk-info-bg, #EAF3FA);
+  border: 1px solid var(--rk-accent-blue);
+  border-radius: 10px;
+  padding: 8px;
+  line-height: 1.6;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--rk-accent-blue);
+  flex-wrap: nowrap;
+  font-family: v.$rk-font-family;
+  white-space: normal;
+  width: fit-content;
+}
+
+.rk-btn-cancel-booking {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  @include v.rk-sheen-primary(v.$rk-primary);
+  background-blend-mode: soft-light, normal !important;
+  color: v.$rk-white !important;
+  border: 0;
+  cursor: pointer;
+  border-radius: v.$rk-radius-md;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px, rgba(0, 0, 0, 0.15) 0px 2px 6px 2px;
+  padding: 8px 16px;
+  font-size: .8rem;
+  font-weight: 700;
+  font-family: inherit;
+  white-space: nowrap;
+  position: relative;
+  border-radius: v.$rk-radius-md !important;
+  z-index: 1;
+  pointer-events: auto;
+  transition: background .18s, color .18s, box-shadow .18s;
+
+  &:hover,
+  &:focus {
+    @include v.rk-sheen-primary(v.$rk-primary);
+    background-blend-mode: soft-light, normal !important;
+    color: v.$rk-white !important;
+    text-decoration: none !important;
+    transform: translateY(-1px);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--rk-error-text, #c92a2a);
+    outline-offset: 2px;
+  }
+}
+
+// ── Onglets du switcher de vue (حجز لقاء / اللقاءات المحجوزة) ────────────
+// Même apparence visuelle que .rk-btn-primary/.rk-btn-secondary — dupliqué
+// plutôt que partagé via une classe commune pour ne pas modifier le markup
+// HTML existant (data-rk-view reste seul attribut de comportement,
+// is-active seul attribut de style).
+.rk-booking-view-tab {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  background: var(--rk-primary-bg);
+  border: none;
+  font-size: 16px;
+  line-height: 100%;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+  white-space: nowrap;
+  background-color: v.$rk-primary-bg !important;
+  color: v.$rk-primary-light !important;
+  border-radius: v.$rk-radius-md !important;
+  margin-bottom: 5px;
+
+  svg {
+    color: var(--rk-primary-light);
+    flex-shrink: 0;
+  }
+
+  &.is-active {
+    background-color: var(--e-global-color-accent) !important;
+    background-blend-mode: soft-light, normal;
+    color: v.$rk-white !important;
+
+    svg { color: v.$rk-white; }
+  }
+
+  &:hover:not(.is-active) {
+    background: var(--rk-primary-bg);
+    color: var(--rk-primary-light);
+
+    svg { color: var(--rk-primary-light); }
+  }
+}
+
+.rk-booking-view.is-hidden {
+  display: none;
+}
+
+.rk-booking-view-switcher {
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: v.$bp-640) {
+  .rk-booking-view-switcher {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .rk-booking-view-tab {
+    flex: 0 1 auto;
+    min-width: 0;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,809 @@
+// ============================================================
+// Child Dashboard — Components  (dashboard/_components.scss)
+//
+// Toutes les cards et composants UI du dashboard rkv2 :
+//   .rkv2-card        → card de base
+//   .rkv2-map-card    → Carte d'aventure / niveaux
+//   .rkv2-skills-card → Compétences
+//   .rkv2-next-card   → Prochain cours
+//   .rkv2-goal-card   → Objectif hebdomadaire
+//   .rkv2-missions    → Liste missions
+//   .rkv2-courses     → Cours en cours
+//   .rkv2-invite      → Inviter amis
+//   .rkv2-sidebar-anim → Personnage animé
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ═══════════════════════════════════════════════════════
+// CARD BASE
+// ═══════════════════════════════════════════════════════
+
+.rkv2-card {
+  @include m.card;
+  display: flex;
+  flex-direction: column;
+}
+
+.rkv2-card-head {
+  display: flex;
+  align-items: center;
+  gap: t.$space-2;
+  margin-bottom: t.$space-4;
+
+  h2 {
+    font-size: t.$font-size-base;
+    font-weight: t.$font-weight-bold;
+    color: t.$text-primary;
+    flex: 1;
+    margin: 0;
+    line-height: 1.2;
+  }
+}
+
+.rkv2-card-emoji { font-size: 1.2rem; flex-shrink: 0; }
+
+.rkv2-chip {
+  @include m.chip;
+
+  &.green {
+    background: rgba(t.$hex-green, 0.1);
+    color: t.$hex-green;
+  }
+}
+
+.rkv2-see-all {
+  font-size: t.$font-size-xs;
+  color: var(--e-global-color-secondary, #{t.$hex-secondary});
+  font-weight: t.$font-weight-bold;
+  text-decoration: none;
+  flex-shrink: 0;
+  @include m.focus-ring;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ═══════════════════════════════════════════════════════
+// ADVENTURE MAP CARD
+// ═══════════════════════════════════════════════════════
+
+.rkv2-map-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.rkv2-map-inner {
+  position: relative;
+  padding: t.$space-4 0;
+}
+
+.rkv2-map-bg-deco {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.rkv2-map-cloud {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.15;
+  animation: rk-float 6s ease-in-out infinite;
+
+  &.c1 { top: 10%; right: 10%; animation-delay: 0s; }
+  &.c2 { top: 50%; left: 5%;  animation-delay: 2s; }
+}
+
+.rkv2-map-planet { position: absolute; top: 5%; left: 50%; font-size: 2rem; opacity: 0.12; animation: rk-spin 20s linear infinite; }
+.rkv2-map-star   { position: absolute; font-size: 1rem; opacity: 0.2; animation: rk-float 4s ease-in-out infinite; }
+.rkv2-map-star.ms1 { top: 20%; right: 20%; }
+.rkv2-map-star.ms2 { bottom: 20%; left: 20%; animation-delay: 1.5s; }
+
+.rkv2-stations-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+  padding: t.$space-4;
+  overflow-x: auto;
+  @include m.scrollable-x;
+}
+
+.rkv2-station-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: t.$space-2;
+  position: relative;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
+
+.rkv2-station-line {
+  position: absolute;
+  top: 20px;
+  right: calc(50% + 20px);
+  left: auto;
+  width: calc(100% - 40px);
+  height: 2px;
+  background: t.$border-color;
+
+  &.done { background: var(--e-global-color-primary, #{t.$hex-primary}); }
+
+  [dir="ltr"] & {
+    left: calc(50% + 20px);
+    right: auto;
+  }
+}
+
+.rkv2-station-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: t.$bg-light;
+  border: 2px solid t.$border-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  transition: border-color t.$transition-base, transform t.$transition-base;
+
+  .rkv2-station--done & {
+    background: rgba(t.$hex-primary, 0.1);
+    border-color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+
+  .rkv2-station--current & {
+    background: var(--e-global-color-primary, #{t.$hex-primary});
+    border-color: var(--e-global-color-primary, #{t.$hex-primary});
+    box-shadow: 0 0 0 6px rgba(t.$hex-primary, 0.15);
+    animation: rk-pulse 2s ease-in-out infinite;
+  }
+
+  .rkv2-station--locked & {
+    opacity: 0.4;
+  }
+}
+
+.rkv2-station-emoji { font-size: 1.2rem; }
+.rkv2-station-label {
+  font-size: 0.62rem;
+  font-weight: t.$font-weight-bold;
+  color: t.$text-muted;
+  text-align: center;
+  max-width: 60px;
+
+  .rkv2-station--current & { color: var(--e-global-color-primary, #{t.$hex-primary}); }
+}
+
+.rkv2-station-lock { position: absolute; bottom: -4px; right: -4px; font-size: 0.7rem; }
+.rkv2-station-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(t.$hex-primary, 0.3);
+  animation: rk-ripple 2s ease-out infinite;
+}
+
+// XP journey bar
+.rkv2-journey-bar-wrap { margin-top: t.$space-4; }
+.rkv2-journey-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: t.$font-size-xs;
+  color: t.$text-muted;
+  margin-bottom: t.$space-1;
+  font-weight: t.$font-weight-semibold;
+}
+.rkv2-journey-bar-bg {
+  height: 8px;
+  background: t.$bg-light;
+  border-radius: t.$border-radius-pill;
+  overflow: hidden;
+  border: 1px solid t.$border-color;
+}
+.rkv2-journey-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg,
+    var(--e-global-color-primary, #{t.$hex-primary}),
+    var(--e-global-color-secondary, #{t.$hex-secondary})
+  );
+  border-radius: t.$border-radius-pill;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Map character float
+.rkv2-map-char-float {
+  position: absolute;
+  bottom: t.$space-4;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+
+  img { animation: rk-float 3s ease-in-out infinite; }
+}
+
+.rkv2-map-char-label {
+  display: block;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  color: var(--e-global-color-primary, #{t.$hex-primary});
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 8px;
+  border-radius: t.$border-radius-pill;
+  margin-top: t.$space-1;
+}
+
+// ═══════════════════════════════════════════════════════
+// SKILLS CARD
+// ═══════════════════════════════════════════════════════
+
+.rkv2-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-3;
+}
+
+.rkv2-skill-row {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+}
+
+.rkv2-skill-emoji { font-size: 1.3rem; flex-shrink: 0; }
+
+.rkv2-skill-info { flex: 1; min-width: 0; }
+
+.rkv2-skill-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.rkv2-skill-name { font-size: t.$font-size-sm; font-weight: t.$font-weight-bold; color: t.$text-primary; }
+.rkv2-skill-pct  { font-size: t.$font-size-xs; color: t.$text-muted; font-weight: t.$font-weight-bold; }
+
+.rkv2-skill-bar-bg {
+  height: 6px;
+  background: t.$bg-light;
+  border-radius: t.$border-radius-pill;
+  overflow: hidden;
+  border: 1px solid t.$border-color;
+}
+
+.rkv2-skill-bar-fill {
+  height: 100%;
+  border-radius: t.$border-radius-pill;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// ═══════════════════════════════════════════════════════
+// NEXT CARD & GOAL CARD
+// ═══════════════════════════════════════════════════════
+
+.rkv2-next-card,
+.rkv2-goal-card {
+  // héritent de .rkv2-card
+}
+
+.rkv2-next-body {
+  display: flex;
+  gap: t.$space-4;
+  align-items: flex-start;
+
+  @include m.mobile {
+    flex-direction: column;
+  }
+}
+
+.rkv2-next-robot { flex-shrink: 0; }
+.rkv2-next-info  { flex: 1; }
+.rkv2-next-title { font-size: t.$font-size-base; font-weight: t.$font-weight-bold; margin-bottom: t.$space-2; color: t.$text-primary; }
+.rkv2-next-date  { font-size: t.$font-size-sm; color: t.$text-muted; margin-bottom: t.$space-1; }
+.rkv2-next-coach { font-size: t.$font-size-sm; color: var(--e-global-color-secondary, #{t.$hex-secondary}); font-weight: t.$font-weight-semibold; margin-bottom: t.$space-3; }
+
+.rkv2-goal-desc   { font-size: t.$font-size-base; color: t.$text-primary; margin-bottom: t.$space-2; }
+.rkv2-goal-reward { font-size: t.$font-size-sm; color: t.$hex-amber; font-weight: t.$font-weight-bold; }
+
+// ═══════════════════════════════════════════════════════
+// MISSIONS
+// ═══════════════════════════════════════════════════════
+
+.rkv2-missions-list {
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-3;
+}
+
+.rkv2-mission-item {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-3;
+  border-radius: t.$border-radius-sm;
+  border: 1px solid t.$border-color;
+  background: t.$surface;
+  transition: border-color t.$transition-fast;
+
+  &.done { opacity: 0.7; }
+
+  &.coach {
+    border-color: var(--e-global-color-secondary, #{t.$hex-secondary});
+    background: rgba(t.$hex-secondary, 0.03);
+  }
+}
+
+.rkv2-mission-check { font-size: 1.2rem; flex-shrink: 0; }
+
+.rkv2-mission-body  { flex: 1; min-width: 0; }
+
+.rkv2-mission-name  {
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-bold;
+  color: t.$text-primary;
+  margin-bottom: t.$space-2;
+  display: flex;
+  align-items: center;
+  gap: t.$space-2;
+  flex-wrap: wrap;
+}
+
+.rkv2-coach-badge {
+  font-size: 0.6rem;
+  background: rgba(t.$hex-secondary, 0.12);
+  color: var(--e-global-color-secondary, #{t.$hex-secondary});
+  padding: 1px 6px;
+  border-radius: t.$border-radius-pill;
+  font-weight: t.$font-weight-bold;
+}
+
+.rkv2-mission-bar-bg {
+  height: 5px;
+  background: t.$bg-light;
+  border-radius: t.$border-radius-pill;
+  overflow: hidden;
+}
+
+.rkv2-mission-bar-fill {
+  height: 100%;
+  background: var(--e-global-color-secondary, #{t.$hex-secondary});
+  border-radius: t.$border-radius-pill;
+  transition: width 0.6s ease;
+
+  &.done { background: t.$hex-green; }
+}
+
+.rkv2-mission-due  { font-size: t.$font-size-xs; color: t.$text-muted; display: block; margin-top: 4px; }
+.rkv2-mission-file { font-size: t.$font-size-xs; color: var(--e-global-color-secondary, #{t.$hex-secondary}); display: block; margin-top: 4px; text-decoration: none; }
+.rkv2-mission-reward { font-size: t.$font-size-xs; font-weight: t.$font-weight-bold; color: t.$hex-amber; flex-shrink: 0; }
+
+// ═══════════════════════════════════════════════════════
+// COURSES (Adventures)
+// ═══════════════════════════════════════════════════════
+
+.rkv2-courses-scroll {
+  display: flex;
+  gap: t.$space-4;
+  overflow-x: auto;
+  padding-bottom: t.$space-2;
+  @include m.scrollable-x;
+}
+
+.rkv2-course-card {
+  flex-shrink: 0;
+  width: 200px;
+  border-radius: t.$border-radius-sm;
+  border: 1px solid t.$border-color;
+  overflow: hidden;
+  background: t.$surface;
+  box-shadow: t.$shadow-card;
+  scroll-snap-align: start;
+  transition: box-shadow t.$transition-base, transform t.$transition-base;
+
+  &:hover {
+    box-shadow: t.$shadow-elevated;
+    transform: translateY(-2px);
+  }
+
+  @include m.mobile {
+    width: 170px;
+  }
+}
+
+.rkv2-course-thumb {
+  height: 110px;
+  background: t.$bg-light;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.rkv2-course-thumb-emoji { font-size: 2.5rem; }
+
+.rkv2-course-done-badge {
+  position: absolute;
+  top: t.$space-2;
+  right: t.$space-2;
+  background: t.$hex-green;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: t.$font-weight-extrabold;
+}
+
+.rkv2-course-body {
+  padding: t.$space-3;
+}
+
+.rkv2-course-title {
+  @include m.text-clamp(2);
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-bold;
+  color: t.$text-primary;
+  text-decoration: none;
+  margin-bottom: t.$space-1;
+  display: block;
+}
+
+.rkv2-course-status {
+  display: inline-block;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  padding: 2px 8px;
+  border-radius: t.$border-radius-pill;
+  margin-bottom: t.$space-2;
+
+  &.status-new         { background: rgba(t.$hex-secondary, 0.1); color: t.$hex-secondary; }
+  &.status-inprogress  { background: rgba(t.$hex-amber, 0.1);     color: t.$hex-amber; }
+  &.status-almost      { background: rgba(t.$hex-purple, 0.1);    color: t.$hex-purple; }
+  &.status-completed   { background: rgba(t.$hex-green, 0.1);     color: t.$hex-green; }
+  &.status-locked      { background: t.$bg-light;                 color: t.$text-muted; }
+}
+
+.rkv2-course-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: t.$space-2;
+  font-size: t.$font-size-xs;
+  color: t.$text-muted;
+  font-weight: t.$font-weight-semibold;
+}
+
+.rkv2-course-prog-bg {
+  flex: 1;
+  height: 5px;
+  background: t.$bg-light;
+  border-radius: t.$border-radius-pill;
+  overflow: hidden;
+}
+
+.rkv2-course-prog-fill {
+  height: 100%;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  border-radius: t.$border-radius-pill;
+  transition: width 0.6s ease;
+}
+
+.rkv2-course-lessons { font-size: t.$font-size-xs; color: t.$text-muted; margin-top: 4px; }
+
+// ═══════════════════════════════════════════════════════
+// INVITE CARD + SIDEBAR ANIM
+// ═══════════════════════════════════════════════════════
+
+.rkv2-invite-card {
+  @include m.card(t.$space-4, t.$border-radius);
+  text-align: center;
+  background: linear-gradient(135deg,
+    rgba(t.$hex-secondary, 0.08) 0%,
+    rgba(t.$hex-primary, 0.06) 100%
+  );
+  border: 1px solid rgba(t.$hex-secondary, 0.2);
+}
+
+.rkv2-invite-chars { font-size: 2.5rem; display: flex; justify-content: center; gap: t.$space-2; margin-bottom: t.$space-2; }
+.rkv2-invite-title { font-size: t.$font-size-sm; font-weight: t.$font-weight-bold; color: t.$text-primary; line-height: t.$line-height-normal; margin: 0; }
+
+.rkv2-sidebar-anim {
+  @include m.card(t.$space-5, t.$border-radius);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    rgba(t.$hex-primary, 0.04) 0%,
+    t.$surface 100%
+  );
+}
+
+.rkv2-anim-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  span {
+    position: absolute;
+    font-size: 1.2rem;
+    animation: rk-sparkle 3s ease-in-out infinite;
+    opacity: 0.6;
+  }
+
+  .sp1 { top: 10%; right: 15%; animation-delay: 0s; }
+  .sp2 { top: 20%; left: 10%; animation-delay: 0.8s; }
+  .sp3 { bottom: 30%; right: 10%; animation-delay: 1.6s; }
+  .sp4 { bottom: 15%; left: 15%; animation-delay: 0.4s; }
+}
+
+.rkv2-anim-char {
+  max-width: 180px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: rk-float 4s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+}
+
+.rkv2-anim-caption {
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-bold;
+  color: t.$text-primary;
+  margin: t.$space-3 0 t.$space-2;
+  position: relative;
+  z-index: 1;
+}
+
+.rkv2-anim-xp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: t.$space-1;
+  background: rgba(t.$hex-primary, 0.1);
+  color: var(--e-global-color-primary, #{t.$hex-primary});
+  padding: 5px 14px;
+  border-radius: t.$border-radius-pill;
+  font-weight: t.$font-weight-extrabold;
+  font-size: t.$font-size-sm;
+  position: relative;
+  z-index: 1;
+}
+
+// ═══════════════════════════════════════════════════════
+// BUTTONS (dashboard-specific)
+// ═══════════════════════════════════════════════════════
+
+.rkv2-btn-primary  { @include m.btn-primary; }
+.rkv2-btn-secondary { @include m.btn-secondary; }
+.rkv2-link-small {
+  font-size: t.$font-size-xs;
+  color: var(--e-global-color-secondary, #{t.$hex-secondary});
+  font-weight: t.$font-weight-bold;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ═══════════════════════════════════════════════════════
+// MISC SECTIONS
+// ═══════════════════════════════════════════════════════
+
+.rkv2-empty-state {
+  @include m.empty-state;
+}
+
+.rkv2-details {
+  margin-top: t.$space-3;
+  border: 1px solid t.$border-color;
+  border-radius: t.$border-radius-sm;
+  padding: t.$space-3 t.$space-4;
+
+  summary {
+    font-weight: t.$font-weight-semibold;
+    font-size: t.$font-size-sm;
+    cursor: pointer;
+    color: t.$text-muted;
+    user-select: none;
+
+    &:hover { color: t.$text-primary; }
+  }
+
+  > p { font-size: t.$font-size-sm; line-height: t.$line-height-loose; margin-top: t.$space-3; }
+}
+
+// Stars
+.rkv2-star {
+  font-size: 1rem;
+  filter: grayscale(1) opacity(0.25);
+  &.on { filter: none; }
+}
+
+.rkv2-stars { display: flex; gap: 2px; }
+
+// ═══════════════════════════════════════════════════════
+// NOTIFICATIONS DROPDOWN (topbar)
+// ═══════════════════════════════════════════════════════
+
+.rkv2-notif-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: t.$bg-light;
+  color: t.$text-muted;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background t.$transition-fast, color t.$transition-fast;
+
+  &:hover {
+    background: rgba(t.$hex-primary, 0.08);
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+}
+
+.rkv2-notif-dot {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  min-width: 17px;
+  height: 17px;
+  border-radius: t.$border-radius-pill;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-extrabold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #fff;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.rkv2-notif-panel {
+  position: absolute;
+  top: calc(100% + #{t.$space-2});
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - #{2 * t.$space-4});
+  background: t.$surface;
+  border: 1px solid t.$border-color;
+  border-radius: t.$border-radius;
+  box-shadow: t.$shadow-float;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  direction: rtl;
+
+  &[hidden] { display: none !important; }
+}
+
+.rkv2-notif-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: t.$space-3 t.$space-4;
+  border-bottom: 1px solid t.$border-color;
+  flex-shrink: 0;
+  background: t.$bg-light;
+
+  strong {
+    font-size: t.$font-size-sm;
+    font-weight: t.$font-weight-bold;
+    color: t.$text-primary;
+  }
+}
+
+.rkv2-notif-mark {
+  font-size: t.$font-size-xs;
+  color: var(--e-global-color-secondary, #{t.$hex-secondary});
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: t.$font-weight-semibold;
+  padding: 0;
+
+  &:hover { text-decoration: underline; }
+}
+
+.rkv2-notif-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 360px;
+}
+
+.rkv2-notif-loading {
+  padding: t.$space-6;
+  text-align: center;
+  font-size: t.$font-size-sm;
+  color: t.$text-muted;
+  margin: 0;
+}
+
+.rkv2-notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: t.$space-2;
+  padding: t.$space-3 t.$space-4;
+  border-bottom: 1px solid t.$border-color;
+  transition: background t.$transition-fast;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: t.$bg-light; }
+
+  > a,
+  > span {
+    flex: 1;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+
+  time {
+    display: block;
+    font-size: 0.6rem;
+    color: t.$text-muted;
+    white-space: nowrap;
+    margin-top: t.$space-1;
+  }
+}
+
+.rkv2-notif-unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.rkv2-notif-title {
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-bold;
+  color: t.$text-primary;
+  margin: 0;
+  @include m.text-ellipsis;
+}
+
+.rkv2-notif-msg {
+  font-size: t.$font-size-xs;
+  color: t.$text-muted;
+  margin: 0;
+  @include m.text-clamp(2);
+}
+
+@include m.mobile {
+  .rkv2-notif-panel {
+    width: calc(100vw - #{2 * t.$space-4});
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

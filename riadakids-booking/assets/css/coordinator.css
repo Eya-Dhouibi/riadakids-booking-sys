@@ -1,0 +1,34 @@
+/* RiadaKids — Dashboard Coordinateur (Phase 3). Couleurs de marque en hex directs. */
+.rk-coord{max-width:1100px;margin:24px auto;padding:0 16px;font-family:inherit;color:#1F2937;box-sizing:border-box}
+.rk-coord *{box-sizing:border-box}
+.rk-coord__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.rk-coord__title{margin:0;font-size:26px;color:#FF4411}
+.rk-coord__status{padding:12px 16px;border-radius:12px;background:#EAF3FB;color:#2C6FA6;margin-bottom:16px}
+.rk-coord__section{margin:0 0 28px}
+.rk-coord__section h2{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:20px}
+.rk-coord__count{display:inline-block;min-width:26px;padding:2px 8px;border-radius:999px;background:#FFEBE5;color:#FF4411;font-size:14px;text-align:center}
+.rk-coord__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.rk-coord__card{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.rk-coord__card--pending{border-top:4px solid #4C95D7}
+.rk-coord__card--new{border-top:4px solid #FF4411}
+.rk-coord__card--changes{border-top:4px solid #F59E0B}
+.rk-coord__card--coach{border-top:4px solid #10B981}
+.rk-coord__child{margin:0 0 10px;font-size:18px}
+.rk-coord__row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:14px;border-bottom:1px dashed #F0F0F0}
+.rk-coord__label{color:#6B7280;font-size:13px}
+.rk-coord__value{font-weight:600;text-align:left}
+.rk-coord__note{margin:6px 0 10px;padding:10px 12px;border-radius:10px;background:#FFF8E6;border-right:4px solid #F59E0B;white-space:pre-wrap;word-break:break-word}
+.rk-coord__wait{margin:10px 0 0;padding:6px 10px;border-radius:999px;background:#EAF3FB;color:#2C6FA6;font-size:13px;text-align:center}
+.rk-coord__empty{grid-column:1/-1;margin:0;padding:14px;border-radius:12px;background:#F9FAFB;color:#6B7280;text-align:center}
+.rk-coord__btn{margin-top:12px;padding:10px 18px;border:0;border-radius:12px;background:linear-gradient(135deg,#FF4411,#FF7A4D);color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.rk-coord__btn:disabled{opacity:.5;cursor:not-allowed}
+.rk-coord__btn--ghost{margin:0;background:#fff;color:#4C95D7;border:1px solid #4C95D7}
+.rk-coord__panel{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(17,24,39,.55)}
+.rk-coord__panel[hidden]{display:none}
+.rk-coord__panel-box{position:relative;width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:22px;border-radius:20px;background:#fff}
+.rk-coord__panel-box h3{margin:0 0 12px;font-size:20px}
+.rk-coord__panel-close{position:absolute;top:10px;left:12px;width:34px;height:34px;border:0;border-radius:50%;background:#F3F4F6;font-size:22px;line-height:1;cursor:pointer}
+.rk-coord__field{margin-top:14px}
+.rk-coord__select{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid #D1D5DB;border-radius:12px;background:#fff;font-size:15px}
+.rk-coord__soon{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:#F3F4F6;color:#4B5563;font-size:13px}
+@media (max-width:600px){.rk-coord__title{font-size:21px}.rk-coord__list{grid-template-columns:1fr}}

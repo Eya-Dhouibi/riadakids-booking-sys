@@ -1,0 +1,256 @@
+// ============================================================
+// Child Dashboard — Drawer & Bottom Nav  (dashboard/_drawer.scss)
+//
+// Burger button + mobile drawer + overlay + bottom navigation.
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Burger Button ────────────────────────────────────────────
+
+.rkv2-burger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 36px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+  @include m.focus-ring;
+
+  span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    border-radius: 3px;
+    background: t.$text-primary;
+    transition: transform t.$transition-base, opacity t.$transition-base;
+  }
+
+  &[aria-expanded="true"] {
+    span:nth-child(1) { transform: translateY(12px) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-12px) rotate(-45deg); }
+  }
+
+  @include m.below-lg { display: flex !important; }
+  @include m.mobile   { display: flex !important; }
+}
+
+// ── Drawer Overlay ───────────────────────────────────────────
+
+.rkv2-drawer-overlay {
+  @include m.overlay;
+}
+
+// ── Drawer Panel ─────────────────────────────────────────────
+
+.rkv2-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  max-width: 85vw;
+  background: t.$surface;
+  z-index: t.$z-drawer;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  padding: t.$space-4;
+  display: flex;
+  flex-direction: column;
+  gap: t.$space-1;
+
+  [dir="ltr"] & {
+    right: auto;
+    left: 0;
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  // Entrée/sortie animée
+  &[hidden] { display: none !important; }
+  &:not([hidden]) { animation: rk-slide-in-right t.$transition-base forwards; }
+}
+
+.rkv2-drawer-close {
+  align-self: flex-start;
+  background: t.$bg-light;
+  border: 1px solid t.$border-color;
+  border-radius: t.$border-radius-xs;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: t.$space-4;
+  color: t.$text-muted;
+  transition: background t.$transition-fast, color t.$transition-fast;
+  @include m.focus-ring;
+
+  &:hover {
+    background: rgba(t.$hex-primary, 0.08);
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+}
+
+// ── Profil dans le drawer ─────────────────────────────────────
+
+.rkv2-drawer-avatar {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-4 0 t.$space-4;
+  border-bottom: 1px solid t.$border-color;
+  margin-bottom: t.$space-3;
+
+  img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--e-global-color-primary, #{t.$hex-primary});
+    flex-shrink: 0;
+  }
+}
+
+.rkv2-drawer-name {
+  font-weight: t.$font-weight-bold;
+  font-size: t.$font-size-md;
+  color: t.$text-primary;
+  margin: 0 0 2px;
+}
+
+.rkv2-drawer-level {
+  font-size: t.$font-size-xs;
+  color: t.$text-muted;
+  margin: 0;
+}
+
+// ── Liens drawer ─────────────────────────────────────────────
+
+.rkv2-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: 11px t.$space-3;
+  border-radius: t.$border-radius-sm;
+  text-decoration: none;
+  color: t.$text-primary;
+  font-size: t.$font-size-base;
+  font-weight: t.$font-weight-semibold;
+  transition: background t.$transition-fast, color t.$transition-fast;
+  @include m.focus-ring;
+
+  span:first-child { font-size: 1.2rem; flex-shrink: 0; }
+
+  &:hover {
+    background: t.$bg-light;
+  }
+
+  &.active {
+    background: rgba(t.$hex-primary, 0.08);
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+
+  &.logout {
+    color: t.$hex-red;
+    margin-top: t.$space-3;
+    border-top: 1px solid t.$border-color;
+    padding-top: t.$space-4;
+
+    &:hover { background: #fee2e2; }
+  }
+}
+
+.rkv2-sidebar-badge {
+  margin-right: auto;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  color: #fff;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-extrabold;
+  padding: 1px 7px;
+  border-radius: t.$border-radius-pill;
+  min-width: 20px;
+  text-align: center;
+}
+
+// ── Bottom Navigation ─────────────────────────────────────────
+
+.rkv2-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: t.$z-topbar;
+  background: rgba(t.$surface, 0.97);
+  border-top: 1px solid t.$border-color;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+  padding: 8px t.$space-2;
+  @include m.safe-bottom(8px);
+
+  @include m.below-lg {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+.rkv2-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px t.$space-2;
+  border-radius: t.$border-radius-sm;
+  text-decoration: none;
+  color: t.$text-muted;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
+  position: relative;
+  flex: 1;
+  transition: color t.$transition-fast;
+  @include m.focus-ring;
+
+  &.active {
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+}
+
+.rkv2-bottom-nav-emoji { font-size: 1.3rem; line-height: 1; }
+
+.rkv2-nav-badge {
+  position: absolute;
+  top: 0;
+  right: calc(50% - 18px);
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  color: #fff;
+  font-size: 0.55rem;
+  font-weight: t.$font-weight-extrabold;
+  padding: 1px 5px;
+  border-radius: t.$border-radius-pill;
+  min-width: 16px;
+  text-align: center;
+  border: 1px solid #fff;
+}
+
+// ── Animations drawer ─────────────────────────────────────────
+
+@keyframes rk-slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+[dir="ltr"] {
+  @keyframes rk-slide-in-right {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+  }
+}

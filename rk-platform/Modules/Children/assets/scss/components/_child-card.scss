@@ -1,0 +1,412 @@
+// ============================================================
+// Components — Child Card  (components/_child-card.scss)
+//
+// REFONTE (demande utilisateur — "solution sass moderne ux design")
+// Nouveau design de la carte enfant (my-children endpoint) : dégradé
+// de surface subtil, avatar avec anneau d'accent, badges username/PIN
+// en pilules distinctes, bouton d'action principal avec icône, menu
+// déroulant flottant avec micro-animation d'ouverture.
+//
+// AVERTISSEMENT — ce fichier avait divergé du HTML réellement servi
+// (ancien BEM __header/__avatar/__stats, jamais recompilé depuis la
+// refonte "Simple Card" v10.0). Entièrement réécrit ici pour cibler
+// les vraies classes du template actif (templates/components/
+// child-card.php) : .rk-scard-simple-*, .rk-scard-more-*.
+//
+// Compiles to: assets/css/child-card.css (voir main-my-children.scss)
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+@use 'sass:color';
+
+// ── Container / Grille ──────────────────────────────────────
+
+.rk-children {
+  padding: t.$space-6 0;
+}
+
+.rk-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 268px);
+  justify-content: start;
+  gap: t.$space-5;
+
+  @include m.mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Hero banner (parent dashboard, page d'accueil compte) ────
+
+.rk-hero-banner {
+  @include m.gradient-primary;
+  border-radius: t.$border-radius;
+  padding: t.$space-8;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: t.$space-6;
+  margin-bottom: t.$space-6;
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  @include m.mobile {
+    flex-direction: column;
+    padding: t.$space-6 t.$space-4;
+  }
+}
+
+// ── Carte enfant — nouveau design ─────────────────────────────
+//
+// Structure réelle (voir templates/components/child-card.php) :
+//   .rk-child-card-final.rk-child-card-simple
+//     .rk-scard-more (menu déroulant عرض/تعديل/حذف)
+//     .rk-scard-simple-avatar (avatar + badge notifications)
+//     h3.rk-scard-simple-name
+//     .rk-scard-simple-login (username + PIN)
+//     .rk-scard-simple-actions (bouton dashboard)
+
+$card-radius: 18px;
+
+.rk-child-card-simple {
+  box-sizing: border-box;
+  width: 268px;
+  max-width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: t.$space-2;
+  padding: t.$space-6 t.$space-5 t.$space-5;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .9) 0%, rgba(215, 236, 250, .35) 60%, rgba(76, 149, 215, .12) 100%),
+    t.$surface;
+  border: 1px solid rgba(t.$hex-secondary, .12);
+  border-radius: $card-radius;
+  box-shadow: 0 1px 2px rgba(23, 47, 70, .08), 0 8px 24px rgba(23, 47, 70, .06);
+  transition: box-shadow t.$transition-base, transform t.$transition-base, border-color t.$transition-base;
+
+  &:hover {
+    border-color: rgba(t.$hex-primary, .25);
+    box-shadow: 0 2px 4px rgba(23, 47, 70, .1), 0 14px 32px rgba(23, 47, 70, .1);
+    transform: translateY(-3px);
+  }
+
+  @include m.touch {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// ── Menu déroulant عرض / تعديل / حذف ──────────────────────────
+
+.rk-scard-more {
+  position: absolute;
+  top: t.$space-3;
+  left: t.$space-3;
+  z-index: 2;
+
+  [dir="rtl"] & {
+    left: auto;
+    right: t.$space-3;
+  }
+}
+
+.rk-scard-more-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: rgba(255, 255, 255, .8);
+  border: 1px solid t.$border-color;
+  border-radius: t.$border-radius-xs;
+  color: t.$text-muted;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background t.$transition-fast, color t.$transition-fast, border-color t.$transition-fast;
+
+  &:hover,
+  &[aria-expanded="true"] {
+    background: rgba(t.$hex-secondary, .12);
+    border-color: rgba(t.$hex-secondary, .35);
+    color: var(--e-global-color-secondary, #{t.$hex-secondary});
+  }
+
+  @include m.focus-ring;
+}
+
+.rk-scard-more-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: t.$z-dropdown;
+  min-width: 150px;
+  margin: 0;
+  padding: t.$space-2;
+  background: t.$surface;
+  border: 1px solid t.$border-color;
+  border-radius: t.$border-radius-sm;
+  box-shadow: t.$shadow-elevated;
+  text-align: right;
+
+  // Micro-animation d'ouverture — le menu part de [hidden] (display:none)
+  // donc l'animation ne rejoue qu'à l'ouverture, jamais en boucle.
+  animation: rk-scard-menu-in .12s ease-out;
+
+  [dir="rtl"] & {
+    left: auto;
+    right: 0;
+  }
+
+  &[hidden] {
+    display: none !important;
+  }
+}
+
+@keyframes rk-scard-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rk-scard-more-item {
+  display: flex;
+  align-items: center;
+  gap: t.$space-2;
+  width: 100%;
+  padding: t.$space-2 10px;
+  border: 0;
+  background: transparent;
+  border-radius: t.$border-radius-xs;
+  font-family: inherit;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  color: #344054;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background t.$transition-fast;
+
+  &:hover {
+    background: t.$bg-light;
+  }
+
+  &--danger {
+    color: t.$hex-red;
+
+    &:hover {
+      background: rgba(t.$hex-red, .08);
+    }
+  }
+
+  svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// ── Avatar + badge notifications ──────────────────────────────
+
+.rk-scard-simple-avatar {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin-top: t.$space-1;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    // Anneau d'accent "story" au lieu d'une simple bordure pleine.
+    padding: 3px;
+    background: linear-gradient(135deg, var(--e-global-color-primary, #{t.$hex-primary}), var(--e-global-color-secondary, #{t.$hex-secondary}));
+    background-clip: padding-box, border-box;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 4.5px rgba(t.$hex-primary, .15);
+  }
+}
+
+.rk-scard-simple-badge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: t.$border-radius-pill;
+  background: var(--e-global-color-primary, #{t.$hex-primary});
+  color: #fff;
+  font-size: .7rem;
+  font-weight: t.$font-weight-extrabold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  line-height: 1;
+
+  [dir="rtl"] & {
+    left: auto;
+    right: -4px;
+  }
+}
+
+// ── Nom ─────────────────────────────────────────────────────
+
+.rk-scard-simple-name {
+  font-size: 1.08rem;
+  font-weight: t.$font-weight-extrabold;
+  color: t.$text-primary;
+  margin: t.$space-1 0 0;
+}
+
+// ── Username + PIN — pilules distinctes (nouveau design) ──────
+
+.rk-scard-simple-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: t.$space-2;
+  margin: t.$space-1 0 t.$space-2;
+}
+
+.rk-scard-simple-login-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: t.$bg-light;
+  border-radius: t.$border-radius-pill;
+  font-size: .7rem;
+  font-weight: t.$font-weight-semibold;
+  color: t.$text-muted;
+  letter-spacing: .2px;
+
+  svg {
+    flex-shrink: 0;
+    color: t.$text-muted;
+    opacity: .8;
+  }
+}
+
+// ── Action principale : accès au tableau de bord enfant ────────
+
+.rk-scard-simple-actions {
+  display: flex;
+  gap: t.$space-2;
+  width: 100%;
+  margin-top: t.$space-2;
+}
+
+.rk-action-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: t.$space-2;
+  padding: 11px t.$space-4;
+  border-radius: t.$border-radius-sm;
+  font-weight: t.$font-weight-bold;
+  font-size: .82rem;
+  text-decoration: none;
+  transition: filter t.$transition-fast, transform t.$transition-fast;
+
+  &:active {
+    transform: scale(.98);
+  }
+}
+
+.rk-action-btn--dashboard {
+  background: linear-gradient(90deg, #ff7a34, var(--e-global-color-primary, #{t.$hex-primary}));
+  box-shadow: 0 4px 14px rgba(t.$hex-primary, .3);
+  color: #fff;
+
+  &:hover {
+    filter: brightness(1.06);
+    color: #fff;
+  }
+
+  &::before {
+    // Icône flèche décorative avant le texte (cohérent avec le sens de
+    // lecture RTL) — évite de dépendre d'un SVG supplémentaire dans le
+    // HTML pour ce simple ornement.
+    content: '←';
+    font-size: .95em;
+  }
+}
+
+// AJOUT (bug signalé — "pourquoi éliminer button rapport de card") —
+// bouton "التقارير" rétabli à côté du bouton dashboard, retiré par
+// erreur lors de la réduction précédente à un seul bouton. Même style
+// clair déjà utilisé ailleurs pour ce type d'action secondaire (voir
+// child-modal-booking-style.css, .rk-btn-cancel).
+.rk-action-btn--reports {
+  background-color: t.$bg-light;
+  color: t.$text-primary;
+  border: 1px solid t.$border-color;
+
+  &:hover {
+    background: rgba(t.$hex-secondary, .06);
+    border-color: rgba(t.$hex-secondary, .3);
+    color: var(--e-global-color-secondary, #{t.$hex-secondary});
+  }
+}
+
+@include m.mobile {
+  .rk-child-card-simple,
+  .rk-child-card-add {
+    width: 100%;
+  }
+}
+
+// ── Titre de page (partagé my-children.php / usages futurs) ──
+// Aligné riadakids-booking (voir woocommerce/myaccount/my-children.php,
+// thème). Le nouvel icône SVG inline du titre est déjà stylée ici
+// (largeur/hauteur/couleur) côté thème — cette règle ne gère que
+// flex-shrink pour rester cohérente si un <img> est utilisé ailleurs.
+
+.rk-page-title-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.rk-page-title {
+  margin: 0 !important;
+  font-size: 32px;
+  font-weight: 700;
+  color: t.$text-primary;
+}
+
+.rk-page-title-icon {
+  flex-shrink: 0;
+}
+
+@include m.mobile {
+  .rk-page-title-group {
+    flex-direction: row-reverse;
+  }
+  .rk-page-title {
+    font-size: 22px;
+  }
+}

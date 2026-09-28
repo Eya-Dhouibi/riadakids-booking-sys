@@ -1,0 +1,138 @@
+// ============================================================
+// Tutor LMS — Mobile  (tutor/_mobile.scss)
+//
+// Breakpoints spécifiques à l'intégration Tutor RK.
+// Bottom nav mobile RK remplace la sidebar desktop.
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Cacher sidebar, afficher bottom nav ──────────────────────
+
+@include m.tablet {
+  .rk-nav-sidebar {
+    display: none !important;
+  }
+}
+
+// ── Bottom Nav mobile ────────────────────────────────────────
+
+.rk-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: t.$z-topbar;
+  background: t.$surface;
+  border-top: 1px solid t.$border-color;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+  padding: 8px t.$space-2;
+  @include m.safe-bottom(8px);
+
+  @include m.tablet {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+.rk-bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px t.$space-3;
+  border-radius: t.$border-radius-sm;
+  text-decoration: none;
+  color: t.$text-muted;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
+  position: relative;
+  flex: 1;
+  transition: color t.$transition-fast;
+
+  &__emoji {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  &--active {
+    color: var(--e-global-color-primary, #{t.$hex-primary});
+  }
+
+  &__badge {
+    position: absolute;
+    top: 2px;
+    right: calc(50% - 16px);
+    background: var(--e-global-color-primary, #{t.$hex-primary});
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: t.$font-weight-extrabold;
+    padding: 1px 5px;
+    border-radius: t.$border-radius-pill;
+    min-width: 16px;
+    text-align: center;
+  }
+}
+
+// ── Ajouter padding au contenu pour bottom nav ───────────────
+
+@include m.tablet {
+  .tutor-dashboard-content,
+  .rk-td-content-wrap {
+    padding-bottom: calc(#{t.$mobile-nav-height} + t.$space-6);
+  }
+}
+
+// ── Cards : stack vertical sur mobile ────────────────────────
+
+@include m.mobile {
+  .rk-quiz-stats,
+  .rk-kpi-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rk-bilan__cols {
+    grid-template-columns: 1fr;
+  }
+
+  .rk-course-card {
+    flex-direction: column;
+
+    &__thumb {
+      width: 100%;
+      min-height: 160px;
+    }
+
+    &__arrow {
+      display: none;
+    }
+  }
+}
+
+@include m.mobile-xs {
+  .rk-quiz-stats,
+  .rk-kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Safe area iOS ────────────────────────────────────────────
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .rk-bottom-nav {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+}
+
+// ── Reduce motion ────────────────────────────────────────────
+
+@include m.reduced-motion {
+  .rk-progress-bar__fill,
+  .rk-quiz-row,
+  .rk-course-card {
+    transition: none;
+  }
+}

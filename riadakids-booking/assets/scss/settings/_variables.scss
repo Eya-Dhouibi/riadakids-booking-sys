@@ -1,0 +1,116 @@
+// =============================================================================
+// SETTINGS · Variables SCSS — RiadaKids Booking
+// =============================================================================
+// Source : variables déjà en place dans l'ancien style.css (:root, ÉTAPE 18)
+// + tokens confirmés par l'audit design Figma (RiadaKids Final Designs,
+//   page Parents Dashboard, node-id 202:2431).
+//
+// Convention : chaque variable SCSS $rk-* a une variable CSS --rk-* miroir
+// générée dans _root.scss (base/), pour que le JS ou tout code externe qui
+// lirait déjà une custom property --rk-* continue de fonctionner sans
+// changement (aucun sélecteur ni comportement n'est modifié ici).
+// =============================================================================
+
+// ── Couleurs de marque ───────────────────────────────────────────────────
+$rk-primary:        #FF4411; // orange/rouge d'action principale — boutons, accents
+$rk-primary-light:  #FF6E46;
+$rk-primary-bg:     #FFEBE5; // fond très clair sur base primaire (badges, hover léger)
+
+// ── Couleurs de texte ────────────────────────────────────────────────────
+$rk-text-heading:   #295177; // titres H1/H2, texte des icônes actives
+$rk-text-muted:     #5A7997; // texte secondaire / description
+$rk-text-faint:     #8BA1B7; // icônes/libellés inactifs (stepper)
+
+// ── Couleurs neutres / structure ─────────────────────────────────────────
+$rk-border:         #D7ECFA; // bordures de cartes, séparateurs, piste stepper
+$rk-bg-page:        #f0f4ff; // fond bleu très clair de page
+$rk-white:          #FFFFFF; // cartes blanches
+$rk-accent-blue:    #4C95D7; // bleu secondaire (liens, icônes actives, bordure toast)
+
+// ── Couleurs sémantiques ─────────────────────────────────────────────────
+$rk-success-bg:     #d3f9d8;
+$rk-success-text:   #2b8a3e;
+$rk-error-bg:       #ffe3e3;
+$rk-error-border:   #ffc9c9;
+$rk-error-text:     #c92a2a;
+$rk-warning-bg:     #fff3bf;
+$rk-info-bg:        #EAF3FA; // fond toast info (confirmé Figma — remplace #f0f4ff, doublon avec rk-bg-page)
+$rk-info-text:      #3b5bdb;
+$rk-info-border:    $rk-accent-blue; // bordure toast (#4C95D7)
+
+// ── Ombres — base commune ────────────────────────────────────────────────
+// Audit Figma : TOUTES les ombres du fichier utilisent la même teinte de
+// base bleu-nuit #172F46, à l'exception du bouton primaire qui utilisait du
+// noir pur — incohérence corrigée ici (voir _buttons.scss, décision projet
+// : harmoniser sur #172F46 partout).
+$rk-shadow-base:     #172F46;
+$rk-overlay-color:   rgba($rk-shadow-base, .5); // voile de fond des modales (spec Figma 50%)
+
+// ── Rayons ────────────────────────────────────────────────────────────────
+// Incohérence Figma tranchée (radius carte 12px vs 15px selon écran) :
+// valeur unique retenue = 12px partout où l'ancien CSS utilisait 15px pour
+// des cartes de contenu (carte parcours/session/avatar), pour rester
+// cohérent avec l'écran "Programme" et le composant .rk-btn-primary déjà
+// en 12px. $rk-radius-lg (16px) reste réservé aux modales, inchangé.
+$rk-radius-sm:       8px;   // boutons standards .rk-btn
+$rk-radius-md:       12px;  // boutons primaire/secondaire, cartes de contenu (unifié, ex 12/15px)
+$rk-radius-lg:       16px;  // cartes de dialogue / modale (popup succès)
+$rk-radius-pill:     999px; // badges pleinement arrondis
+
+// ── Typographie ───────────────────────────────────────────────────────────
+$rk-font-family:     'Alexandria', inherit; // police unique confirmée par l'audit Figma
+
+$rk-fs-h1:           32px; // H1 page — جدول اللقاءات
+$rk-fs-h2-banner:    28px; // H2 bannière hero
+$rk-fs-h2-section:   24px; // H2 section — question au-dessus des cartes
+$rk-fs-h2-modal:     24px; // H2 modale succès
+$rk-fs-body-banner:  20px; // corps bannière
+$rk-fs-body-modal:   16px; // corps modale
+$rk-fs-btn-label:    16px; // libellé bouton primaire/secondaire
+$rk-fs-list-row:     16px; // ligne de liste sélectionnable
+$rk-fs-card-title:   14px; // titre carte programme/parcours
+$rk-fs-step-active:  16px; // libellé actif du stepper
+$rk-fs-step-num:     10.8px; // "الخطوة X"
+$rk-fs-card-desc:    12px; // description sous titre de carte
+
+// ── Espacements structurels (repris de l'audit) ──────────────────────────
+$rk-gap-section:     48px;  // marge/gap entre sections d'écran
+$rk-sidebar-width:   274px;
+
+$rk-btn-pad-h:       12px;
+$rk-btn-pad-v:       8px;
+$rk-btn-icon-gap:    8px;
+
+$rk-card-radius-legacy-alt: 15px; // valeur historique (voir note radius ci-dessus) — conservée en commentaire de référence, non utilisée après unification
+
+$rk-listrow-pad:     16px;
+$rk-listrow-gap:     16px;
+$rk-listrow-border-rest: 1px;
+$rk-listrow-border-selected: 3px;
+
+$rk-slot-pad-h:      80px;
+$rk-slot-pad-v:      16px;
+
+$rk-cal-container:   288px;
+$rk-cal-cell-w:      38px;
+$rk-cal-cell-h:      36px;
+$rk-cal-cell-radius: 6px;
+
+$rk-step-circle:     50.4px;
+$rk-step-track:      5.4px;
+
+$rk-toast-radius:    12px;
+$rk-toast-pad-v:     20px;
+$rk-toast-pad-h:     24px;
+
+$rk-modal-max-width: 512px;
+$rk-modal-radius:    $rk-radius-lg;
+
+// ── Breakpoints (repris tels quels des @media existants) ────────────────
+$bp-1024: 1024px;
+$bp-900:  900px;
+$bp-768:  768px;
+$bp-640:  640px;
+$bp-600:  600px;
+$bp-480:  480px;
+$bp-420:  420px;

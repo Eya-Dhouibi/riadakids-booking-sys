@@ -1,0 +1,363 @@
+// =============================================================================
+// COMPONENTS · Cartes de sélection (programme / parcours / séance)
+// =============================================================================
+// Regroupe .rk-program-card (écran 1 — البرنامج), .rk-course-card (écran 2 —
+// الدورة) et .rk-session-card (écran 3 — اللقاء), qui partagent la même
+// logique visuelle (image + bandeau texte OU icône + libellé, bordure de
+// sélection, ombre à deux états).
+//
+// Incohérence corrigée (validée) : radius unifié à 12px partout
+// ($rk-radius-md) — l'ancien CSS utilisait 15px sur les cartes
+// parcours/avatar (voir settings/_variables.scss, note radius).
+// =============================================================================
+@use '../settings' as v;
+
+// ── Carte générique (fond blanc, ombre douce) ────────────────────────────
+.rk-card {
+  h3 {
+    margin: 0 0 18px 0;
+    font-size: v.$rk-fs-h2-section;
+    color: var(--rk-text-heading);
+    font-weight: 700;
+  }
+}
+.rk-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 40px auto;
+}
+.rk-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+// ── Écran 1 — Programme (البرنامج) : grille de 4 cartes-image ────────────
+.rk-program-heading {
+  margin: 0 0 6px !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--rk-text-heading);
+  text-align: center;
+}
+.rk-program-subheading {
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: var(--rk-text-muted);
+  text-align: center;
+}
+.rk-program-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.rk-program-card.rk-program-card {
+  border: none;
+  border-radius: v.$rk-radius-md;
+  background-color: v.$rk-white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  @include v.rk-shadow-card-rest;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow .2s ease, transform .15s ease;
+
+  &:hover {
+    @include v.rk-shadow-card-hover;
+    transform: translateY(-2px);
+  }
+}
+.rk-program-card:has(input[type="radio"]:checked),
+.rk-program-card.rk-selected-card {
+  box-shadow: 0px 0px 0px 3px var(--rk-primary), 0px 3.81px 11.43px 3.81px rgba(23, 47, 70, 0.1);
+}
+
+// Badge icône — absolute en haut à gauche de la card (RTL), au-dessus de
+// l'image de fond, comme dans la maquette Figma.
+.rk-program-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: v.$rk-radius-md;
+  padding: 12px;
+  background: var(--rk-border);
+  color: var(--rk-text-heading);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  img {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+}
+.rk-program-media img {
+  width: 100%;
+  height: 163px;
+  object-fit: cover;
+  object-position: top;
+}
+// Bandeau texte blanc en bas de la card, au-dessus de l'image de fond.
+.rk-program-content.rk-program-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  padding: 16px;
+  background: v.$rk-white;
+  position: relative;
+  z-index: 1;
+}
+.rk-program-text {
+  width: 100%;
+  text-align: right;
+}
+.rk-program-content .rk-program-text strong {
+  display: block;
+  font-family: v.$rk-font-family;
+  font-weight: 700;
+  font-size: v.$rk-fs-card-title;
+  line-height: 17px;
+  color: var(--rk-text-heading);
+  margin-bottom: 8px;
+}
+.rk-program-content .rk-program-text small {
+  @include v.rk-line-clamp(3);
+  font-family: v.$rk-font-family;
+  font-weight: 400;
+  font-size: v.$rk-fs-card-desc;
+  line-height: 140%;
+  color: var(--rk-text-muted);
+}
+
+@media (max-width: v.$bp-1024) {
+  .rk-program-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: v.$bp-640) {
+  .rk-program-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .rk-program-heading { font-size: 19px !important; }
+  .rk-program-card.rk-program-card { min-height: 200px; }
+  .rk-program-badge {
+    width: 32px;
+    height: 32px;
+    img { width: 16px; height: 16px; }
+  }
+}
+
+// Variante compacte réutilisée ailleurs (taille réduite, second passage
+// historique dans le fichier source — conservée pour compat visuelle)
+.rk-program-media img {
+  width: 100%;
+  height: 121px;
+}
+.rk-program-content .rk-program-text strong { font-size: 12px; }
+.rk-program-content .rk-program-text small { font-size: 10px; }
+
+// ── Écran 2 — Parcours / Dورة : grille de 3 cartes + badge catégorie ─────
+.rk-course-heading {
+  margin: 0 0 6px !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--rk-text-heading);
+  text-align: center;
+}
+.rk-course-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.rk-course-card.rk-course-card {
+  border: none;
+  border-radius: v.$rk-radius-md; // unifié (était 15px)
+  background-color: v.$rk-white;
+  overflow: hidden;
+  position: relative;
+  @include v.rk-shadow-card-rest;
+  transition: box-shadow .2s ease, transform .15s ease;
+
+  &:hover {
+    @include v.rk-shadow-card-hover;
+    transform: translateY(-2px);
+  }
+}
+.rk-course-card:has(input[type="radio"]:checked),
+.rk-course-card.rk-selected-card {
+  box-shadow: 0px 0px 0px 3px var(--rk-primary), 0px 3.81px 11.43px 3.81px rgba(23, 47, 70, 0.1);
+}
+.rk-course-media {
+  position: relative;
+}
+.rk-course-photo {
+  width: 100%;
+  height: 163px;
+  object-fit: cover;
+}
+
+// AJUSTEMENT (demande utilisateur) — photo réduite à 140px sur les cartes
+// de l'historique (لقاءاتي القادمة) uniquement : scopé à .rk-booking-card
+// pour ne pas affecter .rk-course-photo à l'écran 2 du wizard (choix de
+// la دورة), qui garde 163px.
+.rk-booking-card .rk-course-photo {
+  height: 140px;
+}
+
+// ── Badge de statut (écran لقاءاتي القادمة, design Figma) ─────────────────
+// Pastille superposée en haut à gauche (RTL) de l'image : مؤكد ✓ (vert) ou
+// ملغى ⊘ (rouge). Voir Dashboard::render_booking_card() pour la logique de
+// choix du statut affiché.
+.rk-course-status-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1;
+
+  &.is-confirmed {
+    // AJUSTEMENT (demande utilisateur, specs Figma exactes) — dégradé vert
+    // + sheen (même famille visuelle que .rk-btn-rebook, components/
+    // _buttons.scss), radius pleinement arrondi, padding/taille Figma.
+    background: linear-gradient(318.96deg, #B3E8C8 -1.9%, rgba(208, 240, 220, 0) 17.34%, #EBF9F1 87.36%), #79D8A0;
+    background-blend-mode: soft-light, normal;
+    box-shadow: 0px 1.40625px 2.8125px rgba(0, 0, 0, .3), 0px 2.8125px 8.4375px 2.8125px rgba(0, 0, 0, .15);
+    border-radius: v.$rk-radius-pill;
+    color: #407656;
+    font-family: v.$rk-font-family;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+  }
+  &.is-cancelled {
+    background: var(--rk-error-bg);
+    color: var(--rk-error-text);
+    border-radius: v.$rk-radius-pill;
+    font-family: v.$rk-font-family;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+}
+
+// ── Icône de catégorie flottante (design Figma) ────────────────────────────
+// Petit cercle en haut à droite (RTL) de l'image, même icône que le badge
+// de programme du wizard (voir Icons::program_icon_name()).
+.rk-course-category-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  // AJUSTEMENT (demande utilisateur, specs Figma exactes) — dégradé bleu
+  // pâle (même famille visuelle que .rk-summary-card__icon, screens/
+  // _confirmation.scss), radius Figma (~12px plutôt que cercle plein).
+  background: linear-gradient(134.42deg, rgba(215, 236, 250, 0.2) 0.5%, rgba(76, 149, 215, 0.2) 99.5%), var(--rk-border);
+  box-shadow: 0px 1.00018px 2.00036px rgba(v.$rk-shadow-base, .25), 0px 2.00036px 6.00107px 2.00036px rgba(v.$rk-shadow-base, .05);
+  border-radius: 12.0021px;
+  color: var(--rk-text-heading);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rk-course-content.rk-course-content {
+  padding: 16px;
+  background: v.$rk-white;
+}
+.rk-course-text {
+  width: 100%;
+  text-align: right;
+}
+// Badge catégorie — en flux normal, au-dessus du titre (texte orange seul,
+// sans fond visible — confirmé par l'audit Figma).
+.rk-course-badge {
+  display: block;
+  font-family: v.$rk-font-family;
+  font-weight: 600;
+  font-size: 11px;
+  color: v.$rk-primary;
+  margin-bottom: 4px;
+}
+.rk-course-content .rk-course-text strong {
+  display: block;
+  font-family: v.$rk-font-family;
+  font-weight: 700;
+  font-size: v.$rk-fs-card-title;
+  line-height: 17px;
+  color: var(--rk-text-heading);
+  margin-bottom: 8px;
+}
+.rk-course-content .rk-course-text small {
+  @include v.rk-line-clamp(3);
+  font-family: v.$rk-font-family;
+  font-weight: 400;
+  font-size: v.$rk-fs-card-desc;
+  line-height: 140%;
+  color: var(--rk-text-muted);
+}
+
+// AJUSTEMENT (demande utilisateur, specs Figma exactes) — titre du cours
+// sur la carte de l'historique (لقاءاتي القادمة) uniquement : scopé à
+// .rk-booking-card pour ne pas affecter la règle générique ci-dessus,
+// utilisée aussi à l'écran 2 du wizard.
+.rk-booking-card .rk-course-content .rk-course-text strong {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  margin-bottom: 8px;
+  color: #5A7997;
+}
+// Nom de séance — remplace l'ancien "اللقاء: <strong>" (préfixe retiré,
+// voir Dashboard::render_booking_card()) par un simple <p class="rk-bc-sub">.
+.rk-booking-card .rk-bc-sub {
+  display: block;
+  font-family: v.$rk-font-family;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--rk-text-heading);
+  margin: 0 0 8px;
+  text-align: right;
+}
+
+// ── Avatar coach (remplace l'icône silhouette générique — design Figma) ──
+.rk-bc-coach {
+  .rk-bc-coach-avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: v.$bp-640) {
+  .rk-course-list { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+
+// ── Écran 3 — Séance / اللقاء : lignes de liste (icône + libellé) ────────
+// Voir components/_list-rows.scss pour .rk-session-card (liste, pas image).
+.rk-session-heading {
+  margin: 0 0 6px !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--rk-text-heading);
+  text-align: center;
+}

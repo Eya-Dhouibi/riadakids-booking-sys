@@ -1,0 +1,131 @@
+// ============================================================
+// RiadaKids — Design Tokens  (_tokens.scss)
+//
+// SOURCE DE VÉRITÉ UNIQUE pour toutes les variables CSS.
+// Couleurs : toujours var(--e-global-color-*) Elementor.
+// Aucun alias --rk-* pour les couleurs → règle projet.
+//
+// Utilisé par : tous les partials SCSS via @use 'tokens'.
+// Compilé dans : main-*.scss → assets/css/
+// ============================================================
+
+// ── Elementor Global Colors (fallbacks hex obligatoires) ─────
+// Ces variables sont définies par Elementor dans <head>.
+// Les fallbacks garantissent le rendu sans Elementor actif.
+
+$color-primary:   var(--e-global-color-primary,   #FF4411);
+$color-secondary: var(--e-global-color-secondary, #4C95D7);
+$color-text:      var(--e-global-color-text,       #1a2540);
+$color-accent:    var(--e-global-color-accent,     #FF4411);
+
+// Valeurs hex brutes (pour calculs SASS, opacité inline, etc.)
+$hex-primary:   #FF4411;
+$hex-secondary: #4C95D7;
+$hex-text:      #1a2540;
+$hex-amber:     #D97706;
+$hex-green:     #059669;
+$hex-red:       #dc2626;
+$hex-purple:    #7C3AED;
+
+// ── Surface & Background ─────────────────────────────────────
+$surface:         #ffffff;
+$bg-body:         #EEF3FF;
+$bg-light:        #f8fafc;
+$bg-muted:        #f1f5f9;
+
+// ── Text ─────────────────────────────────────────────────────
+$text-primary:    #1a2540;
+$text-muted:      #64748b;
+$text-inverse:    #ffffff;
+
+// ── Border ───────────────────────────────────────────────────
+$border-color:    #e2e8f0;
+$border-radius:   16px;
+$border-radius-sm: 10px;
+$border-radius-xs: 6px;
+$border-radius-pill: 999px;
+
+// ── Shadows ──────────────────────────────────────────────────
+$shadow-card:     0 2px 16px rgba(0, 0, 0, 0.07);
+$shadow-elevated: 0 4px 24px rgba(0, 0, 0, 0.10);
+$shadow-float:    0 8px 32px rgba(0, 0, 0, 0.15);
+
+// ── Spacing (8-point grid) ───────────────────────────────────
+$space-1:   4px;
+$space-2:   8px;
+$space-3:   12px;
+$space-4:   16px;
+$space-5:   20px;
+$space-6:   24px;
+$space-8:   32px;
+$space-10:  40px;
+$space-12:  48px;
+$space-16:  64px;
+
+// ── Typography ───────────────────────────────────────────────
+$font-family:     var(--e-global-typography-primary-font-family, 'Cairo', 'Tajawal', sans-serif);
+$font-size-xs:    0.65rem;
+$font-size-sm:    0.75rem;
+$font-size-base:  0.875rem;
+$font-size-md:    1rem;
+$font-size-lg:    1.1rem;
+$font-size-xl:    1.25rem;
+$font-size-2xl:   1.5rem;
+$font-size-3xl:   2rem;
+
+$font-weight-normal:    400;
+$font-weight-semibold:  600;
+$font-weight-bold:      700;
+$font-weight-extrabold: 800;
+
+$line-height-tight:  1.2;
+$line-height-normal: 1.5;
+$line-height-loose:  1.7;
+
+// ── Breakpoints ──────────────────────────────────────────────
+$bp-xs:   380px;   // Très petits téléphones
+$bp-sm:   640px;   // Mobile standard
+$bp-md:   768px;   // Tablette portrait
+$bp-lg:   900px;   // Tablette paysage / petit desktop
+$bp-xl:   1200px;  // Desktop
+$bp-2xl:  1400px;  // Grand écran
+
+// ── Layout Tutor LMS ─────────────────────────────────────────
+$tutor-sidebar-w:     260px;
+$tutor-sidebar-w-lg:  240px;
+$mobile-nav-height:   68px;
+
+// ── Z-index Scale ────────────────────────────────────────────
+$z-dropdown:   100;
+$z-topbar:     200;
+$z-overlay:    290;
+$z-drawer:     300;
+$z-modal:      500;
+$z-toast:      600;
+$z-float-btn:  150;
+
+// ── Transitions ──────────────────────────────────────────────
+$transition-fast:   0.15s ease;
+$transition-base:   0.25s ease;
+$transition-slow:   0.4s ease;
+
+// ── CSS Custom Properties (injectées dans :root via main-*.scss)
+// Uniquement les tokens structurels — pas de couleurs aliases.
+:root {
+  --rk-surface:      #{$surface};
+  --rk-bg:           #{$bg-light};
+  --rk-bg-body:      #{$bg-body};
+  --rk-muted:        #{$text-muted};
+  --rk-border:       #{$border-color};
+  --rk-radius:       #{$border-radius};
+  --rk-radius-sm:    #{$border-radius-sm};
+  --rk-shadow:       #{$shadow-card};
+  --rk-shadow-lg:    #{$shadow-elevated};
+  --rk-font:         #{$font-family};
+  --rk-text:         #{$text-primary};
+  --rk-amber:        #{$hex-amber};
+  --rk-green:        #{$hex-green};
+  --rk-purple:       #{$hex-purple};
+  --rk-mobile-nav-h: #{$mobile-nav-height};
+  --rk-transition:   #{$transition-base};
+}

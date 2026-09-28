@@ -1,0 +1,1104 @@
+/* ═══════════════════════════════════════════════════════════
+   RiadaKids — التقارير الشهرية v2  (parent WC dashboard)
+   ═══════════════════════════════════════════════════════════ */
+
+.rp-wrap {
+    --rp-blue:         #4C95D7;
+    --rp-blue-dk:      #1B4F8C;
+    --rp-blue-md:      #81B5E3;
+    --rp-blue-lt:      #D7ECFA;
+    --rp-blue-xl:      #EDF4FB;
+    --rp-orange:       #FF4411;
+    --rp-orange-lt:    #FFECE7;
+    --rp-orange-xl:    #FFF5F3;
+    --rp-green:        #79D8A0;
+    --rp-green-lt:     #e4f9ee;
+    --rp-yellow:       #FFE680;
+    --rp-yellow-lt:    #fffae8;
+    --rp-ink:          #0D1A2D;
+    --rp-body:         #334155;
+    --rp-muted:        #7A8FA6;
+    --rp-border:       #D7ECFA;
+    --rp-surface:      #FFFFFF;
+    --rp-bg:           #F2F7FC;
+    --rp-r:            14px;
+    --rp-r-sm:         8px;
+    --rp-shadow:       0 4px 24px rgba(27,79,140,.10), 0 1px 4px rgba(27,79,140,.06);
+
+    direction: rtl;
+    color: var(--rp-body);
+    padding: 4px 0 32px;
+}
+
+/* ── Fil d'Ariane (demande utilisateur) ────────────────────── */
+.rp-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: .82rem;
+    color: var(--rp-muted);
+}
+.rp-breadcrumb a {
+    color: var(--rp-muted);
+    text-decoration: none;
+    transition: color .14s;
+}
+.rp-breadcrumb a:hover { color: var(--rp-blue); }
+.rp-breadcrumb__sep { color: var(--rp-muted); opacity: .6; }
+.rp-breadcrumb__current { color: var(--rp-ink); font-weight: 700; }
+
+/* ── Ligne de filtres : enfant (dropdown) + برنامج, en flex ─── */
+.rp-filters-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* ── Sélecteur enfant (AJUSTEMENT — dropdown au lieu d'onglets) ── */
+.rp-child-filter {
+    flex-shrink: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.rp-visually-hidden {
+    position: relative;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475467;
+    margin-left: 12px;
+}
+#rp-child-select {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(
+        318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+        no-repeat left 14px center;
+    background-blend-mode: soft-light, normal, normal;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    color: #FFFFFF !important;
+    border-radius: 12px !important;
+    border: 0;
+    cursor: pointer;
+    padding: 14px 40px 14px 14px !important;
+    font-size: 0.8rem;
+    font-weight: 400;
+    font-family: inherit;
+    transition: background 0.15s ease;
+}
+#rp-child-select:hover,
+#rp-child-select:focus {
+    outline: none;
+}
+
+/* ── Report card shell ──────────────────────────────────── */
+.rp-card {
+    background: var(--rp-surface);
+    border-radius: var(--rp-r);
+    box-shadow: var(--rp-shadow);
+    overflow: hidden;
+    margin-top: 28px;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.rp-header {
+    background: linear-gradient(130deg, var(--rp-blue-dk) 0%, var(--rp-blue) 55%, var(--rp-blue-md) 100%);
+    padding: 26px 28px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.rp-header-child {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.rp-header-avatar {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2.5px solid rgba(255,255,255,.35);
+    flex-shrink: 0;
+}
+.rp-header-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 2px;
+    line-height: 1.2;
+    text-wrap: balance;
+}
+.rp-header-sub {
+    font-size: .78rem;
+    color: rgba(255,255,255,.65);
+    font-weight: 500;
+    margin: 0;
+}
+.rp-header-brand {
+    font-size: .66rem;
+    font-weight: 700;
+    color: rgba(255,255,255,.4);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+.rp-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.rp-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: var(--rp-r-sm);
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background .13s;
+}
+.rp-nav-btn:hover { background: rgba(255,255,255,.26); color: #fff; }
+.rp-period-pill {
+    font-size: .85rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
+}
+.rp-print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 15px;
+    border-radius: var(--rp-r-sm);
+    background: var(--rp-orange);
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity .13s;
+    white-space: nowrap;
+}
+.rp-print-btn:hover { opacity: .86; color: #fff; }
+
+/* ── KPI strip ──────────────────────────────────────────── */
+.rp-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1.5px solid var(--rp-border);
+}
+.rp-kpi {
+    padding: 18px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 1px solid var(--rp-border);
+    position: relative;
+}
+.rp-kpi:last-child { border-left: none; }
+.rp-kpi::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; left: 0;
+    height: 3px;
+    background: var(--kc, var(--rp-blue));
+    opacity: .9;
+}
+.rp-kpi-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--kb, var(--rp-blue-xl));
+    color: var(--kc, var(--rp-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.rp-kpi-val {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--rp-ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+.rp-kpi-lbl {
+    font-size: .7rem;
+    color: var(--rp-muted);
+    font-weight: 600;
+    margin-top: 3px;
+    letter-spacing: .02em;
+}
+
+/* ── Body ───────────────────────────────────────────────── */
+.rp-body {
+    padding: 26px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+/* ── Section ────────────────────────────────────────────── */
+.rp-section {}
+.rp-section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.rp-section-accent {
+    width: 4px; height: 20px;
+    border-radius: 2px;
+    background: var(--rp-blue);
+    flex-shrink: 0;
+}
+.rp-section-title {
+    font-size: .92rem;
+    font-weight: 800;
+    color: var(--rp-ink);
+    margin: 0;
+}
+.rp-section-divider {
+    flex: 1;
+    height: 1px;
+    background: var(--rp-border);
+}
+
+/* ── Table ──────────────────────────────────────────────── */
+.rp-tscroll { overflow-x: auto; border-radius: var(--rp-r-sm); border: 1px solid var(--rp-border); }
+.rp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+    font-variant-numeric: tabular-nums;
+}
+.rp-table th {
+    background: var(--rp-blue-xl);
+    color: var(--rp-muted);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    text-align: right;
+    border-bottom: 1.5px solid var(--rp-border);
+    white-space: nowrap;
+}
+.rp-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #eef4fb;
+    color: var(--rp-body);
+    vertical-align: middle;
+}
+.rp-table tbody tr:last-child td { border-bottom: none; }
+.rp-table tbody tr:nth-child(even) td { background: #f7fbff; }
+.rp-table tbody tr:hover td { background: var(--rp-blue-xl); transition: background .1s; }
+.rp-table .rp-empty td {
+    text-align: center;
+    color: var(--rp-muted);
+    padding: 22px;
+    font-size: .84rem;
+}
+
+/* ── Badges ─────────────────────────────────────────────── */
+.rp-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: .7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.rp-badge-present { background: var(--rp-green-lt);  color: #166534; }
+.rp-badge-absent  { background: var(--rp-orange-lt); color: var(--rp-orange); }
+.rp-badge-late    { background: var(--rp-yellow-lt); color: #7a5c00; }
+.rp-badge-none    { background: var(--rp-blue-xl);   color: var(--rp-muted); }
+
+.rp-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: .76rem;
+    font-weight: 700;
+}
+.rp-score-hi { background: var(--rp-green-lt);  color: #166534; }
+.rp-score-md { background: var(--rp-yellow-lt); color: #7a5c00; }
+.rp-score-lo { background: var(--rp-orange-lt); color: var(--rp-orange); }
+
+/* ── Skills ─────────────────────────────────────────────── */
+.rp-skills { display: flex; flex-direction: column; gap: 10px; }
+.rp-skill {
+    display: grid;
+    grid-template-columns: 130px 1fr 38px;
+    align-items: center;
+    gap: 12px;
+}
+.rp-skill-name {
+    font-size: .81rem;
+    font-weight: 700;
+    color: var(--rp-body);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.rp-skill-track {
+    height: 7px;
+    background: var(--rp-blue-lt);
+    border-radius: 999px;
+    overflow: hidden;
+}
+.rp-skill-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--rp-blue-dk), var(--rp-blue));
+}
+.rp-skill-pct {
+    font-size: .73rem;
+    font-weight: 800;
+    color: var(--rp-blue);
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Coach eval ─────────────────────────────────────────── */
+.rp-eval {
+    background: var(--rp-blue-xl);
+    border-radius: var(--rp-r-sm);
+    border-right: 4px solid var(--rp-blue);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.rp-eval-stars { display: flex; gap: 3px; }
+.rp-eval-text {
+    font-size: .87rem;
+    line-height: 1.75;
+    color: var(--rp-body);
+    margin: 0;
+}
+.rp-eval-group { font-size: .83rem; color: var(--rp-body); }
+.rp-eval-group-label {
+    display: block;
+    font-size: .68rem;
+    font-weight: 700;
+    color: var(--rp-muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+.rp-eval-group ul {
+    margin: 0; padding-right: 18px;
+}
+.rp-eval-group li { margin-bottom: 3px; }
+.rp-eval-remark {
+    background: #fff;
+    border-radius: 6px;
+    padding: 13px 15px;
+    border: 1px solid var(--rp-blue-lt);
+    font-size: .85rem;
+    color: var(--rp-body);
+    line-height: 1.65;
+}
+.rp-eval-remark .rp-eval-group-label { margin-bottom: 6px; }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.rp-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 28px;
+    background: var(--rp-blue-xl);
+    border-top: 1.5px solid var(--rp-border);
+    font-size: .7rem;
+    color: var(--rp-muted);
+    font-weight: 600;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.rp-footer-logo { font-weight: 900; color: var(--rp-blue); font-size: .78rem; }
+
+/* ── Print ──────────────────────────────────────────────── */
+@media print {
+    .rp-child-filter, .rp-header-controls { display: none !important; }
+    .rp-card { box-shadow: none !important; }
+    .rp-header {
+        background: var(--rp-blue-dk) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .rp-kpi::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+    .rp-kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .rp-kpi:nth-child(2) { border-left: none; }
+    .rp-kpi:nth-child(3),
+    .rp-kpi:nth-child(4) { border-top: 1px solid var(--rp-border); }
+    .rp-body { padding: 18px 16px; gap: 20px; }
+    .rp-header { padding: 20px 16px 18px; }
+    .rp-footer { padding: 12px 16px; }
+    .rp-skill { grid-template-columns: 100px 1fr 34px; }
+}
+@media (max-width: 420px) {
+    .rp-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .rp-header-controls { flex-wrap: wrap; }
+    .rp-kpi-val { font-size: 1.3rem; }
+    .rp-kpi { padding: 14px 12px; gap: 9px; }
+    .rp-table th, .rp-table td { padding: 8px 10px; }
+}
+
+/* ── Sessions table → cards on mobile ──────────────────────────────── */
+@media (max-width: 680px) {
+    .rp-tscroll--sessions {
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+    }
+    .rp-sessions-tbl thead { display: none; }
+    .rp-sessions-tbl,
+    .rp-sessions-tbl tbody,
+    .rp-sessions-tbl tr { display: block; }
+    .rp-sessions-tbl tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .rp-sessions-tbl tr:not(.rp-empty) {
+        border: 1.5px solid var(--rp-border);
+        border-inline-end: 3px solid var(--rp-blue-lt);
+        border-radius: var(--rp-r-sm);
+        padding: 12px 14px;
+        background: var(--rp-surface);
+        box-shadow: 0 1px 4px rgba(27,79,140,.07);
+    }
+    .rp-sessions-tbl tr.rp-session-row--present { border-inline-end-color: var(--rp-green); }
+    .rp-sessions-tbl tr.rp-session-row--absent  { border-inline-end-color: var(--rp-orange); }
+    .rp-sessions-tbl tr.rp-session-row--late    { border-inline-end-color: var(--rp-yellow); }
+    .rp-sessions-tbl tr:nth-child(even) td { background: transparent; }
+    .rp-sessions-tbl tr:hover td { background: transparent; }
+
+    .rp-sessions-tbl td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        border-bottom: none;
+        font-size: .83rem;
+        gap: 8px;
+    }
+    .rp-sessions-tbl td::before {
+        content: attr(data-label);
+        font-size: .68rem;
+        font-weight: 700;
+        color: var(--rp-muted);
+        letter-spacing: .04em;
+        flex-shrink: 0;
+        min-width: 52px;
+    }
+    /* Date cell = card header — bold, no label, bottom divider */
+    .rp-sessions-tbl td[data-label="التاريخ"] {
+        font-weight: 800;
+        font-size: .93rem;
+        color: var(--rp-ink);
+        padding-bottom: 10px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid var(--rp-border);
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    .rp-sessions-tbl td[data-label="التاريخ"]::before { content: none; }
+    /* Time slot displayed inline next to date using a subtle separator */
+    .rp-sessions-tbl td[data-label="الوقت"] { font-weight: 600; color: var(--rp-blue); }
+    /* Empty state */
+    .rp-sessions-tbl tr.rp-empty {
+        border: 1px solid var(--rp-border);
+        border-inline-end: 1.5px solid var(--rp-border);
+        border-radius: var(--rp-r-sm);
+    }
+    .rp-sessions-tbl .rp-empty td::before { content: none; }
+    .rp-sessions-tbl .rp-empty td { justify-content: center; padding: 16px 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Sessions — cartes filtrables par programme (remplace le tableau)
+   ═══════════════════════════════════════════════════════════ */
+/* AJUSTEMENT (demande utilisateur) — rp-filters-row gère déjà le flex
+   entre rp-child-filter et rp-program-filter ; celui-ci n'a plus besoin
+   de marge basse propre ni de wrap séparé (hérité de la ligne parente). */
+.rp-program-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 40px;
+    margin-top: 75px;
+}
+.rp-program-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: var(--rp-orange-xl);
+    color: var(--rp-orange) !important;
+    font-size: .78rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid var(--rp-orange);
+    transition: background .15s, color .15s;
+}
+.rp-program-pill:hover {
+    background: var(--rp-orange-lt);
+    text-decoration: none;
+}
+.rp-program-pill.active {
+    background: linear-gradient(90deg, #FF7A34, var(--rp-orange));
+    color: #fff !important;
+}
+
+/* AJUSTEMENT (demande utilisateur) — grille fixe 3 colonnes desktop /
+   1 colonne mobile (au lieu d'une grille fluide auto-fill), en phase
+   avec la pagination à 6 cartes/page (2 rangées de 3). */
+.rp-session-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+@media (max-width: 900px) {
+    .rp-session-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .rp-session-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Pagination (demande utilisateur) — 6 cartes/page ─────────── */
+.rp-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 28px;
+}
+.rp-pagination__page,
+.rp-pagination__nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    background: #FFEBE5 !important;
+    box-shadow: inset 0px 2px 4px rgba(83, 22, 4, 0.25) !important;
+    border: 1.4px solid #FF987B !important;
+    border-radius: 12px !important;
+    color: #FF6E46 !important;
+    font-size: .82rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.rp-pagination__page:hover,
+.rp-pagination__nav:hover {
+    border-color: var(--rp-blue);
+    background: var(--rp-blue-xl);
+    text-decoration: none;
+}
+.rp-pagination__page.active {
+    background: linear-gradient(
+        318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411 !important;
+    background-blend-mode: soft-light, normal;
+    color: #fff !important;
+}
+.rp-pagination__nav.is-disabled {
+    opacity: .4;
+    pointer-events: none;
+}
+
+/* Valeurs mesurées directement dans Figma (frame "التقارير", node
+   361:1040 → Frame 10/15/16) : fond blanc, bordure dégradée fine,
+   double ombre portée, radius 12, padding 20, gap interne 16. */
+.rp-session-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid transparent;
+    background-image:
+        linear-gradient(#fff, #fff),
+        linear-gradient(180deg, #C4DDF2, #EAF3FA);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow:
+        0 2px 6px rgba(23,47,70,.05),
+        0 1px 2px rgba(23,47,70,.2);
+    min-height: 200px;
+}
+.rp-session-card__body { display: flex; flex-direction: column; gap: 16px; }
+.rp-session-card__top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+.rp-session-card__titles { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.rp-session-card__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #295177;
+}
+.rp-session-card__subtitle {
+    margin: 0;
+    font-size: .875rem;
+    font-weight: 500;
+    color: #5A7897;
+}
+/* Badge icône illustratif 48x48, fond bleu clair dégradé — même
+   traitement visuel que les vignettes المغامرات. */
+.rp-session-card__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #D7ECFA;
+    background-image: linear-gradient(135deg, rgba(215,236,250,.2), rgba(76,149,215,.2));
+    color: #295177;
+}
+.rp-session-card__coach {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: .9rem;
+    font-weight: 600;
+    color: #295177;
+}
+.rp-session-card__coach img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.rp-session-card__date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: .72rem;
+    color: var(--rp-muted);
+}
+/* Bouton pleine largeur — AJUSTEMENT (demande utilisateur) : dégradé
+   diagonal + blend-mode soft-light, double box-shadow. */
+.rp-session-card__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    color: #fff !important;
+    font-size: .875rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-sizing: border-box;
+    background: linear-gradient(318.96deg, #FF987B -1.9%, rgba(255, 194, 176, 0) 17.34%, #FFEBE5 87.36%), #FF4411;
+    background-blend-mode: soft-light, normal;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25), 0px 2px 6px 2px rgba(0, 0, 0, 0.1);
+    flex-direction: row-reverse;
+}
+.rp-session-card__btn:hover { filter: brightness(1.05); color: #fff; text-decoration: none; }
+.rp-session-card__btn svg { transform: scaleX(-1); }
+
+.rp-empty-text {
+    color: var(--rp-muted);
+    font-size: .85rem;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Titre principal + fil d'Ariane, en flex justify-content:space-between
+   (AJUSTEMENT -- demande utilisateur ; remplace le bloc plein-largeur)
+   ═══════════════════════════════════════════════════════════ */
+.rp-top-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 4px 0 12px;
+}
+.rp-top-title h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #295177;
+}
+@media (max-width: 480px) {
+    .rp-top-title h1 { font-size: 24px; }
+    .rp-program-pill { font-size: 12px; border-radius: 12px; }
+}
+
+.rp-eval-context {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 4px 12px;
+    background: var(--rp-orange-xl);
+    color: var(--rp-orange);
+    border-radius: 999px;
+    font-size: .74rem;
+    font-weight: 700;
+}
+
+.rp-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    color: var(--rp-body, #334155);
+    font-size: .82rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.rp-back-link:hover { color: var(--rp-orange, #FF4411); text-decoration: none; }
+.rp-back-link svg { transform: scaleX(-1); }
+
+/* ═══════════════════════════════════════════════════════════
+   Rapport de séance — vue détail (?booking_id=X)
+   Structure vérifiée directement dans Figma (node 361:1092,
+   frame " الخوارزميات البسيطة").
+   ═══════════════════════════════════════════════════════════ */
+.rp-detail {
+    padding: 4px 0 32px;
+}
+
+/* ── Hero — AJUSTEMENT (demande utilisateur) : fond bleu translucide
+   (au lieu du dégradé orange) + box-shadow inset, même traitement que
+   le hero de child-profile.php (rk-cprofile__hero) pour cohérence
+   visuelle entre les deux pages. ── */
+.rp-detail__hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-radius: 12px;
+    padding: 40px 28px 28px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 4px 4px rgba(23, 47, 70, .15);
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+    overflow: visible;
+    color: #fff;
+    background: linear-gradient(0deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .2)), linear-gradient(120deg, #6da8de 0, #4c95d787 60%, #3e7fc054 100%);
+}
+.rp-detail__hero-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+/* AJUSTEMENT (demande utilisateur) — double dégradé + double
+   box-shadow, même traitement que rk-cprofile__pin-icon / rp-skill-card__icon. */
+.rp-detail__hero-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    color: #295177;
+    background: linear-gradient(134.42deg, rgba(215, 236, 250, 0.2) 0.5%, rgba(76, 149, 215, 0.2) 99.5%), #D7ECFA;
+    box-shadow: 0px 1.33333px 2.66667px rgba(23, 47, 70, 0.25), 0px 2.66667px 8px 2.66667px rgba(23, 47, 70, 0.05);
+    border-radius: 16px;
+}
+.rp-detail__hero-titles h1 {
+    margin: 0 0 4px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+}
+.rp-detail__hero-titles p {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #fff;
+    opacity: .92;
+}
+.rp-detail__hero-coach {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-direction: row-reverse;
+}
+.rp-detail__hero-coach span {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #295177;
+}
+.rp-detail__hero-coach img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ── Colonnes نتائج الاختبارات / ملاحظة المدرب ───────────────── */
+.rp-detail__cols {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+@media (max-width: 900px) {
+    .rp-detail__cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .rp-detail__hero { padding: 16px; }
+    .rp-detail__hero-titles h1 { font-size: 20px; }
+    .rp-detail__hero-titles p { font-size: 15px; }
+}
+.rp-detail__col-title {
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #295177;
+}
+
+.rp-quiz-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.rp-quiz-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #D7ECFA;
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+.rp-quiz-item__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #EAF3FC;
+    color: #295177;
+}
+.rp-quiz-item__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+.rp-quiz-item__body strong {
+    font-size: .9rem;
+    font-weight: 700;
+    color: #295177;
+}
+.rp-quiz-item__date {
+    font-size: .72rem;
+    color: #7A8FA6;
+}
+.rp-quiz-item__score {
+    flex-shrink: 0;
+    font-size: .85rem;
+    font-weight: 800;
+    color: #295177;
+}
+.rp-quiz-item__score--pending {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #FFECE7;
+    color: #FF4411;
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+.rp-coach-note {
+    background: #fff;
+    border: 1px solid #D7ECFA;
+    border-radius: 10px;
+    padding: 16px;
+}
+.rp-coach-note__head {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-direction: row-reverse;
+}
+.rp-coach-note__head span {
+    font-size: .85rem;
+    font-weight: 700;
+    color: #295177;
+}
+.rp-coach-note__head img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.rp-coach-note__text {
+    margin: 0;
+    font-size: .85rem;
+    color: #334155;
+    line-height: 1.6;
+}
+.rp-coach-note__block {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #D7ECFA;
+}
+.rp-coach-note__label {
+    margin: 0 0 8px;
+    font-size: .78rem;
+    font-weight: 700;
+    color: #295177;
+}
+.rp-coach-note__list {
+    margin: 0;
+    padding: 0 18px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.rp-coach-note__list li {
+    font-size: .82rem;
+    color: #334155;
+    line-height: 1.5;
+}
+.rp-coach-note__block--strengths .rp-coach-note__list li::marker { color: #16A34A; }
+.rp-coach-note__block--develop .rp-coach-note__list li::marker { color: #FF4411; }
+
+/* ── مستوى المهارات ───────────────────────────────────────── */
+.rp-detail__section { margin-bottom: 12px; }
+.rp-skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+@media (max-width: 640px) {
+    .rp-skills-grid { grid-template-columns: 1fr; }
+}
+/* AJUSTEMENT (demande utilisateur) — fond blanc uni (bordure colorée
+   retirée), radius 12px, flex-direction row-reverse (icône à droite en
+   RTL), box-shadow légère à la place de la bordure. */
+.rp-skill-card {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0px 1px 2px rgba(23, 47, 70, 0.1);
+    flex-direction: row;
+}
+.rp-skill-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.rp-skill-card__pct {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #295177;
+    flex-shrink: 0;
+}
+/* AJUSTEMENT (demande utilisateur) — placé au-dessus de
+   rp-skill-card__track (rp-skill-card__body est passé en colonne). */
+.rp-skill-card__name {
+    font-size: .82rem;
+    font-weight: 600;
+    color: #295177;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.rp-skill-card__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    flex-shrink: 0;
+}
+.rp-skill-card__star {
+    display: inline-flex;
+    color: #D7ECFA;
+}
+.rp-skill-card__star.is-active {
+    color: #F5A623;
+}
+.rp-skill-card__star svg {
+    display: block;
+}
+.rp-skill-card__track {
+    flex: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: #EEF3FF;
+    overflow: hidden;
+}
+.rp-skill-card__fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4C95D7, #295177);
+    border-radius: 999px;
+}
+/* AJUSTEMENT (demande utilisateur) — même traitement double dégradé +
+   double box-shadow que rp-detail__hero-icon / rk-cprofile__pin-icon. */
+.rp-skill-card__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: #295177;
+    background: linear-gradient(134.42deg, rgba(215, 236, 250, 0.2) 0.5%, rgba(76, 149, 215, 0.2) 99.5%), #D7ECFA;
+    box-shadow: 0px 0.9px 1.8px rgba(23, 47, 70, 0.25), 0px 1.8px 5.4px 1.8px rgba(23, 47, 70, 0.05);
+    border-radius: 42px;
+}

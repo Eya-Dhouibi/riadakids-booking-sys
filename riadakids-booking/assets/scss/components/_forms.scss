@@ -1,0 +1,201 @@
+// =============================================================================
+// COMPONENTS · Formulaires
+// =============================================================================
+@use '../settings' as v;
+
+.rk-child-form {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 16px;
+
+  h4 {
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: #333;
+  }
+}
+.rk-child-form-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+.rk-field-group {
+  label {
+    display: block;
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  input,
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 7px;
+    font-size: 13px;
+    box-sizing: border-box;
+    direction: rtl;
+    text-align: right;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+
+    &:focus {
+      border-color: #3b5bdb;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 91, 219, .12);
+    }
+  }
+}
+.rk-req { color: var(--rk-error-text); }
+.rk-field-submit {
+  display: flex;
+  align-items: flex-end;
+}
+
+// Messages de retour formulaire enfant
+#rk-add-child-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 9px;
+
+  &.rk-msg-success {
+    background: var(--rk-success-bg);
+    color: var(--rk-success-text);
+  }
+  &.rk-msg-error {
+    background: var(--rk-error-bg);
+    color: var(--rk-error-text);
+  }
+}
+
+// Champs récapitulatif (écran Confirmation — nom/email masqués visuellement)
+.rk-step6-customer-fields {
+  // conteneur — voir _screens/confirmation.scss pour la disposition d'écran
+}
+.rk-step6-field {
+  // wrapper de champ individuel — voir screens/_confirmation.scss
+}
+.rk-step6-field__label {
+  font-family: v.$rk-font-family;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rk-text-faint) !important;
+}
+.rk-step6-field__input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none !important;
+  outline: none;
+  padding: 0;
+  font-family: v.$rk-font-family;
+  font-size: 15px;
+  font-weight: 700;
+  // Le thème WordPress parent (Astra) applique ses propres styles globaux
+  // input[type] (couleur, fond, opacité), ce qui donnait un rendu
+  // grisé/désactivé à ces champs pourtant bien remplis. !important garantit
+  // le même rendu net que le reste du récap (.rk-summary-card__value), quel
+  // que soit le thème actif.
+  color: #1d2129 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #1d2129 !important; // Safari/iOS applique parfois cette propriété séparément de color
+  text-align: right;
+  direction: rtl;
+
+  &::placeholder {
+    color: var(--rk-text-faint) !important;
+    opacity: 1 !important;
+  }
+  &.rk-field-invalid {
+    color: var(--rk-error-text);
+  }
+}
+.rk-step6-field__error {
+  font-family: v.$rk-font-family;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rk-error-text);
+  text-align: center;
+  padding: 4px 4px 0 4px;
+}
+
+// ── Sélecteur de photo, cartes enfants sélectionnés, admin ───────────────
+.rk-children-selected-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 13px;
+
+  thead { background: #f1f3f5; }
+  th,
+  td {
+    padding: 8px 12px;
+    text-align: right;
+    border-bottom: 1px solid #e9ecef;
+  }
+  th {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tfoot .rk-children-total-row {
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 13px;
+  }
+}
+.rk-credit-cell { color: #1971c2; font-weight: 600; }
+
+.rk-remove-child-btn {
+  background: none;
+  border: 1px solid var(--rk-error-border);
+  color: var(--rk-error-text);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 7px;
+  font-size: 13px;
+  line-height: 1.4;
+  transition: background .15s;
+
+  &:hover { background: #fff5f5; }
+}
+
+.rk-deduct-hint {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+
+.rk-admin-children-table {
+  border-collapse: collapse;
+  width: 100%;
+
+  th,
+  td {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    text-align: right;
+  }
+  th { background: #f5f5f5; font-size: 12px; }
+}
+
+@media (max-width: v.$bp-768) {
+  .rk-child-form-fields { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: v.$bp-600) {
+  .rk-child-form-fields { grid-template-columns: 1fr; }
+}

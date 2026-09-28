@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316"/>
+      <stop offset="100%" style="stop-color:#c2410c"/>
+    </linearGradient>
+    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+  </defs>
+  <polygon points="40,4 72,22 72,58 40,76 8,58 8,22" fill="url(#bgGrad)" stroke="#fdba74" stroke-width="2"/>
+  <!-- Fire icon -->
+  <path d="M40,55 Q28,48 30,35 Q34,40 36,38 Q35,26 44,18 Q44,28 48,30 Q50,22 54,24 Q58,34 52,42 Q56,38 56,46 Q54,55 40,55Z" fill="white" opacity="0.95"/>
+  <path d="M40,54 Q34,50 34,42 Q36,45 38,43 Q38,36 42,32 Q42,40 46,38 Q48,44 44,48 Q46,46 46,50 Q44,55 40,54Z" fill="#fdba74" opacity="0.8"/>
+  <!-- Validated checkmark -->
+  <circle cx="60" cy="16" r="11" fill="url(#checkGrad)" stroke="white" stroke-width="2"/>
+  <polyline points="54,16 58,20 66,12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

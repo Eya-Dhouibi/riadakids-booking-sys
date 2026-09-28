@@ -1,0 +1,164 @@
+// ============================================================
+// Child Dashboard — Mobile  (dashboard/_mobile.scss)
+//
+// Breakpoints responsive pour le dashboard rkv2.
+// Complète les breakpoints déjà dans _layout et _drawer.
+// ============================================================
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ── Grid collapse ────────────────────────────────────────────
+
+@include m.below-lg {
+  .rkv2-main-grid {
+    grid-template-columns: 1fr;
+    padding: t.$space-4;
+    gap: t.$space-4;
+  }
+
+  // Cacher colonnes latérales sur mobile
+  .rkv2-col-left,
+  .rkv2-col-right {
+    display: none;
+  }
+
+  // Sections plein écran
+  .rkv2-sections {
+    padding: 0 t.$space-4 calc(#{t.$mobile-nav-height} + t.$space-8);
+  }
+
+  // Ajouter padding bottom au dashboard pour la bottom nav
+  #rk-dashboard {
+    padding-bottom: t.$mobile-nav-height;
+  }
+}
+
+// ── Hero réduit ──────────────────────────────────────────────
+
+@include m.mobile {
+  .rkv2-hero {
+    padding: t.$space-6 t.$space-4;
+    min-height: auto;
+    flex-direction: column-reverse;
+    gap: t.$space-4;
+  }
+
+  .rkv2-hero-name { font-size: t.$font-size-xl; }
+  .rkv2-hero-sub  { display: none; }
+  .rkv2-hero-char { display: none; }
+
+  .rkv2-hero-stats {
+    justify-content: center;
+    gap: t.$space-3;
+  }
+
+  .rkv2-hero-stat {
+    padding: t.$space-2;
+
+    strong { font-size: t.$font-size-md; }
+  }
+}
+
+// ── Cards ────────────────────────────────────────────────────
+
+@include m.mobile {
+  .rkv2-card {
+    padding: t.$space-4;
+  }
+
+  .rkv2-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .rkv2-row-flex {
+    flex-direction: column;
+  }
+
+  // Topbar → burger only
+  .rkv2-topbar {
+    padding: 0 t.$space-4;
+    height: 56px;
+  }
+
+  .rkv2-topbar-nav,
+  .rkv2-topbar-right {
+    display: none;
+  }
+
+  .rkv2-brand-name { display: inline; }
+
+  .rkv2-float-msg {
+    width: 46px;
+    height: 46px;
+    top: auto;
+    bottom: calc(#{t.$mobile-nav-height} + t.$space-3);
+    left: t.$space-3;
+  }
+}
+
+// ── Très petits écrans ────────────────────────────────────────
+
+@include m.mobile-xs {
+  .rkv2-hero-stats {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .rkv2-hero-name {
+    font-size: t.$font-size-lg;
+  }
+
+  .rkv2-topbar {
+    height: 52px;
+    padding: 0 t.$space-3;
+  }
+
+  .rkv2-bottom-nav-item {
+    padding: 4px t.$space-1;
+    font-size: 0.55rem;
+  }
+
+  .rkv2-bottom-nav-emoji {
+    font-size: 1.1rem;
+  }
+}
+
+// ── iOS safe area ─────────────────────────────────────────────
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .rkv2-bottom-nav {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+
+  #rk-dashboard {
+    padding-bottom: calc(#{t.$mobile-nav-height} + env(safe-area-inset-bottom));
+  }
+}
+
+// ── Touch devices ─────────────────────────────────────────────
+
+@include m.touch {
+  .rkv2-card:hover,
+  .rkv2-course-card:hover,
+  .rkv2-mission-item:hover {
+    transform: none;
+    box-shadow: t.$shadow-card;
+  }
+
+  .rkv2-bottom-nav-item:active {
+    background: rgba(t.$hex-primary, 0.08);
+  }
+}
+
+// ── Sidebar anim compact ──────────────────────────────────────
+
+@include m.mobile {
+  .rkv2-sidebar-anim {
+    padding: t.$space-4;
+  }
+
+  .rkv2-anim-char {
+    max-width: 120px;
+  }
+}

@@ -1,0 +1,60 @@
+/* ── RK Students — RTL ──────────────────────────────────── */
+[dir="rtl"] .tutor-table th,
+[dir="rtl"] .tutor-table td {
+    text-align: right;
+}
+
+[dir="rtl"] .tutor-wp-dashboard-header-inner,
+[dir="rtl"] .tutor-wp-dashboard-course-filter,
+[dir="rtl"] .tutor-wp-dashboard-filter-right {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .tutor-pagination {
+    direction: rtl;
+}
+
+/* ── RK Students — colonnes Coach & Booking ─────────────── */
+
+/* Point vert devant le nom du coach */
+.rk-coach-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    flex-shrink: 0;
+}
+
+/* Cellule Prochain RDV : jour en gras + heure en badge bleu */
+.rk-booking-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rk-booking-day {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.rk-booking-hour {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 1px 7px;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+
+/* Bouton "الملف" : police arabe */
+.tutor-table .tutor-btn.tutor-btn-outline-primary.tutor-btn-sm {
+    font-family: "Tajawal", Tahoma, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0;
+}

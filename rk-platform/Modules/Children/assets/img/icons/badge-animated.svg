@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FFA500"/>
+      <stop offset="100%" stop-color="#FFD700"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="colored"/>
+      <feMerge>
+        <feMergeNode in="colored"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Medal -->
+  <path d="M32 8 L40 22 L58 26 L44 40 L48 58 L32 48 L16 58 L20 40 L6 26 L24 22 Z" fill="url(#badgeGrad)" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <!-- Star -->
+  <polygon points="32,20 36,30 46,30 38,36 40,46 32,40 24,46 26,36 18,30 28,30" fill="#FF4411">
+    <animate attributeName="points" values="32,20 36,30 46,30 38,36 40,46 32,40 24,46 26,36 18,30 28,30;32,18 38,28 48,30 38,38 42,48 32,42 22,48 26,38 16,30 28,28;32,20 36,30 46,30 38,36 40,46 32,40 24,46 26,36 18,30 28,30" dur="1s" repeatCount="indefinite"/>
+  </polygon>
+</svg>

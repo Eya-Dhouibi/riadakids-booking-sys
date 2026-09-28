@@ -1,0 +1,54 @@
+// =============================================================================
+// COMPONENTS · Badges de statut
+// =============================================================================
+// FIX conservé — sans dépendance de style déclarée, WordPress ne garantit
+// aucun ordre de chargement entre ce fichier et le CSS du thème /
+// WooCommerce / Elementor. Un style externe générique (background sur un
+// sélecteur badge/tag) chargé après ce fichier gagnerait à spécificité
+// égale. Corrigé en renforçant la spécificité de nos propres règles de
+// statut (double classe .rk-status-badge.rk-status--X), robuste sans
+// dépendre de l'ordre de chargement.
+// =============================================================================
+@use '../settings' as v;
+
+.rk-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: v.$rk-radius-pill;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.rk-status--confirmed { background: var(--rk-success-bg) !important; color: var(--rk-success-text) !important; }
+  &.rk-status--pending   { background: var(--rk-warning-bg) !important; color: #e67700 !important; }
+  &.rk-status--cancelled { background: var(--rk-error-bg) !important; color: var(--rk-error-text) !important; }
+}
+
+// Statut pending_credit (variante hors double-classe, historique)
+.rk-status--pending-credit {
+  background: var(--rk-warning-bg);
+  color: #e67700;
+  padding: 3px 10px;
+  border-radius: v.$rk-radius-pill;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rk-badge-count {
+  background: #3b5bdb;
+  color: #fff;
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rk-session-time-badge {
+  background: #e7f5ff;
+  color: #1971c2;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
